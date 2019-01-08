@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python os.walk</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-25</p>
+</div>
+<div id="content">
+<h1 class="title">Python os.walk</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf08e149">1. os.walk目录遍历</a>
+<ul>
+<li><a href="#org6db405d">1.1. os.walk</a></li>
+<li><a href="#org85afcdc">1.2. 例子</a>
+<ul>
+<li><a href="#org1aee7c3">1.2.1. 测试topdown</a></li>
+<li><a href="#orge1c3e28">1.2.2. 运行时修改遍历目录</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4a34921">2. 参考资料</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf08e149" class="outline-2">
+<h2 id="orgf08e149"><span class="section-number-2">1</span> os.walk目录遍历</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+今天分享的是刚在处理遍历目录相关用到的相关方法。
+</p>
+</div>
+<div id="outline-container-org6db405d" class="outline-3">
+<h3 id="org6db405d"><span class="section-number-3">1.1</span> os.walk</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+os.walk的参数如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">os.walk<span style="color: #4d4d4c;">(</span>top, topdown=<span style="color: #4271ae;">True</span>, onerror=<span style="color: #4271ae;">None</span>, followlinks=<span style="color: #4271ae;">False</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+其中：
+</p>
+<ul class="org-ul">
+<li>top是要遍历的目录。</li>
+<li>topdown是代表要从上而下遍历还是从下往上遍历。</li>
+<li>onerror可以用来设置当便利出现错误的处理函数(该函数接受一个OSError的实例作为参数)，设置为空则不作处理。</li>
+<li>followlinks表示是否要跟随目录下的链接去继续遍历，要注意的是，os.walk不会记录已经遍历的目录，所以跟随链接遍历的话有可能一直循环调用下去。</li>
+</ul>
+
+<p>
+os.walk返回的是一个3个元素的元组 <code>(root, dirs, files)</code> ，分别表示遍历的路径名，该路径下的目录列表和该路径下文件列表。注意目录列表和文件列表不是具体路径，需要具体路径(从root开始的路径)的话可以用 <code>os.path.join(root,dir)</code> 和 <code>os.path.join(root,dir)</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org85afcdc" class="outline-3">
+<h3 id="org85afcdc"><span class="section-number-3">1.2</span> 例子</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+假设现在存在如下的文件和目录结构:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  test_os_walk git:<span style="color: #4d4d4c;">(</span>master<span style="color: #4d4d4c;">)</span> &#10007; tree
+.
+&#9500;&#9472;&#9472; a.py
+&#9500;&#9472;&#9472; b.py
+&#9500;&#9472;&#9472; c.py
+&#9500;&#9472;&#9472; dir1
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; dir4
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; g.py
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; h.py
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; dirx
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; diry
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; k.py
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; z.py
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; e.py
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; f.py
+&#9474;&#160;&#160; &#9492;&#9472;&#9472; g.py
+&#9500;&#9472;&#9472; dir2
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; dira
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; dirb
+&#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; dirc
+&#9474;&#160;&#160; &#9474;&#160;&#160;         &#9492;&#9472;&#9472; aha.py
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; k.py
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; l.py
+&#9474;&#160;&#160; &#9492;&#9472;&#9472; m.py
+&#9492;&#9472;&#9472; dir3
+    &#9500;&#9472;&#9472; dir5
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; z.py
+    &#9500;&#9472;&#9472; x.py
+    &#9492;&#9472;&#9472; y.py
+
+10 directories, 17 files
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org1aee7c3" class="outline-4">
+<h4 id="org1aee7c3"><span class="section-number-4">1.2.1</span> 测试topdown</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+当我用 <code>os.walk</code> 遍历这个目录时，程序和输出如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> os
+
+<span style="color: #eab700;">path</span> = <span style="color: #3e999f;">'/Users/nisen/Projects/python_advanced_class/test/test_os_walk'</span>
+
+<span style="color: #718c00;">for</span> root, dirs, files <span style="color: #718c00;">in</span> os.walk<span style="color: #4d4d4c;">(</span>path, <span style="color: #4271ae;">True</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">print</span> <span style="color: #3e999f;">'root: %s'</span> % root
+    <span style="color: #718c00;">print</span> <span style="color: #3e999f;">'dirs: %s'</span> % dirs
+    <span style="color: #718c00;">print</span> <span style="color: #3e999f;">'files: %s'</span> % files
+    <span style="color: #718c00;">print</span> <span style="color: #3e999f;">''</span>
+
+</pre>
+</div>
+
+<p>
+结果如下，从root的路径可以看出遍历是自上而下的：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  test git:<span style="color: #4d4d4c;">(</span>master<span style="color: #4d4d4c;">)</span> &#10007; python test11.py
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dir1'</span>, <span style="color: #3e999f;">'dir2'</span>, <span style="color: #3e999f;">'dir3'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'a.py'</span>, <span style="color: #3e999f;">'b.py'</span>, <span style="color: #3e999f;">'c.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dir4'</span>, <span style="color: #3e999f;">'dirx'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'e.py'</span>, <span style="color: #3e999f;">'f.py'</span>, <span style="color: #3e999f;">'g.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1/dir4
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'g.py'</span>, <span style="color: #3e999f;">'h.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1/dirx
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'diry'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'z.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1/dirx/diry
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'k.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dira'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'k.py'</span>, <span style="color: #3e999f;">'l.py'</span>, <span style="color: #3e999f;">'m.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2/dira
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dirb'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2/dira/dirb
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dirc'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2/dira/dirb/dirc
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'aha.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir3
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dir5'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'x.py'</span>, <span style="color: #3e999f;">'y.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir3/dir5
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'z.py'</span><span style="color: #4d4d4c;">]</span>
+
+</pre>
+</div>
+
+<p>
+而当设置os.walk的topdown为False时，结果如下, 可以看出他是自上而下遍历的：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  test git:<span style="color: #4d4d4c;">(</span>master<span style="color: #4d4d4c;">)</span> &#10007; python test11.py
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1/dir4
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'g.py'</span>, <span style="color: #3e999f;">'h.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1/dirx/diry
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'k.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1/dirx
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'diry'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'z.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir1
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dir4'</span>, <span style="color: #3e999f;">'dirx'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'e.py'</span>, <span style="color: #3e999f;">'f.py'</span>, <span style="color: #3e999f;">'g.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2/dira/dirb/dirc
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'aha.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2/dira/dirb
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dirc'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2/dira
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dirb'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir2
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dira'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'k.py'</span>, <span style="color: #3e999f;">'l.py'</span>, <span style="color: #3e999f;">'m.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir3/dir5
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'z.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk/dir3
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dir5'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'x.py'</span>, <span style="color: #3e999f;">'y.py'</span><span style="color: #4d4d4c;">]</span>
+
+root: /Users/nisen/Projects/python_advanced_class/test/test_os_walk
+<span style="color: #8959a8;">dirs</span>: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'dir1'</span>, <span style="color: #3e999f;">'dir2'</span>, <span style="color: #3e999f;">'dir3'</span><span style="color: #4d4d4c;">]</span>
+files: <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'a.py'</span>, <span style="color: #3e999f;">'b.py'</span>, <span style="color: #3e999f;">'c.py'</span><span style="color: #4d4d4c;">]</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge1c3e28" class="outline-4">
+<h4 id="orge1c3e28"><span class="section-number-4">1.2.2</span> 运行时修改遍历目录</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+当topdown设置为True时，可以在处理时修改返回的 <code>dirs</code> 列表，这样可以遍历下面的目录时会根据修改后的 <code>dirs</code> 来遍历。比如下面的例子，在遍历的时候不把"CSV"目录包括在内:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> os
+<span style="color: #718c00;">from</span> os.path <span style="color: #718c00;">import</span> join, getsize
+<span style="color: #718c00;">for</span> root, dirs, files <span style="color: #718c00;">in</span> os.walk<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'python/Lib/email'</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">print</span> root, <span style="color: #3e999f;">"consumes"</span>,
+    <span style="color: #718c00;">print</span> <span style="color: #8959a8;">sum</span><span style="color: #4d4d4c;">(</span>getsize<span style="color: #3e999f;">(</span>join<span style="color: #eab700;">(</span>root, name<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span> <span style="color: #718c00;">for</span> name <span style="color: #718c00;">in</span> files<span style="color: #4d4d4c;">)</span>,
+    <span style="color: #718c00;">print</span> <span style="color: #3e999f;">"bytes in"</span>, <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>files<span style="color: #4d4d4c;">)</span>, <span style="color: #3e999f;">"non-directory files"</span>
+    <span style="color: #718c00;">if</span> <span style="color: #3e999f;">'CVS'</span> <span style="color: #718c00;">in</span> dirs:
+        dirs.remove<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'CVS'</span><span style="color: #4d4d4c;">)</span>  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">don't visit CVS directories</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4a34921" class="outline-2">
+<h2 id="org4a34921"><span class="section-number-2">2</span> 参考资料</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="https://docs.python.org/2/library/os.html#os.walk">https://docs.python.org/2/library/os.html#os.walk</a></li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

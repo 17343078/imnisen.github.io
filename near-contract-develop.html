@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>浅尝NEAR智能合约开发</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2020-01-24</p>
+</div>
+<div id="content">
+<h1 class="title">浅尝NEAR智能合约开发</h1>
+
+
+<div id="outline-container-org2a1b4df" class="outline-2">
+<h2 id="org2a1b4df"><span class="section-number-2">1</span> 参与NEAR黑客松以及我犯的错误</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+前段时间参见了NEAR举办的<a href="https://nearprotocol.com/china-hack/">黑客松</a>活动，由于还有其他事情，仅花了4个工作日做了一个基于near的reddit原型，项目链接参见<a href="https://github.com/imnisen/reddit-clone">这里</a>。
+</p>
+
+<p>
+由于时间比较赶，开发后匆忙测试了一遍没有问题就提交了，到最后线上评审到时候demo没有成功跑起来，自然也没拿到什么名次。
+</p>
+
+<p>
+后来我看了下是什么原因没成功运行，发现自己在合约方法里犯了一个常规错误，导致“用户提交帖子”的时候默认的gas不够，而我开发的时候测试是够的。
+</p>
+
+<p>
+错误原因是我用了一个类似array的形式保存了订阅同一个“栏目”下的所有“用户”，当用户“用户提交帖子”的时候，会遍历这个array里的用户做相应事情。
+随着用户增多，会需要更多的gas。这也是问什么测试的时候只有少数几个还可以最后演示的demo就不行了。
+</p>
+
+<p>
+本质上，是我思虑不周，实现逻辑的时候没有考虑到遍历数组当元素多了后gas怎么处理，而这正是智能合约与普通编程的一个差异点：“操作需要代价”。
+</p>
+
+<p>
+接下来总结下其它编写合约过程中我遇到的一些难点以及怎么解决的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6524932" class="outline-2">
+<h2 id="org6524932"><span class="section-number-2">2</span> 编写智能合约踩的坑</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+下面这些我遇到的问题有可能是由于我不知道正确的解决办法，也有可能是合约相关的实现还有缺陷，我并没有求证，这里只是记录我遇到的问题和解决的办法。也有可能后续这些问题会得到解决。
+</p>
+</div>
+
+
+<div id="outline-container-org2e92e4c" class="outline-3">
+<h3 id="org2e92e4c"><span class="section-number-3">2.1</span> map需要先判断值存不存在</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+刚开始的时候，直接从一个 <code>PersistentMap</code> 获取值返回，如果key不存在，那么合约执行（VM端）会报错，返回的报错信息无法判断是什么原因，花了我一些功夫。
+</p>
+
+<p>
+而可能是 <code>near-runtime-ts</code> 实现或者 <code>nearcore</code> 实现原因， <code>PersistentMap.get(k, defaultValue)</code> 并不能按预期工作，最后我总是先判断key是否存在再获取值，如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#33719;&#21462;&#35746;&#38405;&#30340;subreddit</span>
+<span style="color: #00bfff;">export</span> <span style="color: #00bfff;">function</span> getsubscribeSubreddits<span style="color: #8c8c8c;">(</span><span style="color: #4eee94;">user</span>:<span style="color: #4eee94;">string</span><span style="color: #8c8c8c;">)</span>: Subreddits | <span style="color: #a2cd5a;">null</span> <span style="color: #8c8c8c;">{</span>
+    <span style="color: #00bfff;">if</span> <span style="color: #93a8c6;">(</span>userSubscribedSubreddits.contains<span style="color: #b0b1a3;">(</span>user<span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">{</span>  <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">get&#21069;&#24635;&#26159;&#20808;&#21028;&#26029;&#26159;&#21542;contains</span>
+        <span style="color: #00bfff;">return</span> userSubscribedSubreddits.get<span style="color: #b0b1a3;">(</span>user<span style="color: #b0b1a3;">)</span>
+    <span style="color: #93a8c6;">}</span> <span style="color: #00bfff;">else</span> <span style="color: #93a8c6;">{</span>
+        <span style="color: #00bfff;">let</span> <span style="color: #4eee94;">result</span> = <span style="color: #00bfff;">new</span> <span style="color: #98f5ff;">Subreddits</span><span style="color: #b0b1a3;">()</span>;
+        result.subreddit_ids = <span style="color: #00bfff;">new</span> <span style="color: #98f5ff;">Array</span>&lt;u64&gt;<span style="color: #b0b1a3;">(</span>0<span style="color: #b0b1a3;">)</span>;
+        <span style="color: #00bfff;">return</span> result
+    <span style="color: #93a8c6;">}</span>
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbdceaef" class="outline-3">
+<h3 id="orgbdceaef"><span class="section-number-3">2.2</span> 存储数组</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+使用 <code>PersistentMap</code> 来存储 <code>key-&gt;array</code> ，然后在接口里根据key获取这个array的时候会在编译的时候提示Array没有实现serialize方法。
+由于我不知道如何给Array添加serialize方法，所以我每当需要返回一个Array的时候，总是新建了一个对象，来包裹这个Array，即使造成了啰嗦。
+这样合约方法返回的时候，直接返回 <code>Subreddits</code> 对象，而不是 <code>Array&lt;Subreddit&gt;</code> ：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #00bfff;">export</span> <span style="color: #00bfff;">class</span> Subreddit <span style="color: #8c8c8c;">{</span>
+    id:u64;
+    name:string;
+    description:string;
+    submit_ids:Array&lt;u64&gt;;
+    creator:string;
+<span style="color: #8c8c8c;">}</span>
+
+<span style="color: #00bfff;">export</span> <span style="color: #00bfff;">class</span> Subreddits <span style="color: #8c8c8c;">{</span>  <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#23545;Subreddit&#25968;&#32452;&#30340;&#21253;&#35013;</span>
+    subreddit_ids:u64<span style="color: #93a8c6;">[]</span>
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org37f10cd" class="outline-3">
+<h3 id="org37f10cd"><span class="section-number-3">2.3</span> 返回单个对象时需要用数组封装</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+当需要根据id来返回一个object的时候，我遇到这样的问题：
+</p>
+
+<ol class="org-ol">
+<li>合约方法不能返回null，否则虚拟机执行的时候报错</li>
+<li><code>map.get(key)</code> 这样的方法由于类型推断一定需要我在方法的返回类型上加上 <code>null</code></li>
+<li>我不知道如何一个方法返回三个类型</li>
+</ol>
+
+<p>
+最后折衷起来用数组包裹单个object，当空数组的时候，表示不存在，而不是用 <code>null</code> 表示。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#26681;&#25454;subreddit id&#33719;&#21462;subreddit&#35814;&#32454;&#20869;&#23481;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">note: &#25105;&#34987;&#36843;&#29992;&#25968;&#32452;&#26469;&#36820;&#22238;&#21333;&#20010;&#23545;&#35937;, &#22240;&#20026;&#25105;&#26080;&#27861;&#29992;null&#26469;&#34920;&#31034;&#19981;&#23384;&#22312;&#65292;&#36820;&#22238;wasm &#25191;&#34892;&#38169;&#35823;, &#20063;&#19981;&#30693;&#24590;&#20040;&#36820;&#22238;3&#31181;&#31867;&#22411;</span>
+<span style="color: #00bfff;">export</span> <span style="color: #00bfff;">function</span> getSubredditDetail<span style="color: #8c8c8c;">(</span><span style="color: #4eee94;">id</span>:<span style="color: #4eee94;">u64</span><span style="color: #8c8c8c;">)</span>:Subreddit<span style="color: #8c8c8c;">[]</span> | <span style="color: #a2cd5a;">null</span> <span style="color: #8c8c8c;">{</span>
+
+    <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#21028;&#26029;&#26159;&#21542;&#23384;&#22312;id&#30340;&#20869;&#23481;</span>
+    <span style="color: #00bfff;">if</span> <span style="color: #93a8c6;">(</span>!AllSubreddits.contains<span style="color: #b0b1a3;">(</span>id<span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">{</span>
+        <span style="color: #00bfff;">return</span> <span style="color: #00bfff;">new</span> <span style="color: #98f5ff;">Array</span>&lt;Subreddit&gt;<span style="color: #b0b1a3;">(</span>0<span style="color: #b0b1a3;">)</span>         <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#31354;&#25968;&#32452;&#34920;&#31034;&#19981;&#23384;&#22312;</span>
+    <span style="color: #93a8c6;">}</span> <span style="color: #00bfff;">else</span> <span style="color: #93a8c6;">{</span>
+        <span style="color: #00bfff;">let</span> <span style="color: #4eee94;">result</span> = <span style="color: #00bfff;">new</span> <span style="color: #98f5ff;">Array</span>&lt;Subreddit&gt;<span style="color: #b0b1a3;">(</span>0<span style="color: #b0b1a3;">)</span>;  <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#26032;&#24314;&#19968;&#20010;&#25968;&#32452;&#26469;&#21253;&#35065;&#21333;&#20010;&#23545;&#35937;</span>
+        result.push<span style="color: #b0b1a3;">(</span>AllSubreddits.getSome<span style="color: #97b098;">(</span>id<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span>;
+        <span style="color: #00bfff;">return</span> result
+    <span style="color: #93a8c6;">}</span>
+<span style="color: #8c8c8c;">}</span>
+
+
+</pre>
+</div>
+
+<p>
+该问题应该有其他更合理的解决方法。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe5d8f1" class="outline-2">
+<h2 id="orgfe5d8f1"><span class="section-number-2">3</span> End</h2>
+<div class="outline-text-2" id="text-3">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

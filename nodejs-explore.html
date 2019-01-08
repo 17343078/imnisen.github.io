@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nodejs初探</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2015-09-01</p>
+</div>
+<div id="content">
+<h1 class="title">Nodejs初探</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd1a0b85">1. 背景</a>
+<ul>
+<li><a href="#org676a91c">1.1. 简单聊天室</a>
+<ul>
+<li><a href="#orga553c75">1.1.1. 代码</a></li>
+<li><a href="#org3697384">1.1.2. 运行结果如图：</a></li>
+</ul>
+</li>
+<li><a href="#org32fce39">1.2. express</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd1a0b85" class="outline-2">
+<h2 id="orgd1a0b85"><span class="section-number-2">1</span> 背景</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+出于好奇尝试了nodejs, 看了《Node:Up and Running》，被事件驱动程序和简单明了的方式吸引。
+</p>
+
+<p>
+所以尝试跟着写了两个书上的demo感受下
+</p>
+</div>
+
+<div id="outline-container-org676a91c" class="outline-3">
+<h3 id="org676a91c"><span class="section-number-3">1.1</span> 简单聊天室</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orga553c75" class="outline-4">
+<h4 id="orga553c75"><span class="section-number-4">1.1.1</span> 代码</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+<b>Enviroment</b> :node 0.10.25, ubuntu 14.04
+</p>
+
+<p>
+一个基于TCP的聊天服务器，可使用Telnet连接，可同时连接多个客户端使用，如果其中一个客户端出问题不会影响其它客户端使用.
+代码以及说明如下：
+</p>
+
+<pre class="example">
+:::javascript
+
+//加载'net'模块，包含了TCP模块
+var net = require('net');
+
+//创建一个TCP服务器
+//创建一个数组存放连接的客户端
+var chatServer = net.createServer(),
+    clientList = [];
+
+//添加服务器连接的监听事件
+//将客户端对应的TCP socket对象'client'　传给callback函数
+chatServer.on('connection', function(client){
+
+    //client.remoteAddress获得客户端IP地址，
+    //client.remotePort是客户端接收返回数据的TCP端口，作为client的唯一标识
+    client.name = client.remoteAddress + ':' + client.remotePort
+
+    //client.write方法用来写入发送给客户端的数据
+    client.write('Hi ' + client.name + '!\n');
+
+    //将此客户端放入所有客户端组成的数组
+    clientList.push(client);
+
+    //添加接收到客户端数据的监听事件
+    client.on('data', function(data){
+        //定义一个broadcast函数用来发送数据给所有有效的客户端
+        broadcast(data, client)
+    });
+
+    //添加客户端断开连接的监听事件
+    client.on('end', function(){
+        //客户端断开连接后，将此客户端从客户端列表中清除
+        clientList.splice(clientList.indexOf(client), 1);
+    });
+
+    //添加客户端错误的监听事件
+    client.on('error', function(e){
+        //打印出错误内容
+        console.log(e);
+    })
+})
+
+function broadcast(message, client){
+    //定义一个存放需要清除的客户端的数组
+    var cleanup = [];
+
+    //遍历所有客户端
+    for(var i=0;i&lt;clientList.length;i++){
+
+        //向除自己意外的客户端发送消息
+        if(client != clientList[i]){
+
+            //判断客户端socket是否能写入数据
+            if(clientList[i].writable){
+
+                //向该客户端写入内容
+                clientList[i].write(client.name + " says&gt; " + message);
+            } else {
+
+                //如果该客户端不可用则加它加入要清除的列表
+                cleanup.push(clientList[i]);
+
+                //通过Socket.destroy()方法关闭不可写的socket
+                clientList[i].destroy();
+            }
+        }
+    }
+
+    //从客户端列表中移除所有不可写的客户端
+    for(i=0;i&lt;cleanup.length;i++){
+        clientList.splice(clientList.indexOf(cleanup[i]), 1);
+    }
+}
+
+//设置服务器监听8000端口
+chatServer.listen(8000);
+
+//服务器上打印初始信息
+console.log('Server is now running at "127.0.0.1", port 8000');
+</pre>
+</div>
+</div>
+<div id="outline-container-org3697384" class="outline-4">
+<h4 id="org3697384"><span class="section-number-4">1.1.2</span> 运行结果如图：</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>服务器端</li>
+</ul>
+
+<div class="figure">
+<p><img src="static/images/node-simple-chat-server1.png" alt="node-simple-chat-server1.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li>console1, 使用telnet连接服务器</li>
+</ul>
+
+<div class="figure">
+<p><img src="static/images/node-simple-chat-server2.png" alt="node-simple-chat-server2.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li>console2, 使用telnet连接服务器</li>
+</ul>
+
+<div class="figure">
+<p><img src="static/images/node-simple-chat-server3.png" alt="node-simple-chat-server3.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li>console3, 使用telnet连接服务器</li>
+</ul>
+
+<div class="figure">
+<p><img src="static/images/node-simple-chat-server4.png" alt="node-simple-chat-server4.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org32fce39" class="outline-3">
+<h3 id="org32fce39"><span class="section-number-3">1.2</span> express</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+需要注意的是，版本变迁后，书上有些代码已经过时了
+<b>Enviroment</b> :node 0.10.25, ubuntu 14.04
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #8e908c; font-style: italic;">////</span><span style="color: #8e908c; font-style: italic;">app.js, , server side&#65292; simple twitter</span>
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#24341;&#20837;express&#27169;&#22359;&#65292;&#23427;express&#20250;&#22312;&#21518;&#21488;&#35843;&#29992;http&#27169;&#22359;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">express</span> = require<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'express'</span><span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#21019;&#24314;&#26381;&#21153;&#22120; &#20070;&#19978;&#30340;express.createServer()&#26041;&#27861;&#24050;&#32463;&#19981;&#20877;&#20351;&#29992;&#20102;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">app</span> = express<span style="color: #4d4d4c;">()</span> ;
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21516;&#26679;&#65292;&#26032;&#29256;&#26412;bodyparser&#20063;&#34987;&#20998;&#31163;&#20986;&#26469;&#20102;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">bodyParser</span> = require<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'body-parser'</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">urlencodedParser</span> = bodyParser.urlencoded<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span> extended: <span style="color: #4271ae;">false</span> <span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#25351;&#23450;&#30417;&#21548;&#31471;&#21475;</span>
+app.listen<span style="color: #4d4d4c;">(</span>8000<span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#21021;&#22987;&#21270;&#25968;&#32452;&#29992;&#26469;&#23384;&#25918;twitter</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">tweets</span> = <span style="color: #4d4d4c;">[]</span>;
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#21644;&#20351;&#29992;http&#26041;&#24335;&#19981;&#21516;&#30340;&#26159;&#65292;&#19981;&#29992;&#20026;&#35831;&#27714;&#20107;&#20214;&#35843;&#29992;&#30417;&#21548;&#22120;&#65292;&#36890;&#36807;http&#21305;&#37197;&#30340;&#26041;&#24335;&#26469;&#25351;&#23450;&#22238;&#25481;&#20989;&#25968;</span>
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#32780;&#19988;&#21487;&#20197;&#26681;&#25454;&#35831;&#27714;&#30340;&#26041;&#24335;&#36807;&#28388;(eg.get,post...)</span>
+app.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/'</span>, <span style="color: #718c00;">function</span><span style="color: #3e999f;">(</span><span style="color: #eab700;">req</span>, <span style="color: #eab700;">res</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#19981;&#38656;&#35201;&#20687;http&#37027;&#26679;&#20808;&#21457;&#36865;header&#28982;&#21518;&#20877;&#36820;&#22238;&#20869;&#23481;&#65292;&#30452;&#25509;&#29992;send()&#26041;&#27861;</span>
+  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">send()&#26041;&#27861;&#20250;&#21457;&#36865;header,&#21516;&#26102;&#36824;&#20250;&#35843;&#29992;response.end()&#26041;&#27861;&#32467;&#26463;response</span>
+  res.send<span style="color: #eab700;">(</span><span style="color: #3e999f;">'Welcome to Node Twitter'</span><span style="color: #eab700;">)</span>
+<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #8e908c; font-style: italic;">//  </span><span style="color: #8e908c; font-style: italic;">express.bodyParser()&#26159;&#19968;&#20010;&#20013;&#38388;&#20214;&#65292;&#29992;&#26469;&#23558;&#23458;&#25143;&#31471;post&#25968;&#25454;&#36716;&#21270;&#20026;javascript&#23545;&#35937;</span>
+<span style="color: #8e908c; font-style: italic;">//  </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#19981;&#35843;&#29992; express.bodyParser()&#65292;&#23601;&#38656;&#35201;&#25163;&#21160;&#22788;&#29702;&#35831;&#27714;&#30340;&#25968;&#25454;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26032;&#29256;&#26412;&#29992;&#19978;&#38754;&#25351;&#23450;&#23545;urlencodedParser</span>
+app.post<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/send'</span>, urlencodedParser, <span style="color: #718c00;">function</span><span style="color: #3e999f;">(</span><span style="color: #eab700;">req</span>, <span style="color: #eab700;">res</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+
+  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">req.body&#21253;&#21547;post&#25968;&#25454;&#23545;&#24212;&#30340;&#23545;&#35937;</span>
+  <span style="color: #718c00;">if</span> <span style="color: #eab700;">(</span>req.body &amp;&amp; req.body.tweet<span style="color: #eab700;">)</span> <span style="color: #eab700;">{</span>
+     tweets.push<span style="color: #718c00;">(</span>req.body.tweet<span style="color: #718c00;">)</span>;
+
+     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#19981;&#38656;&#35201;&#25163;&#21160;&#24207;&#21015;&#21270;&#65292;res.send()&#20250;&#33258;&#21160;&#36827;&#34892;&#65292;&#24182;&#28155;&#21152;http header</span>
+     res.send<span style="color: #718c00;">(</span><span style="color: #4271ae;">{</span>status:<span style="color: #3e999f;">"ok"</span>, message:<span style="color: #3e999f;">"Tweet received"</span><span style="color: #4271ae;">}</span><span style="color: #718c00;">)</span>;
+
+  <span style="color: #eab700;">}</span> <span style="color: #718c00;">else</span> <span style="color: #eab700;">{</span>
+    res.send<span style="color: #718c00;">(</span><span style="color: #4271ae;">{</span>status:<span style="color: #3e999f;">"nok"</span>, message:<span style="color: #3e999f;">"No tweet received"</span><span style="color: #4271ae;">}</span><span style="color: #718c00;">)</span>;
+  <span style="color: #eab700;">}</span>
+<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>;
+
+app.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/tweets'</span>, <span style="color: #718c00;">function</span><span style="color: #3e999f;">(</span><span style="color: #eab700;">req</span>, <span style="color: #eab700;">res</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+  res.send<span style="color: #eab700;">(</span>tweets<span style="color: #eab700;">)</span>;
+
+<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript">
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">a simple Post test, &#29992;&#26469;&#27979;&#35797;&#19978;&#36848;api</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">assert&#27169;&#22359;&#26469;&#23545;&#36820;&#22238;&#20540;&#36827;&#34892;&#27979;&#35797;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">http</span> = require<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'http'</span><span style="color: #4d4d4c;">)</span>,
+  assert = require<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'assert'</span><span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#37197;&#32622;http.request&#30340;&#23646;&#24615;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">opts</span> = <span style="color: #4d4d4c;">{</span>
+  host: <span style="color: #3e999f;">'localhost'</span>,
+  port: 8000,
+  path: <span style="color: #3e999f;">'/send'</span>,
+  method: <span style="color: #3e999f;">'POST'</span>,
+  headers: <span style="color: #3e999f;">{</span><span style="color: #3e999f;">'content-type'</span>:<span style="color: #3e999f;">'application/x-www-form-url-encodeed'</span><span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>;
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#21033;&#29992;&#21033;&#29992;http&#27169;&#22359;&#26469;&#21457;&#36865;&#35831;&#27714;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">req</span> = http.request<span style="color: #4d4d4c;">(</span>opts, <span style="color: #718c00;">function</span><span style="color: #3e999f;">(</span><span style="color: #eab700;">res</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+  <span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#25351;&#23450;&#25509;&#21463;&#25968;&#25454;&#30340;&#32534;&#30721;&#26041;&#24335;</span>
+  res.setEncoding<span style="color: #eab700;">(</span><span style="color: #3e999f;">'utf-8'</span><span style="color: #eab700;">)</span>;
+
+  <span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#19981;&#21516;&#20110;express&#20013;&#30340;&#26041;&#24335;&#65292;&#36825;&#37324;&#25163;&#21160;&#22788;&#29702;&#36820;&#22238;&#30340;&#25968;&#25454;&#27969;</span>
+  <span style="color: #718c00;">var</span> <span style="color: #eab700;">data</span> = <span style="color: #3e999f;">""</span>;
+  res.on<span style="color: #eab700;">(</span><span style="color: #3e999f;">'data'</span>, <span style="color: #718c00;">function</span><span style="color: #718c00;">(</span><span style="color: #eab700;">d</span><span style="color: #718c00;">)</span> <span style="color: #718c00;">{</span>
+    data += d
+  <span style="color: #718c00;">}</span><span style="color: #eab700;">)</span>;
+
+  <span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#25351;&#23450;end&#22238;&#35843;&#20989;&#25968;</span>
+  res.on<span style="color: #eab700;">(</span><span style="color: #3e999f;">'end'</span>, <span style="color: #718c00;">function</span><span style="color: #718c00;">()</span> <span style="color: #718c00;">{</span>
+    assert.notStrictEqual&#25351;&#23450;&#23545;&#25968;&#25454;&#36827;&#34892;&#8220;==&#8221;&#32423;&#21035;&#23545;&#26816;&#26597;
+    assert.notStrictEqual<span style="color: #4271ae;">(</span>data, <span style="color: #3e999f;">'{status:"ok", message:"Tweet received"}'</span><span style="color: #4271ae;">)</span>
+  <span style="color: #718c00;">}</span><span style="color: #eab700;">)</span>;
+<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#35843;&#29992;req.write&#26469;&#25351;&#23450;&#21457;&#36865;&#30340;&#25968;&#25454;</span>
+req.write<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'tweet=test'</span><span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#34920;&#31034;&#25968;&#25454;&#24050;&#32463;&#21457;&#36865;&#23436;&#27605;</span>
+req.end<span style="color: #4d4d4c;">()</span>;
+
+</pre>
+</div>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

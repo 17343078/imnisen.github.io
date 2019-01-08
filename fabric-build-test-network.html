@@ -1,0 +1,1172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>搭建一个Fabric网络</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-06-25</p>
+</div>
+<div id="content">
+<h1 class="title">搭建一个Fabric网络</h1>
+<div class="abstract">
+<p>
+注意：本文是我自己尝试本地搭建fabric的一个流程记录，可能对你没有意义
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6987212">1. 安装编译</a></li>
+<li><a href="#org106eb1d">2. 生成证书文件</a>
+<ul>
+<li><a href="#orgb219d9e">2.1. 生成证书配置文件目录</a></li>
+<li><a href="#orgac04b39">2.2. 编辑证书配置文件</a></li>
+<li><a href="#org8958827">2.3. 根据配置文件生成证书</a></li>
+<li><a href="#orga055efb">2.4. 查看生成的证书文件</a></li>
+</ul>
+</li>
+<li><a href="#orgfccafa3">3. 创始块生成</a>
+<ul>
+<li><a href="#org250c1a8">3.1. 创建目录</a></li>
+<li><a href="#orgc934c9c">3.2. 编辑配置文件</a></li>
+<li><a href="#org3a71361">3.3. 根据配置文件生成初始Block</a></li>
+<li><a href="#org7452cae">3.4. 查看生成文件内容</a></li>
+<li><a href="#org0c573c2">3.5. 创建channel</a></li>
+<li><a href="#org6c72d77">3.6. 创建两个锚点文件</a></li>
+<li><a href="#orgd2c61cf">3.7. 检查此时文件</a></li>
+</ul>
+</li>
+<li><a href="#org11e2b6c">4. Order节点启动</a>
+<ul>
+<li><a href="#org97b88be">4.1. 编辑Order节点配置文件</a></li>
+<li><a href="#orga8b52f9">4.2. 启动Order节点</a></li>
+</ul>
+</li>
+<li><a href="#orge4ec74a">5. Peer节点启动</a>
+<ul>
+<li><a href="#orgc5810a3">5.1. 创建Peer节点目录</a></li>
+<li><a href="#orgd702f74">5.2. 创建Peer节点配置文件</a></li>
+<li><a href="#orgac64a6b">5.3. 启动Peer节点</a></li>
+</ul>
+</li>
+<li><a href="#orga2ca105">6. 创建Channel</a>
+<ul>
+<li><a href="#org89f9c6e">6.1. 创建Channel</a></li>
+<li><a href="#org8e18883">6.2. 让已经运行的peer加入channel</a></li>
+<li><a href="#org6207fb2">6.3. 更新锚节点peer</a></li>
+</ul>
+</li>
+<li><a href="#orgb53d168">7. 部署chancode</a>
+<ul>
+<li><a href="#org979af1b">7.1. 显示peer所加入的channel</a></li>
+<li><a href="#org2d5295a">7.2. 部署chancode</a></li>
+<li><a href="#orga1ac10b">7.3. 实例化chaincode</a></li>
+<li><a href="#orgb6a058a">7.4. 查看运行的容器</a></li>
+<li><a href="#org7c6a234">7.5. 调用chaincode</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6987212" class="outline-2">
+<h2 id="org6987212"><span class="section-number-2">1</span> 安装编译</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>项目环境依赖: <a href="http://hyperledger-fabric.readthedocs.io/en/release-1.1/prereqs.html#prerequisites">http://hyperledger-fabric.readthedocs.io/en/release-1.1/prereqs.html#prerequisites</a></li>
+<li>构建代码参考: <a href="http://hyperledger-fabric.readthedocs.io/en/release-1.1/samples.html#hyperledger-fabric-samples">http://hyperledger-fabric.readthedocs.io/en/release-1.1/samples.html#hyperledger-fabric-samples</a></li>
+<li>二进制工具参考: <a href="http://hyperledger-fabric.readthedocs.io/en/release-1.1/samples.html#binaries">http://hyperledger-fabric.readthedocs.io/en/release-1.1/samples.html#binaries</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org106eb1d" class="outline-2">
+<h2 id="org106eb1d"><span class="section-number-2">2</span> 生成证书文件</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgb219d9e" class="outline-3">
+<h3 id="orgb219d9e"><span class="section-number-3">2.1</span> 生成证书配置文件目录</h3>
+<div class="outline-text-3" id="text-2-1">
+<pre class="example">
+mkdir -p demo/crypto-dir
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgac04b39" class="outline-3">
+<h3 id="orgac04b39"><span class="section-number-3">2.2</span> 编辑证书配置文件</h3>
+<div class="outline-text-3" id="text-2-2">
+<pre class="example">
+
+vim crypto-config.yaml
+
+文件内容如下:
+
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+
+  - Name: Org1
+    Domain: org1.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: Org2
+    Domain: org2.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org8958827" class="outline-3">
+<h3 id="org8958827"><span class="section-number-3">2.3</span> 根据配置文件生成证书</h3>
+<div class="outline-text-3" id="text-2-3">
+<pre class="example">
+cryptogen generate --config=crypto-config.yaml --output ./crypto-dir
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga055efb" class="outline-3">
+<h3 id="orga055efb"><span class="section-number-3">2.4</span> 查看生成的证书文件</h3>
+<div class="outline-text-3" id="text-2-4">
+<pre class="example">
+-&gt; tree crypto-dir/ -L 3
+
+crypto-dir/
+├── ordererOrganizations
+│   └── example.com
+│       ├── ca
+│       ├── msp
+│       ├── orderers
+│       ├── tlsca
+│       └── users
+└── peerOrganizations
+    ├── org1.example.com
+    │   ├── ca
+    │   ├── msp
+    │   ├── peers
+    │   ├── tlsca
+    │   └── users
+    └── org2.example.com
+        ├── ca
+        ├── msp
+        ├── peers
+        ├── tlsca
+        └── users
+
+20 directories, 0 files
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfccafa3" class="outline-2">
+<h2 id="orgfccafa3"><span class="section-number-2">3</span> 创始块生成</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org250c1a8" class="outline-3">
+<h3 id="org250c1a8"><span class="section-number-3">3.1</span> 创建目录</h3>
+<div class="outline-text-3" id="text-3-1">
+<pre class="example">
+mkdir order
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc934c9c" class="outline-3">
+<h3 id="orgc934c9c"><span class="section-number-3">3.2</span> 编辑配置文件</h3>
+<div class="outline-text-3" id="text-3-2">
+<pre class="example">
+vim configtx.yaml
+
+文件内容如下
+Profiles:
+
+    TwoOrgsOrdererGenesis:
+        Orderer:
+            &lt;&lt;: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+                    - *Org2
+    TwoOrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            &lt;&lt;: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+
+Organizations:
+
+    - &amp;OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-dir/ordererOrganizations/example.com/msp
+    - &amp;Org1
+        Name: Org1MSP
+        ID: Org1MSP
+        MSPDir: crypto-dir/peerOrganizations/org1.example.com/msp
+        AnchorPeers:
+            - Host: peer0.org1.example.com
+              Port: 7051
+    - &amp;Org2
+        Name: Org2MSP
+        ID: Org2MSP
+        MSPDir: crypto-dir/peerOrganizations/org2.example.com/msp
+        AnchorPeers:
+            - Host: peer0.org2.example.com
+              Port: 7051
+
+Orderer: &amp;OrdererDefaults
+
+    OrdererType: solo
+    Addresses:
+        - orderer.example.com:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Kafka:
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+
+Application: &amp;ApplicationDefaults
+
+    Organizations:
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org3a71361" class="outline-3">
+<h3 id="org3a71361"><span class="section-number-3">3.3</span> 根据配置文件生成初始Block</h3>
+<div class="outline-text-3" id="text-3-3">
+<pre class="example">
+configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./order/order.genesis.block
+
+2018-06-21 15:50:41.461 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration
+2018-06-21 15:50:41.472 CST [msp] getMspConfig -&gt; INFO 002 Loading NodeOUs
+2018-06-21 15:50:41.472 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 003 Generating genesis block
+2018-06-21 15:50:41.473 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 004 Writing genesis block
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7452cae" class="outline-3">
+<h3 id="org7452cae"><span class="section-number-3">3.4</span> 查看生成文件内容</h3>
+<div class="outline-text-3" id="text-3-4">
+<pre class="example">
+tree order
+order
+└── order.genesis.block
+
+0 directories, 1 file
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0c573c2" class="outline-3">
+<h3 id="org0c573c2"><span class="section-number-3">3.5</span> 创建channel</h3>
+<div class="outline-text-3" id="text-3-5">
+<pre class="example">
+➜  configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./order/alicetestchannel.tx -channelID alicetestchannel
+
+&lt;CeateChannelTx ./order/alicetestchannel.tx -channelID alicetestchannel
+2018-06-21 16:35:23.769 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration
+2018-06-21 16:35:23.781 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 002 Generating new channel configtx
+2018-06-21 16:35:23.784 CST [msp] getMspConfig -&gt; INFO 003 Loading NodeOUs
+2018-06-21 16:35:23.811 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 004 Writing new channel tx
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6c72d77" class="outline-3">
+<h3 id="org6c72d77"><span class="section-number-3">3.6</span> 创建两个锚点文件</h3>
+<div class="outline-text-3" id="text-3-6">
+<pre class="example">
+1). 第一个锚节点
+
+➜  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./order/Org1MSPanchors.tx -channelID alicetestchannel -asOrg Org1MSP
+
+&lt;chorPeersUpdate ./order/Org1MSPanchors.tx -channelID alicetestchannel -asOrg Org1MSP
+2018-06-21 16:39:03.311 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration
+2018-06-21 16:39:03.321 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 002 Generating anchor peer update
+2018-06-21 16:39:03.321 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 003 Writing anchor peer update
+
+
+2). 第二个锚节点
+
+➜  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./order/Org2MSPanchors.tx -channelID alicetestchannel -asOrg Org2MSP
+
+&lt;chorPeersUpdate ./order/Org2MSPanchors.tx -channelID alicetestchannel -asOrg Org2MSP
+2018-06-21 16:39:33.978 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration
+2018-06-21 16:39:33.990 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 002 Generating anchor peer update
+2018-06-21 16:39:33.990 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 003 Writing anchor peer update
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgd2c61cf" class="outline-3">
+<h3 id="orgd2c61cf"><span class="section-number-3">3.7</span> 检查此时文件</h3>
+<div class="outline-text-3" id="text-3-7">
+<pre class="example">
+
+➜  tree order
+tree order
+order
+├── Org1MSPanchors.tx
+├── Org2MSPanchors.tx
+├── alicetestchannel.tx
+└── order.genesis.block
+
+0 directories, 4 files
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11e2b6c" class="outline-2">
+<h2 id="org11e2b6c"><span class="section-number-2">4</span> Order节点启动</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org97b88be" class="outline-3">
+<h3 id="org97b88be"><span class="section-number-3">4.1</span> 编辑Order节点配置文件</h3>
+<div class="outline-text-3" id="text-4-1">
+<pre class="example">
+vim orderer.yaml
+
+文件内容如下:
+参考 fabric/sampleconfig/orderer.yaml to demo/orderer.yaml
+
+General:
+
+    LedgerType: file
+
+    ListenAddress: 0.0.0.0
+
+    ListenPort: 7050
+
+    TLS:
+        Enabled: false
+        PrivateKey: ./crypto-dir/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
+        Certificate: ./crypto-dir/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+        RootCAs:
+          - ./crypto-dir/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
+        ClientAuthRequired: false
+        ClientRootCAs:
+
+    Keepalive:
+        ServerMinInterval: 60s
+        ServerInterval: 7200s
+        ServerTimeout: 20s
+
+    LogLevel: debug
+
+    LogFormat: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -&gt; %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+    GenesisMethod: file
+
+    GenesisProfile: TwoOrgsOrdererGenesis
+
+    GenesisFile: ./order/order.genesis.block
+
+    LocalMSPDir: ./crypto-dir/ordererOrganizations/example.com/orderers/orderer.example.com/msp
+
+    LocalMSPID: OrdererMSP
+
+    Profile:
+        Enabled: false
+        Address: 0.0.0.0:6060
+
+    BCCSP:
+        Default: SW
+
+        SW:
+            Hash: SHA2
+            Security: 256
+            FileKeyStore:
+                KeyStore:
+
+    Authentication:
+        TimeWindow: 15m
+
+FileLedger:
+
+    Location: ./order/production/orderer
+
+    Prefix: hyperledger-fabric-ordererledger
+
+RAMLedger:
+
+    HistorySize: 1000
+
+Kafka:
+
+    Retry:
+        ShortInterval: 5s
+        ShortTotal: 10m
+        LongInterval: 5m
+        LongTotal: 12h
+        NetworkTimeouts:
+            DialTimeout: 10s
+            ReadTimeout: 10s
+            WriteTimeout: 10s
+        Metadata:
+            RetryBackoff: 250ms
+            RetryMax: 3
+        Producer:
+            RetryBackoff: 100ms
+            RetryMax: 3
+        Consumer:
+            RetryBackoff: 2s
+
+    Verbose: false
+
+    TLS:
+
+      Enabled: false
+
+      PrivateKey:
+
+      Certificate:
+
+      RootCAs:
+
+    Version:
+
+Debug:
+
+    BroadcastTraceDir:
+
+    DeliverTraceDir:
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orga8b52f9" class="outline-3">
+<h3 id="orga8b52f9"><span class="section-number-3">4.2</span> 启动Order节点</h3>
+<div class="outline-text-3" id="text-4-2">
+<pre class="example">
+orderer start
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge4ec74a" class="outline-2">
+<h2 id="orge4ec74a"><span class="section-number-2">5</span> Peer节点启动</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgc5810a3" class="outline-3">
+<h3 id="orgc5810a3"><span class="section-number-3">5.1</span> 创建Peer节点目录</h3>
+<div class="outline-text-3" id="text-5-1">
+<pre class="example">
+mkdir peer
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orgd702f74" class="outline-3">
+<h3 id="orgd702f74"><span class="section-number-3">5.2</span> 创建Peer节点配置文件</h3>
+<div class="outline-text-3" id="text-5-2">
+<pre class="example">
+vim core.yaml
+
+文件内容如下:
+logging:
+
+    level:       info
+    cauthdsl:   warning
+    gossip:     warning
+    grpc:       error
+    ledger:     info
+    msp:        warning
+    policies:   warning
+    peer:
+        gossip: warning
+
+    format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -&gt; %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+peer:
+
+    id: peer0.org1.example.com
+    networkId: dev
+    listenAddress: 0.0.0.0:7051
+    chaincodeListenAddress: 0.0.0.0:7052
+    address: 0.0.0.0:7051
+    addressAutoDetect: false
+    gomaxprocs: -1
+    keepalive:
+        minInterval: 60s
+        client:
+            interval: 60s
+            timeout: 20s
+        deliveryClient:
+            interval: 60s
+            timeout: 20s
+    gossip:
+        bootstrap: 127.0.0.1:7051
+        useLeaderElection: true
+        orgLeader: false
+        endpoint:
+        maxBlockCountToStore: 100
+        maxPropagationBurstLatency: 10ms
+        maxPropagationBurstSize: 10
+        propagateIterations: 1
+        propagatePeerNum: 3
+        pullInterval: 4s
+        pullPeerNum: 3
+        requestStateInfoInterval: 4s
+        publishStateInfoInterval: 4s
+        stateInfoRetentionInterval:
+        publishCertPeriod: 10s
+        skipBlockVerification: false
+        dialTimeout: 3s
+        connTimeout: 2s
+        recvBuffSize: 20
+        sendBuffSize: 200
+        digestWaitTime: 1s
+        requestWaitTime: 1500ms
+        responseWaitTime: 2s
+        aliveTimeInterval: 5s
+        aliveExpirationTimeout: 25s
+        reconnectInterval: 25s
+        externalEndpoint:
+        election:
+            startupGracePeriod: 15s
+            membershipSampleInterval: 1s
+            leaderAliveThreshold: 10s
+            leaderElectionDuration: 5s
+        pvtData:
+            pullRetryThreshold: 60s
+            transientstoreMaxBlockRetention: 1000
+            pushAckTimeout: 3s
+            btlPullMargin: 10
+
+    events:
+        address: 0.0.0.0:7053
+        buffersize: 100
+        timeout: 10ms
+        timewindow: 15m
+        keepalive:
+            minInterval: 60s
+
+    tls:
+        enabled:  false
+        clientAuthRequired: false
+        cert:
+            file: ./crypto-dir/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.crt
+        key:
+            file: ./crypto-dir/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.key
+        rootcert:
+            file: ./crypto-dir/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
+        clientRootCAs:
+            files:
+              - tls/ca.crt
+        clientKey:
+            file:
+        clientCert:
+            file:
+
+    authentication:
+        timewindow: 15m
+
+    fileSystemPath: ./peer/production
+
+    BCCSP:
+        Default: SW
+        SW:
+            Hash: SHA2
+            Security: 256
+            FileKeyStore:
+                KeyStore:
+        PKCS11:
+            Library:
+            Label:
+            Pin:
+            Hash:
+            Security:
+            FileKeyStore:
+                KeyStore:
+
+    mspConfigPath: ./crypto-dir/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp
+
+    localMspId: Org1MSP
+
+    client:
+        connTimeout: 3s
+
+    deliveryclient:
+        reconnectTotalTimeThreshold: 3600s
+        connTimeout: 3s
+        reConnectBackoffThreshold: 3600s
+
+    localMspType: bccsp
+
+    profile:
+        enabled:     false
+        listenAddress: 0.0.0.0:6060
+
+    adminService:
+
+    handlers:
+        authFilters:
+          -
+            name: DefaultAuth
+          -
+            name: ExpirationCheck    # This filter checks identity x509 certificate expiration
+        decorators:
+          -
+            name: DefaultDecorator
+        endorsers:
+          escc:
+            name: DefaultEndorsement
+            library:
+        validators:
+          vscc:
+            name: DefaultValidation
+            library:
+
+    validatorPoolSize:
+
+    discovery:
+        enabled: true
+        authCacheEnabled: true
+        authCacheMaxSize: 1000
+        authCachePurgeRetentionRatio: 0.75
+        orgMembersAllowedAccess: false
+
+vm:
+
+    endpoint: unix:///var/run/docker.sock
+
+    docker:
+        tls:
+            enabled: false
+            ca:
+                file: docker/ca.crt
+            cert:
+                file: docker/tls.crt
+            key:
+                file: docker/tls.key
+
+        attachStdout: false
+
+        hostConfig:
+            NetworkMode: host
+            Dns:
+               # - 192.168.0.1
+            LogConfig:
+                Type: json-file
+                Config:
+                    max-size: "50m"
+                    max-file: "5"
+            Memory: 2147483648
+
+chaincode:
+
+    id:
+        path:
+        name:
+
+    builder: $(DOCKER_NS)/fabric-ccenv:latest
+
+    pull: false
+
+    golang:
+        runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH)-$(BASE_VERSION)
+
+        dynamicLink: false
+
+    car:
+        runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH)-$(BASE_VERSION)
+
+    java:
+        Dockerfile:  |
+            from $(DOCKER_NS)/fabric-javaenv:$(ARCH)-1.1.0
+
+    node:
+        runtime: $(BASE_DOCKER_NS)/fabric-baseimage:$(ARCH)-$(BASE_VERSION)
+
+    startuptimeout: 300s
+
+    executetimeout: 30s
+
+    mode: net
+
+    keepalive: 0
+
+    system:
+        cscc: enable
+        lscc: enable
+        escc: enable
+        vscc: enable
+        qscc: enable
+
+    systemPlugins:
+
+    logging:
+      level:  info
+      shim:   warning
+      format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -&gt; %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+ledger:
+
+  blockchain:
+
+  state:
+    stateDatabase: goleveldb
+    couchDBConfig:
+       couchDBAddress: 127.0.0.1:5984
+       username:
+       password:
+       maxRetries: 3
+       maxRetriesOnStartup: 10
+       requestTimeout: 35s
+       queryLimit: 10000
+       maxBatchUpdateSize: 1000
+       warmIndexesAfterNBlocks: 1
+
+  history:
+    enableHistoryDatabase: true
+
+metrics:
+        enabled: false
+        reporter: statsd
+        interval: 1s
+        statsdReporter:
+              address: 0.0.0.0:8125
+              flushInterval: 2s
+              flushBytes: 1432
+
+        promReporter:
+              listenAddress: 0.0.0.0:8080
+
+
+</pre>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgac64a6b" class="outline-3">
+<h3 id="orgac64a6b"><span class="section-number-3">5.3</span> 启动Peer节点</h3>
+<div class="outline-text-3" id="text-5-3">
+<pre class="example">
+
+# 设置环境变量为当前目录
+export set FABRIC_CFG_PATH=/Users/nisen/fabric-dir/demo
+
+# 启动
+peer node start
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga2ca105" class="outline-2">
+<h2 id="orga2ca105"><span class="section-number-2">6</span> 创建Channel</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org89f9c6e" class="outline-3">
+<h3 id="org89f9c6e"><span class="section-number-3">6.1</span> 创建Channel</h3>
+<div class="outline-text-3" id="text-6-1">
+<pre class="example">
+# 设置环境变量
+➜  export set CORE_PEER_LOCALMSPID=Org1MSP
+➜  export set CORE_PEER_MSPCONFIGPATH=/Users/nisen/fabric-dir/demo/crypto-dir/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+
+# 应当运行:
+peer channel create -t 50 -o orderer.example.com:7050 -c alicetestchannel -f /Users/nisen/fabric-dir/demo/order/alicetestchannel.tx
+
+# 但因为都在本地部署，实际上没有域名，所以实际运行:
+peer channel create -t 50 -o 127.0.0.1:7050 -c alicetestchannel -f /Users/nisen/fabric-dir/demo/order/alicetestchannel.tx
+
+
+2018-06-21 17:31:20.399 CST [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized
+2018-06-21 17:31:20.462 CST [channelCmd] InitCmdFactory -&gt; INFO 002 Endorser and orderer connections initialized
+2018-06-21 17:31:20.683 CST [main] main -&gt; INFO 003 Exiting.....
+
+
+# 运行完后会在当前目录生成alicetestchannel.block
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org8e18883" class="outline-3">
+<h3 id="org8e18883"><span class="section-number-3">6.2</span> 让已经运行的peer加入channel</h3>
+<div class="outline-text-3" id="text-6-2">
+<pre class="example">
+
+➜  export set CORE_PEER_LOCALMSPID=Org1MSP
+➜  export set CORE_PEER_MSPCONFIGPATH=/Users/nisen/fabric-dir/demo/crypto-dir/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+➜  export set CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+➜  peer channel join -b ./alicetestchannel.block
+Error: Error getting endorser client channel: endorser client failed to connect to peer0.org1.example.com:7051: failed to create new connection: context deadline exceeded
+
+域名不可用，修改为
+➜  export set CORE_PEER_ADDRESS=localhost:7051
+➜  peer channel join -b ./alicetestchannel.block
+2018-06-21 17:36:02.053 CST [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized
+2018-06-21 17:36:02.106 CST [channelCmd] executeJoin -&gt; INFO 002 Successfully submitted proposal to join channel
+2018-06-21 17:36:02.106 CST [main] main -&gt; INFO 003 Exiting.....
+
+
+</pre>
+</div>
+</div>
+
+
+
+<div id="outline-container-org6207fb2" class="outline-3">
+<h3 id="org6207fb2"><span class="section-number-3">6.3</span> 更新锚节点peer</h3>
+<div class="outline-text-3" id="text-6-3">
+<pre class="example">
+➜  export set CORE_PEER_LOCALMSPID=Org1MSP
+➜  export set CORE_PEER_MSPCONFIGPATH=/Users/nisen/fabric-dir/demo/crypto-dir/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+➜  export set CORE_PEER_ADDRESS=peer0.org1.example.com:7051  # 域名不可用，需要修改
+
+➜  peer channel update -o localhost:7050 -c alicetestchannel -f ./order/Org1MSPanchors.tx
+2018-06-21 17:39:03.820 CST [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized
+2018-06-21 17:39:03.884 CST [channelCmd] update -&gt; INFO 002 Successfully submitted channel update
+2018-06-21 17:39:03.885 CST [main] main -&gt; INFO 003 Exiting.....
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb53d168" class="outline-2">
+<h2 id="orgb53d168"><span class="section-number-2">7</span> 部署chancode</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org979af1b" class="outline-3">
+<h3 id="org979af1b"><span class="section-number-3">7.1</span> 显示peer所加入的channel</h3>
+<div class="outline-text-3" id="text-7-1">
+<pre class="example">
+➜  peer channel list
+
+2018-06-21 17:40:16.125 CST [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized
+Channels peers has joined:
+alicetestchannel
+2018-06-21 17:40:16.132 CST [main] main -&gt; INFO 002 Exiting.....
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2d5295a" class="outline-3">
+<h3 id="org2d5295a"><span class="section-number-3">7.2</span> 部署chancode</h3>
+<div class="outline-text-3" id="text-7-2">
+<pre class="example">
+➜  peer chaincode install -n examplechaincode -v 1.1 -p simpledemo
+2018-06-21 17:49:58.103 CST [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc
+2018-06-21 17:49:58.103 CST [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc
+2018-06-21 17:49:59.043 CST [main] main -&gt; INFO 003 Exiting.....
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga1ac10b" class="outline-3">
+<h3 id="orga1ac10b"><span class="section-number-3">7.3</span> 实例化chaincode</h3>
+<div class="outline-text-3" id="text-7-3">
+<pre class="example">
+➜  peer chaincode instantiate -o localhost:7050 -C \
+         alicetestchannel -n examplechaincode -v 1.1 -c '{"Args":["init","a","100","b","200"]}' \
+         -P "OR ('Org1MSP.member','Org2MSP.member')"
+2018-06-21 17:52:25.318 CST [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc
+2018-06-21 17:52:25.318 CST [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc
+2018-06-21 17:52:48.665 CST [main] main -&gt; INFO 003 Exiting.....
+
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb6a058a" class="outline-3">
+<h3 id="orgb6a058a"><span class="section-number-3">7.4</span> 查看运行的容器</h3>
+<div class="outline-text-3" id="text-7-4">
+<pre class="example">
+➜  docker ps
+CONTAINER ID        IMAGE                                                                                                               COMMAND                  CREATED             STATUS              PORTS               NAMES
+47d28c47b6eb        dev-peer0.org1.example.com-examplechaincode-1.1-d2b990146ffe74fcdfcdc76dbb4ad69ae46eb0a557d438972c6b66673ce3517e   "chaincode -peer.add…"   9 seconds ago       Up 8 seconds                            dev-peer0.org1.example.com-examplechaincode-1.1
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7c6a234" class="outline-3">
+<h3 id="org7c6a234"><span class="section-number-3">7.5</span> 调用chaincode</h3>
+<div class="outline-text-3" id="text-7-5">
+<pre class="example">
+➜  peer chaincode invoke -o localhost:7050 -C alicetestchannel -n examplechaincode -c '{"Args":["invoke","a","b","1"]}'
+
+</pre>
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

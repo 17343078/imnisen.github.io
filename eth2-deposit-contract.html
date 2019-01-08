@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ETH2抵押合约分析</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2020-07-04</p>
+</div>
+<div id="content">
+<h1 class="title">ETH2抵押合约分析</h1>
+<p>
+本文分析了以太坊2.0抵押合约相关实现。
+</p>
+
+<div class="abstract">
+<p>
+
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgaa495af">1. Deposit Contract</a>
+<ul>
+<li><a href="#org8ccab34">1.1. 常量</a></li>
+<li><a href="#org96e9e9e">1.2. 存款事件</a></li>
+<li><a href="#org887c4d2">1.3. merkle tree structure</a></li>
+<li><a href="#orga5c429d">1.4. type convert</a></li>
+<li><a href="#org6837733">1.5. 公共方法</a></li>
+</ul>
+</li>
+<li><a href="#orgb9a61e5">2. Deposit</a>
+<ul>
+<li><a href="#org84963af">2.1. HashTreeRoot</a></li>
+</ul>
+</li>
+<li><a href="#org6ca261a">3. <span class="todo TODO">TODO</span> incremental Merkle tree</a></li>
+<li><a href="#org09c2c8f">4. END</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgaa495af" class="outline-2">
+<h2 id="orgaa495af"><span class="section-number-2">1</span> Deposit Contract</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+存款合约采用Vyper编写，合约地址: <a href="https://github.com/ethereum/eth2.0-specs/blob/dev/deposit_contract/contracts/validator_registration.vy">存款合约</a> 。
+</p>
+</div>
+
+
+<div id="outline-container-org8ccab34" class="outline-3">
+<h3 id="org8ccab34"><span class="section-number-3">1.1</span> 常量</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+合约先定义了一些常量，各个参数的长度等。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-vyper"># Vyper target 0.1.0b13.hotfix1761
+MIN_DEPOSIT_AMOUNT: constant(uint256) = 1000000000  # Gwei
+DEPOSIT_CONTRACT_TREE_DEPTH: constant(uint256) = 32
+MAX_DEPOSIT_COUNT: constant(uint256) = 4294967295 # 2**DEPOSIT_CONTRACT_TREE_DEPTH - 1
+PUBKEY_LENGTH: constant(uint256) = 48  # bytes
+WITHDRAWAL_CREDENTIALS_LENGTH: constant(uint256) = 32  # bytes
+SIGNATURE_LENGTH: constant(uint256) = 96  # bytes
+AMOUNT_LENGTH: constant(uint256) = 8  # bytes
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org96e9e9e" class="outline-3">
+<h3 id="org96e9e9e"><span class="section-number-3">1.2</span> 存款事件</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+然后定义了一个存款事件。这个时间在下面的deposit方法里调用，当收到存款事件时触发。
+Eth2的beacon chain通过此事件得知存款的发生，以此来更新验证者相关信息。
+</p>
+<div class="org-src-container">
+<pre class="src src-vyper">DepositEvent: event({
+    pubkey: bytes[48],
+    withdrawal_credentials: bytes[32],
+    amount: bytes[8],
+    signature: bytes[96],
+    index: bytes[8],
+})
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org887c4d2" class="outline-3">
+<h3 id="org887c4d2"><span class="section-number-3">1.3</span> merkle tree structure</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+合约本身采用merkle tree存储所有的存款事件，在上面的常量设置里，合约最多接受 <code>2^32 -1</code> 个deposit。
+最大的merkle tree深度为32。由于在智能合约里直接维护这样的结构比较费时费空间（需要gas）。
+于是合约采用了<a href="https://github.com/ethereum/research/blob/master/beacon_chain_impl/progressive_merkle_tree.py">incremental Merkle tree</a> 算法。将计算Merkle Tree Root的时间和空间复杂度由 <code>O(2^h)</code> 减少到 <code>O(h)</code> .
+</p>
+
+<p>
+合约里采用两个数组来实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-vyper">branch: bytes32[DEPOSIT_CONTRACT_TREE_DEPTH]
+deposit_count: uint256
+
+# Compute hashes in empty sparse Merkle tree
+zero_hashes: bytes32[DEPOSIT_CONTRACT_TREE_DEPTH]
+@public
+def __init__():
+    for i in range(DEPOSIT_CONTRACT_TREE_DEPTH - 1):
+        self.zero_hashes[i + 1] = sha256(concat(self.zero_hashes[i], self.zero_hashes[i]))
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orga5c429d" class="outline-3">
+<h3 id="orga5c429d"><span class="section-number-3">1.4</span> type convert</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+接下来定义了类型转化方法将uint256转化成bytes.
+</p>
+<div class="org-src-container">
+<pre class="src src-vyper">@private
+@constant
+def to_little_endian_64(value: uint256) -&gt; bytes[8]:
+    # Reversing bytes using bitwise uint256 manipulations
+    # Note: array accesses of bytes[] are not currently supported in Vyper
+    # Note: this function is only called when `value &lt; 2**64`
+    y: uint256 = 0
+    x: uint256 = value
+    for _ in range(8):
+        y = shift(y, 8)
+        y = y + bitwise_and(x, 255)
+        x = shift(x, -8)
+    return slice(convert(y, bytes32), start=24, len=8)
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org6837733" class="outline-3">
+<h3 id="org6837733"><span class="section-number-3">1.5</span> 公共方法</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+接下来合约定义了三个公开的方法: <code>get_deposit_root</code>, <code>get_deposit_count</code>, 和 <code>deposit</code> 。
+<code>get_deposit_root</code> 获取所有deposit的merkle root.
+</p>
+<div class="org-src-container">
+<pre class="src src-vyper">@public
+@constant
+def get_deposit_root() -&gt; bytes32:
+    zero_bytes32: bytes32 = 0x0000000000000000000000000000000000000000000000000000000000000000
+    node: bytes32 = zero_bytes32
+    size: uint256 = self.deposit_count
+    for height in range(DEPOSIT_CONTRACT_TREE_DEPTH):
+        if bitwise_and(size, 1) == 1:  # More gas efficient than `size % 2 == 1`
+            node = sha256(concat(self.branch[height], node))
+        else:
+            node = sha256(concat(node, self.zero_hashes[height]))
+        size /= 2
+    return sha256(concat(node, self.to_little_endian_64(self.deposit_count), slice(zero_bytes32, start=0, len=24)))
+
+
+</pre>
+</div>
+
+
+<p>
+<code>get_deposit_count</code> 获取一共有多少deposit.
+</p>
+<div class="org-src-container">
+<pre class="src src-vyper">@public
+@constant
+def get_deposit_count() -&gt; bytes[8]:
+    return self.to_little_endian_64(self.deposit_count)
+
+
+</pre>
+</div>
+
+
+<p>
+<code>deposit</code> 是主要的存入方法，定义了当存款事件发生时如何处理。
+</p>
+<div class="org-src-container">
+<pre class="src src-vyper">@payable
+@public
+def deposit(pubkey: bytes[PUBKEY_LENGTH],
+            withdrawal_credentials: bytes[WITHDRAWAL_CREDENTIALS_LENGTH],
+            signature: bytes[SIGNATURE_LENGTH],
+            deposit_data_root: bytes32):
+    # Avoid overflowing the Merkle tree (and prevent edge case in computing `self.branch`)
+    assert self.deposit_count &lt; MAX_DEPOSIT_COUNT
+
+    # Check deposit amount
+    deposit_amount: uint256 = msg.value / as_wei_value(1, "gwei")
+    assert deposit_amount &gt;= MIN_DEPOSIT_AMOUNT
+
+    # Length checks for safety
+    assert len(pubkey) == PUBKEY_LENGTH
+    assert len(withdrawal_credentials) == WITHDRAWAL_CREDENTIALS_LENGTH
+    assert len(signature) == SIGNATURE_LENGTH
+
+    # Emit `DepositEvent` log
+    amount: bytes[8] = self.to_little_endian_64(deposit_amount)
+    log.DepositEvent(pubkey, withdrawal_credentials, amount, signature, self.to_little_endian_64(self.deposit_count))
+
+    # Compute deposit data root (`DepositData` hash tree root)
+    zero_bytes32: bytes32 = 0x0000000000000000000000000000000000000000000000000000000000000000
+    pubkey_root: bytes32 = sha256(concat(pubkey, slice(zero_bytes32, start=0, len=64 - PUBKEY_LENGTH)))
+    signature_root: bytes32 = sha256(concat(
+        sha256(slice(signature, start=0, len=64)),
+        sha256(concat(slice(signature, start=64, len=SIGNATURE_LENGTH - 64), zero_bytes32)),
+    ))
+    node: bytes32 = sha256(concat(
+        sha256(concat(pubkey_root, withdrawal_credentials)),
+        sha256(concat(amount, slice(zero_bytes32, start=0, len=32 - AMOUNT_LENGTH), signature_root)),
+    ))
+    # Verify computed and expected deposit data roots match
+    assert node == deposit_data_root
+
+    # Add deposit data root to Merkle tree (update a single `branch` node)
+    self.deposit_count += 1
+    size: uint256 = self.deposit_count
+    for height in range(DEPOSIT_CONTRACT_TREE_DEPTH):
+        if bitwise_and(size, 1) == 1:  # More gas efficient than `size % 2 == 1`
+            self.branch[height] = node
+            break
+        node = sha256(concat(self.branch[height], node))
+        size /= 2
+
+</pre>
+</div>
+
+
+<p>
+接下来我们来主要看下这里的存储merkle tree的结构和deposit方法的逻辑。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9a61e5" class="outline-2">
+<h2 id="orgb9a61e5"><span class="section-number-2">2</span> Deposit</h2>
+<div class="outline-text-2" id="text-2">
+
+<div class="figure">
+<p><img src="static/images/eth2-deposit-contract-01.png" alt="eth2-deposit-contract-01.png" />
+</p>
+</div>
+
+<p>
+Deposit方法先校验了数据的有效性，然后更新Merkle Tree结构。
+</p>
+
+<p>
+Deposit里是如何验证接收的deposit<sub>data</sub><sub>root参数的</sub>？
+</p>
+
+<p>
+这取决于这里的 <code>deposit_data_root</code> 是如何构造的？
+</p>
+
+<p>
+根据<a href="https://github.com/ethereum/eth2.0-specs/blob/dev/specs/phase0/deposit-contract.md">规范</a>， <code>deposit_data_root</code> 是 <code>DepositData</code> 的一个防止篡改的记号（例如Merkle root或者checksum）。
+</p>
+
+<p>
+<code>DepositData</code> 的结构如下:
+</p>
+<pre class="example">
+class DepositData(Container):
+    pubkey: BLSPubkey
+    withdrawal_credentials: Bytes32
+    amount: Gwei
+    signature: BLSSignature  # Signing over DepositMessage
+
+</pre>
+
+<p>
+整体的计算流程图如下：
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/eth2-deposit-contract-02.png" alt="eth2-deposit-contract-02.png" />
+</p>
+</div>
+
+<p>
+图上的hash采用的是sha256，而HashTreeRoot是一种对复杂/简单对象的求merkle root的方式。
+</p>
+</div>
+
+<div id="outline-container-org84963af" class="outline-3">
+<h3 id="org84963af"><span class="section-number-3">2.1</span> HashTreeRoot</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+HashTreeRoot提供了将一个对象按一定格式构建默克尔树，然后求得树的默克尔根值的方法。
+</p>
+
+<p>
+类似于比特币将一个区块的所有交易ID按序排列构建默克尔树，获得根值记录到区块头部，
+HashTreeRoot可以将一个对象（bit,bytes, vector,list,containers等等）的各个部分按序排列然后构建默克尔树，获得根值。
+</p>
+
+<p>
+可以参见<a href="https://github.com/ethereum/eth2.0-specs/blob/dev/ssz/simple-serialize.md">规范</a>上是如何分成几种类型描述HashTreeRoot的算法的。
+</p>
+
+<p>
+下图根据规范上的说明，以递归演算的方式，说明如何求得 <code>DepositData</code> 的root.
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/eth2-deposit-contract-03.png" alt="eth2-deposit-contract-03.png" />
+</p>
+</div>
+
+<p>
+本质上求的一个对象的HashTreeRoot是将其各个部分按照一定的bytes大小padding，然后一层一层向上merklezie。
+</p>
+
+
+<p>
+而合约上由于接收的对象是固定的，所以直接按照一定的格式一步一步组装计算HashTreeRoot。
+</p>
+
+<p>
+代码如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-vyper"># Compute deposit data root (`DepositData` hash tree root)
+zero_bytes32: bytes32 = 0x0000000000000000000000000000000000000000000000000000000000000000
+pubkey_root: bytes32 = sha256(concat(pubkey, slice(zero_bytes32, start=0, len=64 - PUBKEY_LENGTH)))
+signature_root: bytes32 = sha256(concat(
+    sha256(slice(signature, start=0, len=64)),
+    sha256(concat(slice(signature, start=64, len=SIGNATURE_LENGTH - 64), zero_bytes32)),
+))
+node: bytes32 = sha256(concat(
+    sha256(concat(pubkey_root, withdrawal_credentials)),
+    sha256(concat(amount, slice(zero_bytes32, start=0, len=32 - AMOUNT_LENGTH), signature_root)),
+))
+# Verify computed and expected deposit data roots match
+assert node == deposit_data_root
+
+</pre>
+</div>
+
+<p>
+翻译成直观的流程图如下:
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/eth2-deposit-contract-04.png" alt="eth2-deposit-contract-04.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org6ca261a" class="outline-2">
+<h2 id="org6ca261a"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> incremental Merkle tree</h2>
+</div>
+
+<div id="outline-container-org09c2c8f" class="outline-2">
+<h2 id="org09c2c8f"><span class="section-number-2">4</span> END</h2>
+<div class="outline-text-2" id="text-4">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python信号处理signal模块</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-15</p>
+</div>
+<div id="content">
+<h1 class="title">Python信号处理signal模块</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org03f3930">1. signal模块简介</a>
+<ul>
+<li><a href="#org7ee4630">1.1. signal简单示例</a></li>
+<li><a href="#org1dc3b83">1.2. signal说明</a>
+<ul>
+<li><a href="#org1c01a82">1.2.1. 基本的信号名</a></li>
+<li><a href="#orgc4f76cc">1.2.2. 常用信号处理函数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org88df68d">2. signal使用示例</a>
+<ul>
+<li><a href="#orgdadcd88">2.1. 示例1</a></li>
+<li><a href="#org2483162">2.2. 示例2</a></li>
+</ul>
+</li>
+<li><a href="#org1e76f0f">3. 参考资料</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org03f3930" class="outline-2">
+<h2 id="org03f3930"><span class="section-number-2">1</span> signal模块简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+最近在看Linux <code>signal</code> 相关内容，signal可以被用来进程间通信和异步处理。Python标准库提供了signal包可以用来处理信号相关。这里讨论的是Unix系统中Python的signal模块。
+</p>
+</div>
+<div id="outline-container-org7ee4630" class="outline-3">
+<h3 id="org7ee4630"><span class="section-number-3">1.1</span> signal简单示例</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+官方文档上有这样的示例:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> signal, os
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#23450;&#20041;&#19968;&#20010;&#20449;&#21495;&#22788;&#29702;&#20989;&#25968;&#65292;&#35813;&#20989;&#25968;&#25171;&#21360;&#25910;&#21040;&#30340;&#20449;&#21495;&#65292;&#28982;&#21518;raise IOError</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">handler</span><span style="color: #4d4d4c;">(</span>signum, frame<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">print</span> <span style="color: #3e999f;">'Signal handler called with signal'</span>, signum
+    <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">IOError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Couldn't open device!"</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#23545;SIGALRM(&#32456;&#27490;)&#35774;&#32622;&#22788;&#29702;&#30340;handler, &#28982;&#21518;&#35774;&#32622;&#23450;&#26102;&#22120;&#65292;5&#31186;&#21518;&#35302;&#21457;SIGALRM&#20449;&#21495;</span>
+signal.signal<span style="color: #4d4d4c;">(</span>signal.SIGALRM, handler<span style="color: #4d4d4c;">)</span>
+signal.alarm<span style="color: #4d4d4c;">(</span>5<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">This open() may hang indefinitely</span>
+<span style="color: #eab700;">fd</span> = os.<span style="color: #8959a8;">open</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/dev/ttyS0'</span>, os.O_RDWR<span style="color: #4d4d4c;">)</span>
+
+signal.alarm<span style="color: #4d4d4c;">(</span>0<span style="color: #4d4d4c;">)</span>          <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20851;&#38381;&#23450;&#26102;&#22120;</span>
+
+</pre>
+</div>
+<p>
+该示例实现的功能是，为了防止打开一个文件出错或者其他异常一直处于等待的状态，设定一个定时器，5秒后触发IOError。如果5s内正常打开文件，则清除定时器。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1dc3b83" class="outline-3">
+<h3 id="org1dc3b83"><span class="section-number-3">1.2</span> signal说明</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org1c01a82" class="outline-4">
+<h4 id="org1c01a82"><span class="section-number-4">1.2.1</span> 基本的信号名</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> signal
+
+signal.SIGABORT
+signal.SIGHUP  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36830;&#25509;&#25346;&#26029;</span>
+signal.SIGILL  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#38750;&#27861;&#25351;&#20196;</span>
+signal.SIGINT  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36830;&#25509;&#20013;&#26029;</span>
+signal.SIGKILL <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#32456;&#27490;&#36827;&#31243;&#65288;&#27492;&#20449;&#21495;&#19981;&#33021;&#34987;&#25429;&#33719;&#25110;&#24573;&#30053;&#65289;</span>
+signal.SIGQUIT <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#32456;&#31471;&#36864;&#20986;</span>
+signal.SIGTERM <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#32456;&#27490;</span>
+signal.SIGALRM  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36229;&#26102;&#35686;&#21578;</span>
+signal.SIGCONT  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#32487;&#32493;&#25191;&#34892;&#26242;&#20572;&#36827;&#31243;</span>
+
+&#31561;&#31561;...
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc4f76cc" class="outline-4">
+<h4 id="orgc4f76cc"><span class="section-number-4">1.2.2</span> 常用信号处理函数</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<ul class="org-ul">
+<li>signal.signal(signalnum, handler)
+设置信号处理的函数</li>
+<li>signal.alarm(time)
+设置发送SIGALRM信号的定时器</li>
+<li>os.kill
+这个不属于signal模块，但其可以使用给某一进程发送信号</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org88df68d" class="outline-2">
+<h2 id="org88df68d"><span class="section-number-2">2</span> signal使用示例</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgdadcd88" class="outline-3">
+<h3 id="orgdadcd88"><span class="section-number-3">2.1</span> 示例1</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">From project httpscreenshot-master, under directory , in source file httpscreenshot.py.</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">timeoutFn</span><span style="color: #4d4d4c;">(</span>func, args=<span style="color: #3e999f;">()</span>, kwargs=<span style="color: #3e999f;">{}</span>, timeout_duration=1, default=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">import</span> signal
+
+    <span style="color: #718c00;">class</span> <span style="color: #4271ae;">TimeoutError</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">Exception</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">pass</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">handler</span><span style="color: #4d4d4c;">(</span>signum, frame<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TimeoutError</span><span style="color: #4d4d4c;">()</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">set the timeout handler</span>
+    signal.signal<span style="color: #4d4d4c;">(</span>signal.SIGALRM, handler<span style="color: #4d4d4c;">)</span>
+    signal.alarm<span style="color: #4d4d4c;">(</span>timeout_duration<span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">try</span>:
+        <span style="color: #eab700;">result</span> = func<span style="color: #4d4d4c;">(</span>*args, **kwargs<span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">except</span> <span style="color: #4271ae;">TimeoutError</span> <span style="color: #718c00;">as</span> exc:
+        <span style="color: #eab700;">result</span> = default
+    <span style="color: #718c00;">finally</span>:
+        signal.alarm<span style="color: #4d4d4c;">(</span>0<span style="color: #4d4d4c;">)</span>
+        signal.signal<span style="color: #4d4d4c;">(</span>signal.SIGALRM, signal.SIG_DFL<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">return</span> result
+
+</pre>
+</div>
+<p>
+上面这个示例实现了设置函数执行超时返回默认结果的功能。先是设置了一个超时处理函数，在函数中抛出自定义的抛出异常。在执行函数前设置了 <code>signal.alarm</code> ，当超出时间后触发抛出异常 <code>SIGALRM</code>, 然后捕获这个异常设置默认值，最后做下清理工作将定时器取消，并且将对 <code>SIGALRM</code> 的处理设为默认。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2483162" class="outline-3">
+<h3 id="org2483162"><span class="section-number-3">2.2</span> 示例2</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+这个示例来源于<a href="http://engineerwithoutacause.com/easy-signal-handling-for-python-daemons.html">这里</a>。 需求是动态加载python导入的模块，也就是说，当导入的模块代码更新时，希望可以立即更新引用的代码。示例如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">lib.py</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">scrape_me_bro</span><span style="color: #4d4d4c;">()</span>:
+        <span style="color: #718c00;">print</span> <span style="color: #3e999f;">"Scraping is fun"</span>
+
+
+
+<span style="color: #8e908c; font-style: italic;">#</span><span style="color: #8e908c; font-style: italic;">scrape.py</span>
+<span style="color: #718c00;">import</span> time
+<span style="color: #718c00;">import</span> signal
+<span style="color: #718c00;">import</span> lib
+
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">scrape</span><span style="color: #4d4d4c;">()</span>:
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Assume we are hitting Streaming API</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">and doing something buzzwordy with it</span>
+        <span style="color: #718c00;">while</span> <span style="color: #4271ae;">True</span>:
+                lib.scrape_me_bro<span style="color: #4d4d4c;">()</span>
+                time.sleep<span style="color: #4d4d4c;">(</span>2<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">reload_libs</span><span style="color: #4d4d4c;">(</span>signum, frame<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">print</span> <span style="color: #3e999f;">"Received Signal: %s at frame: %s"</span> % <span style="color: #4d4d4c;">(</span>signum, frame<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">print</span> <span style="color: #3e999f;">"Excuting a Lib Reload"</span>
+        <span style="color: #8959a8;">reload</span><span style="color: #4d4d4c;">(</span>lib<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Register reload_libs to be called on restart</span>
+signal.signal<span style="color: #4d4d4c;">(</span>signal.SIGHUP, reload_libs<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Main</span>
+scrape<span style="color: #4d4d4c;">()</span>
+</pre>
+</div>
+<p>
+当运行scrape.py时，程序会每个两秒调用一次lib.py中的 <code>scrape_me_bro()</code> 方法，这时候如果lib.py里的方法变化了，向运行scrape.py的进程发送 <code>SIGHUP</code> 信号，那么它会重新加载lib.py,这样会接着循环执行修改后的 <code>scrape_me_bro()</code> 方法。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1e76f0f" class="outline-2">
+<h2 id="org1e76f0f"><span class="section-number-2">3</span> 参考资料</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>《Beginning Linux Programming》</li>
+<li><a href="https://docs.python.org/2/library/signal.html">https://docs.python.org/2/library/signal.html</a></li>
+<li><a href="http://engineerwithoutacause.com/easy-signal-handling-for-python-daemons.html">http://engineerwithoutacause.com/easy-signal-handling-for-python-daemons.html</a></li>
+<li><a href="http://www.cnblogs.com/vamei/archive/2012/10/06/2712683.html">http://www.cnblogs.com/vamei/archive/2012/10/06/2712683.html</a></li>
+<li><a href="http://www.programcreek.com/python/example/1220/signal.SIGALRM">http://www.programcreek.com/python/example/1220/signal.SIGALRM</a></li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

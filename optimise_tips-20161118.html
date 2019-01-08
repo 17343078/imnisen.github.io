@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python代码优化技巧</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-18</p>
+</div>
+<div id="content">
+<h1 class="title">Python代码优化技巧</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbc4904d">1. 代码优化</a>
+<ul>
+<li><a href="#orgea42da4">1.1. if 判断的短路特性</a></li>
+<li><a href="#orgcb3b00b">1.2. join 合并字符串</a></li>
+<li><a href="#org2774d4b">1.3. while 1 和 while True</a></li>
+<li><a href="#org46d04f2">1.4. cProfile, cStringIO 和 cPickle</a></li>
+<li><a href="#org1dad8ea">1.5. 合理使用生成器</a>
+<ul>
+<li><a href="#org4a6ae0f">1.5.1. 区别</a></li>
+<li><a href="#org783032a">1.5.2. xrange</a></li>
+</ul>
+</li>
+<li><a href="#org9cdabbd">1.6. import 语句的开销</a></li>
+</ul>
+</li>
+<li><a href="#orge0f62a8">2. 参考资源:</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbc4904d" class="outline-2">
+<h2 id="orgbc4904d"><span class="section-number-2">1</span> 代码优化</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+分享最近看到的关于代码优化的一些技巧。
+</p>
+</div>
+<div id="outline-container-orgea42da4" class="outline-3">
+<h3 id="orgea42da4"><span class="section-number-3">1.1</span> if 判断的短路特性</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+对于and，应该把满足条件少的放在前面，这样当对于大量判断时， 满足条件少的情况直接回导致其后其他表达式不会计算从而节约时间(因为 False and True 还是 False)
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">a = range(2000)</span>
+<span style="color: #3e999f;">[i for i in a if i % 2 ==0 and i &gt; 1900]</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">a = range(2000)</span>
+<span style="color: #3e999f;">[i for i in a if  i &gt; 1900 and i % 2 ==0]</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=1000<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=1000<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+
+<p>
+运行结果如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  python test6.py
+0.248532056808
+0.195827960968
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#21487;&#20197;&#30475;&#21040;s2 &#34920;&#36798;&#24335;&#35745;&#31639;&#26356;&#24555;&#65292; &#22240;&#20026;&#22823;&#37096;&#20998;&#24773;&#20917;&#37117;&#19981;&#28385;&#36275; i&gt;1900, &#25152;&#20197;&#36825;&#20123;&#24773;&#20917;&#19979;, i % 2 == 0 &#20063;&#27809;&#26377;&#35745;&#31639;&#65292;&#20174;&#32780;&#33410;&#32422;&#20102;&#26102;&#38388;</span>
+</pre>
+</div>
+
+<p>
+同理对于or，把满足条件多的放在前面。
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">a = range(2000)</span>
+<span style="color: #3e999f;">[i for i in a if 10 &lt; i &lt;20 or 1000 &lt; i &lt; 2000]</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">a = range(2000)</span>
+<span style="color: #3e999f;">[i for i in a if 1000 &lt; i &lt; 2000 or 10 &lt; i &lt;20]</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=1000<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=1000<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+<p>
+运行结果:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">0.253124952316
+0.202992200851
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb3b00b" class="outline-3">
+<h3 id="orgcb3b00b"><span class="section-number-3">1.2</span> join 合并字符串</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+join 合并字符串比循环使用 <code>+</code> 来合并要快。
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">a = [str(x) for x in range(2000)]</span>
+<span style="color: #3e999f;">s = ''</span>
+<span style="color: #3e999f;">for i in a:</span>
+<span style="color: #3e999f;">    s += i</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">a = [str(x) for x in range(2000)]</span>
+<span style="color: #3e999f;">s = ''.join(a)</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=1000<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=1000<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+运行结果如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">python test6.py
+
+0.558945894241
+0.422435998917
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2774d4b" class="outline-3">
+<h3 id="org2774d4b"><span class="section-number-3">1.3</span> while 1 和 while True</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+在python2.x里， True 和 False 不是保留的关键字，是一个全局变量，这意味着你可以这样
+</p>
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="color: #4271ae;">True</span> = 0
+&gt;&gt;&gt; <span style="color: #4271ae;">True</span>
+0
+&gt;&gt;&gt; <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #4271ae;">True</span>:
+...   <span style="color: #718c00;">print</span> <span style="color: #3e999f;">'1'</span>
+...
+1
+
+</pre>
+</div>
+
+<p>
+所以下面这两种情况:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">n = 1000000</span>
+<span style="color: #3e999f;">while 1:</span>
+<span style="color: #3e999f;">    n -= 1</span>
+<span style="color: #3e999f;">    if n &lt;= 0: break</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">n = 1000000</span>
+<span style="color: #3e999f;">while True:</span>
+<span style="color: #3e999f;">    n -= 1</span>
+<span style="color: #3e999f;">    if n &lt;= 0: break</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=100<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=100<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+
+<p>
+运行结果如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  python test6.py
+5.18007302284
+6.84624099731
+
+</pre>
+</div>
+<p>
+因为每次判断 <code>while True</code> 的时候， 先要去找到True的值。
+</p>
+
+<p>
+在python3.x里， <code>True</code> 变成了关键字参数，所以上述两种情况就一样了。
+</p>
+</div>
+</div>
+<div id="outline-container-org46d04f2" class="outline-3">
+<h3 id="org46d04f2"><span class="section-number-3">1.4</span> cProfile, cStringIO 和 cPickle</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+使用C语言的版本写的扩展要比原生的要快。cPickle vs pickle 如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">import cPickle</span>
+<span style="color: #3e999f;">import pickle</span>
+<span style="color: #3e999f;">n = range(10000)</span>
+<span style="color: #3e999f;">cPickle.dumps(n)</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">import cPickle</span>
+<span style="color: #3e999f;">import pickle</span>
+<span style="color: #3e999f;">n = range(10000)</span>
+<span style="color: #3e999f;">pickle.dumps(n)</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=100<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=100<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+运行结果如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140; python test6.py
+0.182178974152
+1.70917797089
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1dad8ea" class="outline-3">
+<h3 id="org1dad8ea"><span class="section-number-3">1.5</span> 合理使用生成器</h3>
+<div class="outline-text-3" id="text-1-5">
+</div>
+<div id="outline-container-org4a6ae0f" class="outline-4">
+<h4 id="org4a6ae0f"><span class="section-number-4">1.5.1</span> 区别</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<p>
+使用()得到的是一个generator对象，所需要的内存空间与列表的大小无关，所以效率会高一些。
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">[i for i in range (100000)]</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">(i for i in range(100000))</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=1000<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=1000<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+<p>
+结果:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  python test6.py
+5.44327497482
+0.923446893692
+
+</pre>
+</div>
+
+<p>
+但是对于需要循环遍历的情况：使用迭代器效率反而不高，如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">import</span> timeit
+
+<span style="color: #eab700;">s1</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">ls = range(1000000)</span>
+<span style="color: #3e999f;">def yield_func(ls):</span>
+<span style="color: #3e999f;">    for i in ls:</span>
+<span style="color: #3e999f;">        yield i+1</span>
+<span style="color: #3e999f;">for x in yield_func(ls):</span>
+<span style="color: #3e999f;">    pass</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #eab700;">s2</span> = <span style="color: #3e999f;">"""</span>
+<span style="color: #3e999f;">ls = range(1000000)</span>
+<span style="color: #3e999f;">def not_yield_func(ls):</span>
+<span style="color: #3e999f;">    return [i+1 for i in ls]</span>
+<span style="color: #3e999f;">for x in not_yield_func(ls):</span>
+<span style="color: #3e999f;">    pass</span>
+<span style="color: #3e999f;">"""</span>
+
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s1, number=10<span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">print</span> timeit.timeit<span style="color: #4d4d4c;">(</span>stmt=s2, number=10<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+
+<p>
+结果如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&#10140;  python test6.py
+1.03186702728
+1.01472687721
+
+</pre>
+</div>
+
+<p>
+所以使用生成器是一个权衡的结果，对于内存、速度综合考虑的结果。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org783032a" class="outline-4">
+<h4 id="org783032a"><span class="section-number-4">1.5.2</span> xrange</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+在python2.x里xrange 是纯C实现的生成器，相对于range来说，它不会一次性计算出所有值在内存中。但它的限制是只能和整型一起工作：你不能使用long或者float。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org9cdabbd" class="outline-3">
+<h3 id="org9cdabbd"><span class="section-number-3">1.6</span> import 语句的开销</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+import语句有时候为了限制它们的作用范围或者节省初始化时间，被卸载函数内部，虽然python的解释器不会重复import同一个模块不会出错，但重复导入会影响部分性能。
+有时候为了实现懒加载（即使用的时候再加载一个开销很大的模块），可以这么做：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #eab700;">email</span> = <span style="color: #4271ae;">None</span>
+
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">parse_email</span><span style="color: #4d4d4c;">()</span>:
+    <span style="color: #718c00;">global</span> email
+    <span style="color: #718c00;">if</span> email <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>:
+        <span style="color: #718c00;">import</span> email
+    ...
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36825;&#26679;&#19968;&#26469;email&#27169;&#22359;&#20165;&#20250;&#34987;&#24341;&#20837;&#19968;&#27425;&#65292;&#22312;parse_email()&#34987;&#31532;&#19968;&#27425;&#35843;&#29992;&#30340;&#26102;&#20505;&#12290;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge0f62a8" class="outline-2">
+<h2 id="orge0f62a8"><span class="section-number-2">2</span> 参考资源:</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="https://wiki.python.org/moin/PythonSpeed/PerformanceTips">https://wiki.python.org/moin/PythonSpeed/PerformanceTips</a></li>
+<li><a href="http://blog.csdn.net/zhoudaxia/article/details/23853609">http://blog.csdn.net/zhoudaxia/article/details/23853609</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-python-optim/">https://www.ibm.com/developerworks/cn/linux/l-cn-python-optim/</a></li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Develop Blog With Flask</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2015-09-27</p>
+</div>
+<div id="content">
+<h1 class="title">Develop Blog With Flask</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4f9d8a5">1. 概述</a></li>
+<li><a href="#orgf13edfd">2. 扩展</a></li>
+<li><a href="#org6b375d5">3. Model</a>
+<ul>
+<li><a href="#org8df034b">3.1. 基本写法</a></li>
+<li><a href="#org0503616">3.2. 一对多关系 (One to Many)</a></li>
+<li><a href="#org96e8a6b">3.3. 多对多关系 (Many to Many self)</a></li>
+</ul>
+</li>
+<li><a href="#orgbc786c3">4. View</a>
+<ul>
+<li><a href="#orgcf6d195">4.1. 示例</a></li>
+</ul>
+</li>
+<li><a href="#org98673f7">5. Form</a>
+<ul>
+<li><a href="#org19497a3">5.1. 示例</a></li>
+</ul>
+</li>
+<li><a href="#org3f8386d">6. Skills</a>
+<ul>
+<li><a href="#org94b778b">6.1. 检查Flask版本：</a></li>
+<li><a href="#org69e958c">6.2. Post/重定向/Get 模式</a></li>
+<li><a href="#orgd7be59e">6.3. Flash消息</a></li>
+<li><a href="#org505eca0">6.4. 发送邮件</a></li>
+<li><a href="#org350b63a">6.5. 需求文件</a></li>
+<li><a href="#orgef17687">6.6. Werkzeug 实现密码散列</a></li>
+<li><a href="#org56fcb3c">6.7. itsdangerous 生成确认令牌</a></li>
+<li><a href="#org31141bd">6.8. before<sub>request</sub> or before<sub>app</sub><sub>request</sub></a></li>
+<li><a href="#org4424fdc">6.9. Gravatar头像</a></li>
+<li><a href="#orgc05079c">6.10. 使用Markdown支持富文本文章</a></li>
+</ul>
+</li>
+<li><a href="#orge69fe29">7. To Imporve</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4f9d8a5" class="outline-2">
+<h2 id="org4f9d8a5"><span class="section-number-2">1</span> 概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+之前参考《Flask Web开发-&#x2013;&#x2014;基于Python的Wen应用开发实战》做了一个博客，
+根据所学所了解的做个整理备忘。具体还请参考原书。
+</p>
+
+<p>
+Flask按照MVC的架构，和Django在很多地方相似。不同之处在于设计者将flask设计得很小很灵活，如果需要事先一些本身没有的功能，就借助第三方扩展，或者自己写喽。
+</p>
+
+<p>
+这是我第一个用Flask做的应用，总结不足之处欢迎指出。
+</p>
+
+<p>
+<b>环境</b> : flask 0.10.1, python 2.7.6, ubuntu 14.04, sqlite 存储数据
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf13edfd" class="outline-2">
+<h2 id="orgf13edfd"><span class="section-number-2">2</span> 扩展</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>flask-script Flask
+的开发web服务器支持很多启动设置选项，但只能在脚本中作为参数传给 <code>app.run()</code> ,比较不方便，所以使用此扩展来为Flask添加一个命令行解释器</li>
+
+<li>flask-bootstrap Flask中简单集成Bootstrap模板</li>
+
+<li>flask-moment
+将Javascript客户端开源代码库<a href="http://momentjs.com/">moment.js</a>继承到Jinja2模板中,
+使得在Flask中方便地处理不同地区的日期和时间</li>
+
+<li>flask-wtf 方便Flask处理表单</li>
+
+<li>flask-sqlalchemy
+SQLAlchemy是数据库抽象层代码包，可以用来直接处理高级的Python对象，而不用处理如表、文档或查询语言的数据库实体
+Flask-sqlalchemy 简化了在Flask中使用SQLAlchemy</li>
+
+<li>flask-migrate flask-migrate是对
+数据库迁移框架/Alembic/的轻量包装，用来方便处理数据库修改、更新、迁移等操作</li>
+
+<li>flask-mail 处理发送邮件相关，flask-mail 连接到SMTP服务器发送邮件</li>
+
+<li>flask-login 专门用来管理用户认证系统中的认证状态</li>
+
+<li>forgerpy 可以用来生成虚拟的数据，供测试用</li>
+
+<li>flask-pagedown PageDown : Javascript实现的客户端 Markdown 到 HTML
+转换程序 flask-pagedown : 用Flask 包装的PageDown,
+将PageDown集成到Flask-WTF中 Bleach： 使用Python实现HTML清理器</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6b375d5" class="outline-2">
+<h2 id="org6b375d5"><span class="section-number-2">3</span> Model</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org8df034b" class="outline-3">
+<h3 id="org8df034b"><span class="section-number-3">3.1</span> 基本写法</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+model 用以下方式写：
+</p>
+
+<pre class="example">
+class User(db.Model):
+    __tablename__ = 'users'     ##指定数据库名称
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(64),unique=True)
+    password_hash = db.Column(db.String(128))
+</pre>
+
+<ul class="org-ul">
+<li><code>db</code> 是引用了SQLAlchemy初始化后的db</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0503616" class="outline-3">
+<h3 id="org0503616"><span class="section-number-3">3.2</span> 一对多关系 (One to Many)</h3>
+<div class="outline-text-3" id="text-3-2">
+<pre class="example">
+class Role(db.Model):
+    #...
+    users = db.relationship('User', backref='role', lazy='dynamic')
+
+class User(db.Model):
+    #...
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+</pre>
+
+<ul class="org-ul">
+<li>一个Role对应多个User</li>
+<li><code>backref='role'</code> 向User模型添加role属性，可代替 <code>role_id</code> 访问Role模型</li>
+<li><code>lazy</code> 指定如何加载相关记录， <code>lazy='dynamic'</code>  指不加载记录，但提供加载记录的query，可参考具体文档说明</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org96e8a6b" class="outline-3">
+<h3 id="org96e8a6b"><span class="section-number-3">3.3</span> 多对多关系 (Many to Many self)</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+比如用户之间互相关注，有多种方式可以处理这种 many2many
+关系，综合考虑利弊，比较推荐的是下面这样：
+</p>
+
+<pre class="example">
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    id = db.Column(db.Integer, primary_key=True)
+    following_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    timestamp = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
+
+
+
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(64),unique=True)
+    password_hash = db.Column(db.String(128))
+
+    followings = db.relationship('Follow',
+                                foreign_keys=[Follow.following_id],
+                                backref=db.backref('follower', lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all, delete-orphan')
+    followers = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('following', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+</pre>
+
+<ul class="org-ul">
+<li>创建一个中间Model : Follow</li>
+<li>foreign<sub>keys</sub> 指定外键</li>
+<li>db.backref(）回引 Follow 模型</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc786c3" class="outline-2">
+<h2 id="orgbc786c3"><span class="section-number-2">4</span> View</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgcf6d195" class="outline-3">
+<h3 id="orgcf6d195"><span class="section-number-3">4.1</span> 示例</h3>
+<div class="outline-text-3" id="text-4-1">
+<pre class="example">
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user, form.remember_me.data)
+            return redirect(request.args.get('next') or url_for('index'))
+        flash('Invalid username or password.')
+    return render_template('login.html', form=form)
+</pre>
+
+<ul class="org-ul">
+<li>methods指定请求方式</li>
+<li><code>if form.validate_on_submit():</code>
+用来判断是否时Post的数据并且是否通过了验证</li>
+<li><code>return render_template('login.html', form=form)</code>
+渲染视图，指定模板并且传入渲染的数据</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org98673f7" class="outline-2">
+<h2 id="org98673f7"><span class="section-number-2">5</span> Form</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org19497a3" class="outline-3">
+<h3 id="org19497a3"><span class="section-number-3">5.1</span> 示例</h3>
+<div class="outline-text-3" id="text-5-1">
+<pre class="example">
+class LoginForm(Form):
+    email = StringField('Email', validators=[Required(), Length(1,64), Email()])
+    password = PasswordField('Password', validators=[Required()])
+    remember_me = BooleanField('Keep me logged in')
+    submit = SubmitField('Login')
+</pre>
+
+<ul class="org-ul">
+<li>使用flask-wtf 提供的函数和元素</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3f8386d" class="outline-2">
+<h2 id="org3f8386d"><span class="section-number-2">6</span> Skills</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org94b778b" class="outline-3">
+<h3 id="org94b778b"><span class="section-number-3">6.1</span> 检查Flask版本：</h3>
+<div class="outline-text-3" id="text-6-1">
+<pre class="example">
+#work on flask version 0.7 or later
+&gt;&gt; import flask
+&gt;&gt; flask.__version__
+or
+#If flask was installed via pip or easy_instal:
+&gt;&gt; pip freeze | grep Flask
+</pre>
+
+<p>
+Ps : 建议使用virtualenv和virtualenvwapper来安装和配置环境
+</p>
+</div>
+</div>
+
+<div id="outline-container-org69e958c" class="outline-3">
+<h3 id="org69e958c"><span class="section-number-3">6.2</span> Post/重定向/Get 模式</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+因为Post请求的页面刷新会再向服务器发送数据，所以可以才有Post完后重定向再Get页面即可避免这一问题。页面数据可以存储在Session中
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd7be59e" class="outline-3">
+<h3 id="orgd7be59e"><span class="section-number-3">6.3</span> Flash消息</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+系统提示之类的信息可以用 <code>flash()</code> 在后端生成。模板中使用函数 <code>get_flashed_messages()</code> 以类似于 <code>{% for message in get_flashed_messages() %}</code> 的方式来渲染消息
+</p>
+</div>
+</div>
+
+<div id="outline-container-org505eca0" class="outline-3">
+<h3 id="org505eca0"><span class="section-number-3">6.4</span> 发送邮件</h3>
+<div class="outline-text-3" id="text-6-4">
+<ul class="org-ul">
+<li><p>
+环境变量
+处理比如发送邮件时，配置的邮件服务器用户名、密码等要在环境变量中定义，这样好处是安全以及方便维护，Linux中可采用如下方式：
+</p>
+
+<pre class="example">
+$ export MAIL_USERNAME=xxxxx@gmail.com
+</pre></li>
+
+<li>异步发送电子邮件
+可以采用多线程把发送电子邮件的函数移到后台线程中，避免程序停滞
+另外，当程序要发送大量电子邮件时，使用比如<a href="http://www.celeryproject.org/">Celery</a>任务队列或许更加合适</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org350b63a" class="outline-3">
+<h3 id="org350b63a"><span class="section-number-3">6.5</span> 需求文件</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+可以使用pip 来生成和安装所需依赖
+</p>
+
+<pre class="example">
+$ pip freeze &gt;requirements.txt   #生成目前环境中的依赖包到requirements.txt文件
+
+$ pip install -r requirements.txt
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgef17687" class="outline-3">
+<h3 id="orgef17687"><span class="section-number-3">6.6</span> Werkzeug 实现密码散列</h3>
+<div class="outline-text-3" id="text-6-6">
+<p>
+使用Werkzeug中的/security/模块实现密码散列值计算
+<code>generate_password_hash</code> 将原始密码转化为字符串形式的散列值
+<code>check_password_hash</code> 比较散列值和用户输入密码
+</p>
+</div>
+</div>
+
+<div id="outline-container-org56fcb3c" class="outline-3">
+<h3 id="org56fcb3c"><span class="section-number-3">6.7</span> itsdangerous 生成确认令牌</h3>
+<div class="outline-text-3" id="text-6-7">
+<p>
+可以使用itsdangerous 的 TimedJSONWebSignatureSerializer
+类生成具有过期时间的Json Web签名。使用 <code>dumps()</code>
+和 <code>locads()</code> 方法，配合flask中的 secret key,来生成用在确认用户邮件中加密token
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31141bd" class="outline-3">
+<h3 id="org31141bd"><span class="section-number-3">6.8</span> before<sub>request</sub> or before<sub>app</sub><sub>request</sub></h3>
+<div class="outline-text-3" id="text-6-8">
+<p>
+使用 before<sub>request</sub> or before<sub>app</sub><sub>request</sub> 可在必要时拦截请求，
+直接返回至客户端，而不会调用请求的函数，
+可以用来处理比如账号是否验证过的情况
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4424fdc" class="outline-3">
+<h3 id="org4424fdc"><span class="section-number-3">6.9</span> Gravatar头像</h3>
+<div class="outline-text-3" id="text-6-9">
+<p>
+使用 ~hashlib.md5(self.email.encode('utf-8')).hexdigest() 计算邮件的MD5散列值
+在用户中创建方法生成Gravatar Url，在模板中加载
+另外，生成MD5值是一项CPU密集型操作，所有可以考虑将MD5值缓存在用户模型中，当用户更改电子邮件时再重新计算
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc05079c" class="outline-3">
+<h3 id="orgc05079c"><span class="section-number-3">6.10</span> 使用Markdown支持富文本文章</h3>
+<div class="outline-text-3" id="text-6-10">
+<p>
+在服务器端保存用户输入的markdown,并且将markdown转化成HTML,并且将生成的HTML清除掉不允许的标签，缓存在一个字段中，这样做的好处是防止每次客户端渲染时都要转换一次
+渲染HTML时，调用 <code>|safe</code> ，让Jinja2不要转义HTML元素
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge69fe29" class="outline-2">
+<h2 id="orge69fe29"><span class="section-number-2">7</span> To Imporve</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>使用Blueprint</li>
+
+<li>REST Web服务</li>
+
+<li>单元测试</li>
+
+<li>生产环境部署</li>
+</ul>
+
+
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

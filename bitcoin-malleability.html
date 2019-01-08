@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>比特币交易的延展性问题(Transaction Malleability)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-10-01</p>
+</div>
+<div id="content">
+<h1 class="title">比特币交易的延展性问题(Transaction Malleability)</h1>
+
+
+<div id="outline-container-org48acbaa" class="outline-2">
+<h2 id="org48acbaa"><span class="section-number-2">1</span> 概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+正如黄金等金属具有延展性，比特币也是有的;)
+</p>
+
+<p>
+比特币交易的延展性的本质在于: 一个交易的签名可以稍作修改但不影响其含义，但因为这个修改却产生了不同的交易哈希值（也就是交易ID）。
+也就是说，可以将一笔交易的签名稍作修改，然后广播，它有可能在原始交易之前被包含进区块链，使得原始交易成为无效的交易。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc3eee2f" class="outline-2">
+<h2 id="orgc3eee2f"><span class="section-number-2">2</span> 细节</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+具体来讲，以<a href="https://github.com/btcsuite/btcd">btcd</a> 的实现为例，先看看比特币交易的结构和交易的Id的产生方式
+</p>
+</div>
+
+<div id="outline-container-orgb01278c" class="outline-3">
+<h3 id="orgb01278c"><span class="section-number-3">2.1</span> Tx的数据结构</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">OutPoint defines a bitcoin data type that is used to track previous</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transaction outputs.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">OutPoint</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        Hash  chainhash.Hash  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#25351;&#21521;&#26410;&#33457;&#36153;TxOut&#25152;&#22312;&#30340;&#20132;&#26131;</span>
+        Index uint32          <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26410;&#33457;&#36153;&#30340;TxOut&#22312;&#35813;&#20132;&#26131;&#37324;&#30340;&#32034;&#24341;</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">TxIn defines a bitcoin transaction input.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">TxIn</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        PreviousOutPoint OutPoint  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#25351;&#21521;&#35201;&#33457;&#36153;&#30340;&#20132;&#26131;&#65292;&#20197;&#21450;&#35813;&#20132;&#26131;&#30340;&#21738;&#19968;&#20010;&#36755;&#20986;</span>
+        SignatureScript  <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>   <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#31614;&#21517;&#33050;&#26412;&#65292;&#27599;&#20010;Input&#37117;&#26377;&#19968;&#20010;&#31614;&#21517;&#33050;&#26412;&#65292;&#29992;&#26469;&#35299;&#38145;PreviousOutPoint&#25351;&#21521;&#30340;TxOut&#30340;PkScript</span>
+        Witness          TxWitness  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#31245;&#21518;&#20877;&#30475;</span>
+        Sequence         uint32
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">TxOut defines a bitcoin transaction output.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">TxOut</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        Value    int64
+        PkScript <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#23558;&#27604;&#29305;&#24065;&#38145;&#23450;&#21040;&#29305;&#23450;&#33050;&#26412;&#65292;&#20351;&#29992;&#32773;&#25552;&#20379;&#33021;&#35299;&#38145;&#35813;&#33050;&#26412;&#30340;&#33050;&#26412;&#25165;&#33021;&#33457;&#36153;&#35813;&#27604;&#29305;&#24065;</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Transaction Struct</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">MsgTx</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        Version  int32
+        TxIn     <span style="color: #3e999f;">[]</span>*<span style="color: #4271ae;">TxIn</span>
+        TxOut    <span style="color: #3e999f;">[]</span>*<span style="color: #4271ae;">TxOut</span>
+        LockTime uint32
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgf4aab10" class="outline-3">
+<h3 id="orgf4aab10"><span class="section-number-3">2.2</span> TxId生成方法</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">1. Txid&#23601;&#26159;&#23558;Tx&#30340;&#21508;&#20010;&#37096;&#20998;&#24207;&#21015;&#21270;&#21518;doublHash(&#20004;&#27425;sha256)&#24471;&#21040;&#30340;</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">TxHash generates the Hash for the transaction.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>msg *<span style="color: #4271ae;">MsgTx</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">TxHash</span><span style="color: #4d4d4c;">()</span> <span style="color: #4271ae;">chainhash.Hash</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Encode the transaction and calculate double sha256 on the result.</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Ignore the error returns since the only way the encode could fail</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">is being out of memory or due to nil pointers, both of which would</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">cause a run-time panic.</span>
+        buf := bytes.<span style="color: #f5871f;">NewBuffer</span><span style="color: #3e999f;">(</span><span style="color: #8959a8;">make</span><span style="color: #eab700;">(</span><span style="color: #718c00;">[]</span><span style="color: #4271ae;">byte</span>, 0, msg.<span style="color: #f5871f;">SerializeSizeStripped</span><span style="color: #718c00;">()</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+        _ = msg.<span style="color: #f5871f;">SerializeNoWitness</span><span style="color: #3e999f;">(</span>buf<span style="color: #3e999f;">)</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#27880;&#24847;&#65292;&#36825;&#26159;&#37324;segwit&#20043;&#21518;&#30340;&#19981;&#21253;&#21547;witness&#30340;TxId</span>
+        <span style="color: #718c00;">return</span> chainhash.<span style="color: #f5871f;">DoubleHashH</span><span style="color: #3e999f;">(</span>buf.<span style="color: #f5871f;">Bytes</span><span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">2. &#27714;TxId&#30340;&#20013;&#30340;&#24207;&#21015;&#21270;&#26041;&#27861;&#23454;&#29616;&#65292;&#35843;&#29992;MsgTx&#30340;BtcEncode&#26041;&#27861;</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">SerializeNoWitness encodes the transaction to w in an identical manner to</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Serialize, however even if the source transaction has inputs with witness</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">data, the old serialization format will still be used.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>msg *<span style="color: #4271ae;">MsgTx</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">SerializeNoWitness</span><span style="color: #4d4d4c;">(</span>w <span style="color: #4271ae;">io.Writer</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">error</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">return</span> msg.<span style="color: #f5871f;">BtcEncode</span><span style="color: #3e999f;">(</span>w, 0, BaseEncoding<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">BtcEncode encodes the receiver to w using the bitcoin protocol encoding.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This is part of the Message interface implementation.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">See Serialize for encoding transactions to be stored to disk, such as in a</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">database, as opposed to encoding transactions for the wire.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>msg *<span style="color: #4271ae;">MsgTx</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">BtcEncode</span><span style="color: #4d4d4c;">(</span>w <span style="color: #4271ae;">io.Writer</span>, pver <span style="color: #4271ae;">uint32</span>, enc <span style="color: #4271ae;">MessageEncoding</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">error</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#65292;&#26680;&#24515;&#21151;&#33021;&#26159;&#26159;&#23558;&#21508;&#37096;&#20998;&#25353;&#29031;&#21327;&#35758;&#24207;&#21015;&#21270;&#25104;bytes</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1fba01f" class="outline-3">
+<h3 id="org1fba01f"><span class="section-number-3">2.3</span> 签名脚本的产生</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+以一个Pay-To-Public-Key-Hash (P2PKH)为例，
+假设Alice给Bob转账1BTC，那么Alice需要知道Bob的地址，这里的地址是Bob的公钥经过Hash得到的(具体地址计算的方式和种类可以参见<a href="https://en.bitcoin.it/wiki/Address">这里</a>)。
+</p>
+
+<p>
+参见下面示意图(图片来自<a href="https://bitcoin.org/en/developer-guide#transactions">bitcoin.org</a>):
+</p>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="static/images/bitcoin-malleability-1.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<p>
+Alice在她生成的Tx1里的 <code>TxOut</code> 结构里，Value是1e8，PkScript是类似 <code>OP_DUP OP_HASH160 &lt;Bob's PubkeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG</code> 这样的脚本。假设Alice的Tx1被确认成功，这样Bob就有了1BTC。
+</p>
+
+<p>
+当Bob想花费这1BTC赋给Carol的时候，同样的Bob需要获得Carol的地址包含到自己创建的Tx2的 <code>Txout</code> 里，而在 <code>TxIn</code> 里，他先通过 <code>PreviousOutPoint</code> 表明他想花费Tx1里的Alice给他1BTC的那个输出，然后填充 <code>TxIn.SignatureScript</code> 这个字段。
+</p>
+
+<p>
+如果是花费一个P2PKH的输出，那么 <code>TxIn.SignatureScript</code> 分为两个部分：Bob's Pubkey和一个<a href="http://www.secg.org/sec2-v2.pdf">secp256k1</a>签名(signature)，类似: <code>&lt;Bob's Sig&gt; &lt;Bob's PubKey&gt;</code> 这种格式。
+</p>
+
+<p>
+Bob的公钥就是提供hash值给Alice的那个公钥，签名(signature)是通过Bob的私钥和该交易Tx2的部分数据一起计算得到的。
+</p>
+
+<p>
+Tx2包含的主要数据有：Tx2.TxIn[0].PreviousOutPoint, Tx1.TxOut[0].PkScript, Tx2.TxOut[0].Value, Tx2.TxOut[0].PkScript
+</p>
+
+<p>
+本质上来说，Tx2除了TxIn的SignatureScript其它都包含在内（以及加上Tx1的PkScript）
+</p>
+
+<p>
+所以Bob的secp256k1签名不仅证明了Bob拥有相应的私钥，还保证了该交易除了签名脚本的部分在传播时不会被修改（因为一旦被修改，那么签名就不对了）。
+</p>
+</div>
+
+<div id="outline-container-org566755f" class="outline-4">
+<h4 id="org566755f"><span class="section-number-4">2.3.1</span> 实现</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+具体生成Signature Script的实现可以参看btcd实现：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">1. &#31614;&#21517;&#19968;&#20010;Tx2&#30340;TxIn&#30340;&#20027;&#35201;&#30340;&#26041;&#27861;</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">sign</span><span style="color: #4d4d4c;">(</span><span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#21442;&#25968;&#30465;&#30053; */</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053; */</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26681;&#25454;Alice&#30340;PkScript&#30340;&#31867;&#22411;&#26469;&#30830;&#35748;&#22914;&#20309;&#29983;&#25104;&#31614;&#21517;</span>
+        <span style="color: #718c00;">switch</span> class <span style="color: #3e999f;">{</span>
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#20854;&#23427;&#31867;&#22411;&#30465;&#30053; */</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#36825;&#26159;&#19968;&#20010;P2PKH</span>
+        <span style="color: #718c00;">case</span> PubKeyHashTy:
+                <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#33719;&#21462;&#31169;&#38053;&#27493;&#39588;&#30465;&#30053; */</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">tx &#26159;Alice&#30340;Tx1</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">idx Bob&#35201;&#31614;&#21517;&#30340;&#36825;&#20010;TxIn&#30340;&#32034;&#24341;</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">subScript&#26159;Tx1&#37324;Alice&#35774;&#32622;&#30340; OP_DUP OP_HASH160 &lt;Bob's PubkeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">hashType &#26159;&#29992;&#26469;&#37197;&#32622;&#19981;&#21516;&#30340;&#31614;&#21517;&#26041;&#24335;</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">key &#26159;Bob&#30340;&#31169;&#38053;</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">compressed &#34920;&#31034;Bob&#30340;&#20844;&#38053;&#26159;&#21542;&#21387;&#32553;&#65288;&#36825;&#26159;&#21478;&#22806;&#19968;&#20010;&#35805;&#39064;&#20102;&#65289;</span>
+                script, err := <span style="color: #f5871f;">SignatureScript</span><span style="color: #eab700;">(</span>tx, idx, subScript, hashType,
+                        key, compressed<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">return</span> <span style="color: #4271ae;">nil</span>, class, <span style="color: #4271ae;">nil</span>, 0, err
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #718c00;">return</span> script, class, addresses, nrequired, <span style="color: #4271ae;">nil</span>
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#20854;&#23427;&#31867;&#22411;&#30465;&#30053; */</span>
+
+        <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">2. sign&#35843;&#29992;&#30340;&#26680;&#24515;&#65292;&#29983;&#25104;P2PKH&#30340;signature script</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">SignatureScript creates an input signature script for tx to spend BTC sent</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">from a previous output to the owner of privKey. tx must include all</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transaction inputs and outputs, however txin scripts are allowed to be filled</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">or empty. The returned script is calculated to be used as the idx'th txin</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">sigscript for tx. subscript is the PkScript of the previous output being used</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">as the idx'th input. privKey is serialized in either a compressed or</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">uncompressed format based on compress. This format must match the same format</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">used to generate the payment address, or the script validation will fail.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">SignatureScript</span><span style="color: #4d4d4c;">(</span>tx *<span style="color: #4271ae;">wire.MsgTx</span>, idx <span style="color: #4271ae;">int</span>, subscript <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>, hashType <span style="color: #4271ae;">SigHashType</span>, privKey *<span style="color: #4271ae;">btcec.PrivateKey</span>, compress <span style="color: #4271ae;">bool</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20808;&#29983;&#25104;signature</span>
+        sig, err := <span style="color: #f5871f;">RawTxInSignature</span><span style="color: #3e999f;">(</span>tx, idx, subscript, hashType, privKey<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">nil</span>, err
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20877;&#26681;&#25454;&#26159;&#21542;&#21387;&#32553;&#29983;&#25104;Bob&#30340;Pubkey</span>
+        pk := <span style="color: #3e999f;">(</span>*btcec.PublicKey<span style="color: #3e999f;">)(</span>&amp;privKey.PublicKey<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">var</span> pkData <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>
+        <span style="color: #718c00;">if</span> compress <span style="color: #3e999f;">{</span>
+                pkData = pk.<span style="color: #f5871f;">SerializeCompressed</span><span style="color: #eab700;">()</span>
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #3e999f;">{</span>
+                pkData = pk.<span style="color: #f5871f;">SerializeUncompressed</span><span style="color: #eab700;">()</span>
+        <span style="color: #3e999f;">}</span>
+
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26368;&#21518;&#32452;&#21512;&#25104; &lt;Sig&gt; &lt;PubKey&gt; &#27604;&#29305;&#24065;&#33050;&#26412;</span>
+        <span style="color: #718c00;">return</span> <span style="color: #f5871f;">NewScriptBuilder</span><span style="color: #3e999f;">()</span>.<span style="color: #f5871f;">AddData</span><span style="color: #3e999f;">(</span>sig<span style="color: #3e999f;">)</span>.<span style="color: #f5871f;">AddData</span><span style="color: #3e999f;">(</span>pkData<span style="color: #3e999f;">)</span>.<span style="color: #f5871f;">Script</span><span style="color: #3e999f;">()</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">3. &#29983;&#25104;signature&#30340;&#26041;&#27861;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">RawTxInSignature returns the serialized ECDSA signature for the input idx of</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the given transaction, with hashType appended to it.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">RawTxInSignature</span><span style="color: #4d4d4c;">(</span>tx *<span style="color: #4271ae;">wire.MsgTx</span>, idx <span style="color: #4271ae;">int</span>, subScript <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>,
+        hashType <span style="color: #4271ae;">SigHashType</span>, key *<span style="color: #4271ae;">btcec.PrivateKey</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20808;&#25353;&#19968;&#23450;&#26041;&#27861;&#35745;&#31639;&#21508;&#37096;&#20998;&#21704;&#24076;&#20540;</span>
+        hash, err := <span style="color: #f5871f;">CalcSignatureHash</span><span style="color: #3e999f;">(</span>subScript, hashType, tx, idx<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">nil</span>, err
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20877;&#29992;&#31169;&#38053;&#31614;&#21517;&#35813;&#21704;&#24076;&#20540;</span>
+        signature, err := key.<span style="color: #f5871f;">Sign</span><span style="color: #3e999f;">(</span>hash<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">nil</span>, fmt.<span style="color: #f5871f;">Errorf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"cannot sign tx input: %s"</span>, err<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26368;&#21518;&#23558;&#31614;&#21517;&#24207;&#21015;&#21270;&#21644;&#21704;&#24076;&#31867;&#22411;&#19968;&#36215;&#36820;&#22238;</span>
+        <span style="color: #718c00;">return</span> <span style="color: #8959a8;">append</span><span style="color: #3e999f;">(</span>signature.<span style="color: #f5871f;">Serialize</span><span style="color: #eab700;">()</span>, <span style="color: #f5871f;">byte</span><span style="color: #eab700;">(</span>hashType<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>, <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">4. &#30475;&#30475;CalcSignatureHash&#35843;&#29992;&#30340;calcSignatureHash&#26041;&#27861;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">calcSignatureHash will, given a script and hash type for the current script</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">engine instance, calculate the signature hash to be used for signing and</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">verification.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">calcSignatureHash</span><span style="color: #4d4d4c;">(</span>script <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">parsedOpcode</span>, hashType <span style="color: #4271ae;">SigHashType</span>, tx *<span style="color: #4271ae;">wire.MsgTx</span>, idx <span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">byte</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#21442;&#25968;&#35828;&#26126;&#65306;</span>
+<span style="color: #8e908c; font-style: italic;">           script&#26159;Tx1&#37324;Alice&#35774;&#32622;&#30340;: OP_DUP OP_HASH160 &lt;Bob's PubkeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG.</span>
+<span style="color: #8e908c; font-style: italic;">           hashType &#26159;&#29992;&#26469;&#37197;&#32622;&#19981;&#21516;&#30340;&#31614;&#21517;&#26041;&#24335;</span>
+<span style="color: #8e908c; font-style: italic;">           tx &#26159;Bob&#30340;Tx2</span>
+<span style="color: #8e908c; font-style: italic;">           idx &#26159; Bob&#35201;&#31614;&#21517;&#30340;&#36825;&#20010;txin&#30340;&#32034;&#24341;</span>
+<span style="color: #8e908c; font-style: italic;">        */</span>
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#37096;&#20998; */</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#22797;&#21046;Tx2, &#24471;&#21040;&#31227;&#38500;&#36825;&#20010;TxIn&#22806;&#20854;&#23427;TxIn&#30340;signature script</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Make a shallow copy of the transaction, zeroing out the script for</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">all inputs that are not currently being processed.</span>
+        txCopy := <span style="color: #f5871f;">shallowCopyTx</span><span style="color: #3e999f;">(</span>tx<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">for</span> i := <span style="color: #718c00;">range</span> txCopy.TxIn <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">if</span> i == idx <span style="color: #eab700;">{</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">UnparseScript cannot fail here because removeOpcode</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">above only returns a valid script.</span>
+                        sigScript, _ := <span style="color: #f5871f;">unparseScript</span><span style="color: #718c00;">(</span>script<span style="color: #718c00;">)</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#27880;&#24847;&#65292;&#36825;&#37324;&#29992;Tx1&#30340;PkScript&#26469;&#22635;&#20805;&#36825;&#20010;&#30456;&#24212;index&#30340;Signature script</span>
+                        txCopy.TxIn<span style="color: #718c00;">[</span>idx<span style="color: #718c00;">]</span>.SignatureScript = sigScript
+                <span style="color: #eab700;">}</span> <span style="color: #718c00;">else</span> <span style="color: #eab700;">{</span>
+                        txCopy.TxIn<span style="color: #718c00;">[</span>i<span style="color: #718c00;">]</span>.SignatureScript = <span style="color: #4271ae;">nil</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26681;&#25454;&#19981;&#21516;&#30340;hash&#30340;&#26041;&#27861;&#36992;&#35831;&#65292;&#21464;&#25442;&#25805;&#20316;txCopy&#36798;&#21040;&#35201;&#27714;</span>
+        <span style="color: #718c00;">switch</span> hashType &amp; sigHashMask <span style="color: #3e999f;">{</span>
+        <span style="color: #718c00;">case</span> SigHashNone:
+                txCopy.TxOut = txCopy.TxOut<span style="color: #eab700;">[</span>0:0<span style="color: #eab700;">]</span> <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Empty slice.</span>
+                <span style="color: #718c00;">for</span> i := <span style="color: #718c00;">range</span> txCopy.TxIn <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">if</span> i != idx <span style="color: #718c00;">{</span>
+                                txCopy.TxIn<span style="color: #4271ae;">[</span>i<span style="color: #4271ae;">]</span>.Sequence = 0
+                        <span style="color: #718c00;">}</span>
+                <span style="color: #eab700;">}</span>
+
+        <span style="color: #718c00;">case</span> SigHashSingle:
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Resize output array to up to and including requested index.</span>
+                txCopy.TxOut = txCopy.TxOut<span style="color: #eab700;">[</span>:idx+1<span style="color: #eab700;">]</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">All but current output get zeroed out.</span>
+                <span style="color: #718c00;">for</span> i := 0; i &lt; idx; i++ <span style="color: #eab700;">{</span>
+                        txCopy.TxOut<span style="color: #718c00;">[</span>i<span style="color: #718c00;">]</span>.Value = -1
+                        txCopy.TxOut<span style="color: #718c00;">[</span>i<span style="color: #718c00;">]</span>.PkScript = <span style="color: #4271ae;">nil</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Sequence on all other inputs is 0, too.</span>
+                <span style="color: #718c00;">for</span> i := <span style="color: #718c00;">range</span> txCopy.TxIn <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">if</span> i != idx <span style="color: #718c00;">{</span>
+                                txCopy.TxIn<span style="color: #4271ae;">[</span>i<span style="color: #4271ae;">]</span>.Sequence = 0
+                        <span style="color: #718c00;">}</span>
+                <span style="color: #eab700;">}</span>
+
+        <span style="color: #718c00;">default</span>:
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Consensus treats undefined hashtypes like normal SigHashAll</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">for purposes of hash generation.</span>
+                <span style="color: #718c00;">fallthrough</span>
+        <span style="color: #718c00;">case</span> SigHashOld:
+                <span style="color: #718c00;">fallthrough</span>
+        <span style="color: #718c00;">case</span> SigHashAll:
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Nothing special here.</span>
+        <span style="color: #3e999f;">}</span>
+        <span style="color: #718c00;">if</span> hashType&amp;SigHashAnyOneCanPay != 0 <span style="color: #3e999f;">{</span>
+                txCopy.TxIn = txCopy.TxIn<span style="color: #eab700;">[</span>idx : idx+1<span style="color: #eab700;">]</span>
+        <span style="color: #3e999f;">}</span>
+
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#26368;&#21518; DoubleHash&#65288;</span>
+<span style="color: #8e908c; font-style: italic;">                 MsgTxCopy&#24207;&#21015;&#21270;(&#25152;&#26377;Tx2&#30340;&#30340;&#20869;&#23481;,&#38500;&#20102;&#31532;idx&#20010;Input&#30340;Signature Script&#29992;Tx1&#30340;PKscript&#20195;&#26367;&#65292;&#20197;&#21450;&#31227;&#38500;&#20854;&#23427;&#30340;TxIn&#30340;Signature Script)</span>
+<span style="color: #8e908c; font-style: italic;">                 + hash&#31867;&#21035;</span>
+<span style="color: #8e908c; font-style: italic;">                 &#65289;</span>
+<span style="color: #8e908c; font-style: italic;">        */</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The final hash is the double sha256 of both the serialized modified</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transaction and the hash type (encoded as a 4-byte little-endian</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">value) appended.</span>
+        wbuf := bytes.<span style="color: #f5871f;">NewBuffer</span><span style="color: #3e999f;">(</span><span style="color: #8959a8;">make</span><span style="color: #eab700;">(</span><span style="color: #718c00;">[]</span><span style="color: #4271ae;">byte</span>, 0, txCopy.<span style="color: #f5871f;">SerializeSizeStripped</span><span style="color: #718c00;">()</span>+4<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+        txCopy.<span style="color: #f5871f;">SerializeNoWitness</span><span style="color: #3e999f;">(</span>wbuf<span style="color: #3e999f;">)</span>
+        binary.<span style="color: #f5871f;">Write</span><span style="color: #3e999f;">(</span>wbuf, binary.LittleEndian, hashType<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">return</span> chainhash.<span style="color: #f5871f;">DoubleHashB</span><span style="color: #3e999f;">(</span>wbuf.<span style="color: #f5871f;">Bytes</span><span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org31321c7" class="outline-2">
+<h2 id="org31321c7"><span class="section-number-2">3</span> 延展性的影响</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+可以看到，交易延展性并不影响交易的输出输出等，它对于交易的核心功能是没有影响的，只有TxId受影响，并不会造成比特币的窃取或者阻碍交易的进行等。
+</p>
+
+<p>
+但交易延展性却会造成一些麻烦成不小的麻烦：
+</p>
+
+<p>
+一个是采用TxId为标识的业务逻辑，比如<a href="https://bitcoinmagazine.com/articles/transaction-malleability-mtgoxs-latest-woes-1392068966/">MtGox</a>交易所声称，其由于用户声称没有收到bitcoin（因为交易所记录的TxId确实没有被包含进区块链）而发起退款等请求等，
+造成用户收到比他应得要多的比特币，而使得交易所蒙受损失。
+</p>
+
+<p>
+另外一个是对串联交易的影响。串联交易有很多形式，最常见的是交易的Input执行的上一个TxId已经被修改了，导致该交易失败。
+另外一个问题是像闪电网络这样的上层协议，其基于的正式交易串联的方式。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org903a92a" class="outline-2">
+<h2 id="org903a92a"><span class="section-number-2">4</span> 解决方案</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+喂，醒醒，现在已经8102年了，segwit的采用已经解决了这个问题，因为它将问题的根源signature script移除了Txid的计算。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BTCD源码分析之database存储</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-01-29</p>
+</div>
+<div id="content">
+<h1 class="title">BTCD源码分析之database存储</h1>
+<div class="abstract">
+<p>
+<a href="https://github.com/btcsuite/btcd">btcd</a> 是一个golang实现的比特币全节点。我曾尝试做一个python版的<a href="https://github.com/imnisen/pybtcd">fork</a>，有些研究。
+</p>
+
+<p>
+本文分析其 <code>database</code> 包的基本结构和实现。
+</p>
+
+<p>
+基于git代码版本: 7d2daa5bfef28c5e282571bc06416516936115ee
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7f25ef9">1. database</a>
+<ul>
+<li><a href="#orge4d3d7e">1.1. database/*</a>
+<ul>
+<li><a href="#orgb8f80ef">1.1.1. interface.go</a></li>
+<li><a href="#org6af282d">1.1.2. driver.go</a></li>
+</ul>
+</li>
+<li><a href="#org597246d">1.2. database/ffldb</a>
+<ul>
+<li><a href="#org025e9ec">1.2.1. db.go</a></li>
+<li><a href="#org8c8a55f">1.2.2. blockio.go</a></li>
+<li><a href="#orge742730">1.2.3. dbcache.go</a></li>
+<li><a href="#org0e82f02">1.2.4. 其它</a></li>
+</ul>
+</li>
+<li><a href="#org5cf0e10">1.3. internal/treap</a>
+<ul>
+<li><a href="#org6ebdbd5">1.3.1. common.go</a></li>
+<li><a href="#org1f9cf4c">1.3.2. mutable.go, imutable.go</a></li>
+<li><a href="#orgf759f3f">1.3.3. treapiter.go</a></li>
+</ul>
+</li>
+<li><a href="#org34c0844">1.4. cmd/dbtool</a></li>
+</ul>
+</li>
+<li><a href="#org5a95336">2. 流程示意图</a></li>
+<li><a href="#orgc99b083">3. 参考列表</a></li>
+<li><a href="#org3ce273c">4. End</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7f25ef9" class="outline-2">
+<h2 id="org7f25ef9"><span class="section-number-2">1</span> database</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+database模块提供了bitcoin存储相关功能，通过多层缓存，逻辑上分成metadata和flat block files两部分存储。
+</p>
+</div>
+
+<div id="outline-container-orge4d3d7e" class="outline-3">
+<h3 id="orge4d3d7e"><span class="section-number-3">1.1</span> database/*</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orgb8f80ef" class="outline-4">
+<h4 id="orgb8f80ef"><span class="section-number-4">1.1.1</span> interface.go</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+interface.go 定义了database包对外提供的类型和方法
+主要包括4块: <code>DB</code>, <code>TX</code>, <code>Bucket</code>, <code>Cursor</code> 四个部分。
+</p>
+
+<p>
+这4部分的关系是:
+</p>
+
+<ol class="org-ol">
+<li>DB提供了整体数据库的功能，存储的数据大体上分成元数据和区块数据。</li>
+
+<li>Tx是操作DB获取数据和状态变化的途径（可以提供原子性等），</li>
+
+<li>Bucket是DB存储的元数据的容易，以一些列键值对方式存储。</li>
+
+<li>Cursor是遍历Bucket里键值对的手段。</li>
+</ol>
+</div>
+
+<ol class="org-ol">
+<li><a id="orgf898878"></a>DB<br />
+<div class="outline-text-5" id="text-1-1-1-1">
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">DB&#36890;&#36807;&#25509;&#21475;&#21644;&#20855;&#20307;&#23454;&#29616;&#20998;&#38548;&#24320;</span>
+
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">DB</span> <span style="color: #b9ca4a;">interface</span> <span style="color: #eaeaea;">{</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36820;&#22238;databse driver&#31867;&#22411;</span>
+    <span style="color: #e78c45;">Type</span><span style="color: #70c0b1;">()</span> string
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#24320;&#22987;&#19968;&#20010;&#25968;&#25454;&#24211;&#20107;&#21153;</span>
+    <span style="color: #e78c45;">Begin</span><span style="color: #70c0b1;">(</span>writable bool<span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span>Tx, error<span style="color: #70c0b1;">)</span>
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#22312;&#19968;&#20010;&#21482;&#35835;&#30340;&#20107;&#21153;&#37324;&#25191;&#34892;&#20256;&#20837;&#30340;&#26041;&#27861;</span>
+    <span style="color: #e78c45;">View</span><span style="color: #70c0b1;">(</span>fn <span style="color: #b9ca4a;">func</span><span style="color: #e7c547;">(</span>tx <span style="color: #7aa6da;">Tx</span><span style="color: #e7c547;">)</span> <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#22312;&#19968;&#20010;&#35835;&#20889;&#30340;&#20107;&#21153;&#37324;&#25191;&#34892;&#20256;&#20837;&#30340;&#26041;&#27861;</span>
+    <span style="color: #e78c45;">Update</span><span style="color: #70c0b1;">(</span>fn <span style="color: #b9ca4a;">func</span><span style="color: #e7c547;">(</span>tx <span style="color: #7aa6da;">Tx</span><span style="color: #e7c547;">)</span> <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#20851;&#38381;&#25968;&#25454;&#24211;</span>
+    <span style="color: #e78c45;">Close</span><span style="color: #70c0b1;">()</span> error
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org0c83bec"></a>Tx<br />
+<div class="outline-text-5" id="text-1-1-1-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#25968;&#25454;&#24211;&#20107;&#21153;&#25509;&#21475;</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">database&#22312;&#23384;&#20648;&#25968;&#25454;&#26102;&#65292;&#20998;&#20026;metadata&#25968;&#25454;&#23384;&#20648;&#21644;&#36890;&#24120;&#30340;block&#25991;&#20214;&#23384;&#20648;</span>
+
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">Tx</span> <span style="color: #b9ca4a;">interface</span> <span style="color: #eaeaea;">{</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36820;&#22238;&#20803;&#25968;&#25454;</span>
+    <span style="color: #e78c45;">Metadata</span><span style="color: #70c0b1;">()</span> Bucket
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#23384;&#20648;&#21306;&#22359;</span>
+    <span style="color: #e78c45;">StoreBlock</span><span style="color: #70c0b1;">(</span>block *btcutil.Block<span style="color: #70c0b1;">)</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#26816;&#26597;&#21306;&#22359;&#26159;&#21542;&#23384;&#22312;</span>
+    <span style="color: #e78c45;">HasBlock</span><span style="color: #70c0b1;">(</span>hash *chainhash.Hash<span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span>bool, error<span style="color: #70c0b1;">)</span>
+    <span style="color: #e78c45;">HasBlocks</span><span style="color: #70c0b1;">(</span>hashes <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">chainhash.Hash</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">bool</span>, error<span style="color: #70c0b1;">)</span>
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#33719;&#21462;&#21306;&#22359;&#22836;&#25968;&#25454;</span>
+    <span style="color: #e78c45;">FetchBlockHeader</span><span style="color: #70c0b1;">(</span>hash *chainhash.Hash<span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span>, error<span style="color: #70c0b1;">)</span>
+    <span style="color: #e78c45;">FetchBlockHeaders</span><span style="color: #70c0b1;">(</span>hashes <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">chainhash.Hash</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[][]</span><span style="color: #7aa6da;">byte</span>, error<span style="color: #70c0b1;">)</span>
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#33719;&#21462;&#21306;&#22359;&#25968;&#25454;</span>
+    <span style="color: #e78c45;">FetchBlock</span><span style="color: #70c0b1;">(</span>hash *chainhash.Hash<span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span>, error<span style="color: #70c0b1;">)</span>
+    <span style="color: #e78c45;">FetchBlocks</span><span style="color: #70c0b1;">(</span>hashes <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">chainhash.Hash</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[][]</span><span style="color: #7aa6da;">byte</span>, error<span style="color: #70c0b1;">)</span>
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#33719;&#21462;&#26576;&#37096;&#20998;&#21306;&#22359;&#25968;&#25454;</span>
+    <span style="color: #e78c45;">FetchBlockRegion</span><span style="color: #70c0b1;">(</span>region *BlockRegion<span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span>, error<span style="color: #70c0b1;">)</span>
+    <span style="color: #e78c45;">FetchBlockRegions</span><span style="color: #70c0b1;">(</span>regions <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">BlockRegion</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #e7c547;">[][]</span><span style="color: #7aa6da;">byte</span>, error<span style="color: #70c0b1;">)</span>
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#25552;&#20132;&#65288;&#20803;&#25968;&#25454;&#21644;&#21306;&#22359;&#23384;&#20648;&#65289;&#20107;&#21153;</span>
+    <span style="color: #e78c45;">Commit</span><span style="color: #70c0b1;">()</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#22238;&#28378;&#65288;&#20803;&#25968;&#25454;&#21644;&#21306;&#22359;&#23384;&#20648;&#65289;&#20107;&#21153;</span>
+    <span style="color: #e78c45;">Rollback</span><span style="color: #70c0b1;">()</span> error
+<span style="color: #eaeaea;">}</span>
+
+
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org6b50a7a"></a>Bucket<br />
+<div class="outline-text-5" id="text-1-1-1-3">
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Bucket &#34920;&#31034;&#19968;&#31995;&#21015;&#30340;&#38190;&#20540;&#23545;&#23384;&#20648;</span>
+
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">Bucket</span> <span style="color: #b9ca4a;">interface</span> <span style="color: #eaeaea;">{</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36820;&#22238;&#19968;&#20010;&#23376;bucket</span>
+    <span style="color: #e78c45;">Bucket</span><span style="color: #70c0b1;">(</span>key <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> Bucket
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#21019;&#24314;&#23376;bucket</span>
+    <span style="color: #e78c45;">CreateBucket</span><span style="color: #70c0b1;">(</span>key <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span>Bucket, error<span style="color: #70c0b1;">)</span>
+    <span style="color: #e78c45;">CreateBucketIfNotExists</span><span style="color: #70c0b1;">(</span>key <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span>Bucket, error<span style="color: #70c0b1;">)</span>
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#21024;&#38500;bucket</span>
+    <span style="color: #e78c45;">DeleteBucket</span><span style="color: #70c0b1;">(</span>key <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36941;&#21382;&#38190;&#20540;&#23545;</span>
+    <span style="color: #e78c45;">ForEach</span><span style="color: #70c0b1;">(</span><span style="color: #b9ca4a;">func</span><span style="color: #e7c547;">(</span>k, v <span style="color: #b9ca4a;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #e7c547;">)</span> <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36941;&#21382;&#23376;bucket</span>
+    <span style="color: #e78c45;">ForEachBucket</span><span style="color: #70c0b1;">(</span><span style="color: #b9ca4a;">func</span><span style="color: #e7c547;">(</span>k <span style="color: #b9ca4a;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #e7c547;">)</span> <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span> error
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36820;&#22238;&#38190;&#20540;&#23545;&#20043;&#38388;&#36941;&#21382;&#30340;&#28216;&#26631;</span>
+    <span style="color: #e78c45;">Cursor</span><span style="color: #70c0b1;">()</span> Cursor
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">bucket&#26159;&#21542;&#21487;&#20889;</span>
+    <span style="color: #e78c45;">Writable</span><span style="color: #70c0b1;">()</span> bool
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#20445;&#23384;&#12289;&#33719;&#21462;&#12289;&#21024;&#38500;&#38190;&#20540;&#23545;</span>
+    <span style="color: #e78c45;">Put</span><span style="color: #70c0b1;">(</span>key, value <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> error
+    <span style="color: #e78c45;">Get</span><span style="color: #70c0b1;">(</span>key <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">byte</span>
+    <span style="color: #e78c45;">Delete</span><span style="color: #70c0b1;">(</span>key <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> error
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org34bcb10"></a>Cursor<br />
+<div class="outline-text-5" id="text-1-1-1-4">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">Cursor</span> <span style="color: #b9ca4a;">interface</span> <span style="color: #eaeaea;">{</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36820;&#22238;&#20851;&#32852;&#30340;bucket</span>
+    <span style="color: #e78c45;">Bucket</span><span style="color: #70c0b1;">()</span> Bucket
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#22914;&#20854;&#21517;</span>
+    <span style="color: #e78c45;">Delete</span><span style="color: #70c0b1;">()</span> error
+    <span style="color: #e78c45;">First</span><span style="color: #70c0b1;">()</span> bool
+    <span style="color: #e78c45;">Last</span><span style="color: #70c0b1;">()</span> bool
+    <span style="color: #e78c45;">Next</span><span style="color: #70c0b1;">()</span> bool
+    <span style="color: #e78c45;">Prev</span><span style="color: #70c0b1;">()</span> bool
+    <span style="color: #e78c45;">Seek</span><span style="color: #70c0b1;">(</span>seek <span style="color: #e7c547;">[]</span><span style="color: #7aa6da;">byte</span><span style="color: #70c0b1;">)</span> bool
+    <span style="color: #e78c45;">Key</span><span style="color: #70c0b1;">()</span> <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">byte</span>
+    <span style="color: #e78c45;">Value</span><span style="color: #70c0b1;">()</span> <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">byte</span>
+<span style="color: #eaeaea;">}</span>
+
+
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org6af282d" class="outline-4">
+<h4 id="org6af282d"><span class="section-number-4">1.1.2</span> driver.go</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+driver.go定义了用来创建DB的drivers的结构
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">Driver</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36820;&#22238;driver&#31867;&#22411;</span>
+    DbType string
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#21019;&#24314;&#19968;&#20010;DB</span>
+    Create <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>args ...<span style="color: #b9ca4a;">interface</span><span style="color: #e7c547;">{}</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">DB</span>, <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#25171;&#24320;DB</span>
+    Open <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>args ...<span style="color: #b9ca4a;">interface</span><span style="color: #e7c547;">{}</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">DB</span>, <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#26085;&#24535;&#30456;&#20851;</span>
+    UseLogger <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>logger <span style="color: #7aa6da;">btclog.Logger</span><span style="color: #70c0b1;">)</span>
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org597246d" class="outline-3">
+<h3 id="org597246d"><span class="section-number-3">1.2</span> database/ffldb</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+ffldb包是对上面定义的接口的一种实现。
+</p>
+</div>
+
+<div id="outline-container-org025e9ec" class="outline-4">
+<h4 id="org025e9ec"><span class="section-number-4">1.2.1</span> db.go</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+对 database/interface.go 里 <code>DB,Tx,Bucket,Cursor</code> 接口的实现.
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="org7740075"></a>db<br />
+<div class="outline-text-5" id="text-1-2-1-1">
+<p>
+db结构主要是分成两个部分： store 和 cache
+store部分用文件来保存区块信息，
+cache部分是用leveldb来保存一些区块和整体的一些元数据。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">db</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    writeLock sync.Mutex   <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Limit to one write transaction at a time.</span>
+    closeLock sync.RWMutex <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Make database close block while txns active.</span>
+    closed    bool         <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Is the database closed?</span>
+    store     *blockStore  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Handles read/writing blocks to flat files.</span>
+    cache     *dbCache     <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Cache layer which wraps underlying leveldb DB.</span>
+<span style="color: #eaeaea;">}</span>
+
+
+</pre>
+</div>
+</div>
+</li>
+
+
+<li><a id="org5a9b1f7"></a>transaction<br />
+<div class="outline-text-5" id="text-1-2-1-2">
+<p>
+transation表示了每个db操作的事务的概念，采用 <code>pendingBlocks, pendingBlockData</code> 来缓存事务里的block数据，用 <code>pendingKeys, pendingRemove</code> 来缓存事务里的metadata数据
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">transaction represents a database transaction.  It can either be read-only or</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">read-write and implements the database.Bucket interface.  The transaction</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">provides a root bucket against which all read and writes occur.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">transaction</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+        managed        bool             <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Is the transaction managed?</span>
+        closed         bool             <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Is the transaction closed?</span>
+        writable       bool             <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Is the transaction writable?</span>
+        db             *db              <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">DB instance the tx was created from.</span>
+        snapshot       *dbCacheSnapshot <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Underlying snapshot for txns.</span>
+        metaBucket     *bucket          <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">The root metadata bucket.</span>
+        blockIdxBucket *bucket          <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">The block index bucket.</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Blocks that need to be stored on commit.  The pendingBlocks map is</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">kept to allow quick lookups of pending data by block hash.</span>
+        pendingBlocks    Map<span style="color: #70c0b1;">[</span>chainhash.Hash<span style="color: #70c0b1;">]</span>int
+        pendingBlockData <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">pendingBlock</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Keys that need to be stored or deleted on commit.</span>
+        pendingKeys   *treap.Mutable
+        pendingRemove *treap.Mutable
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Active iterators that need to be notified when the pending keys have</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">been updated so the cursors can properly handle updates to the</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">transaction state.</span>
+        activeIterLock sync.RWMutex
+        activeIters    <span style="color: #70c0b1;">[]</span>*<span style="color: #7aa6da;">treap.Iterator</span>
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org94bf77f"></a>bucket<br />
+<div class="outline-text-5" id="text-1-2-1-3">
+<p>
+bucket通过操作关联的transaction上的 <code>pending_keys, pending_remove</code> 来实现其 <code>Put,Get,Delete,ForEach</code> 等接口方法。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">bucket</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    tx *transaction
+    id <span style="color: #70c0b1;">[</span>4<span style="color: #70c0b1;">]</span><span style="color: #7aa6da;">byte</span>
+<span style="color: #eaeaea;">}</span>
+</pre>
+</div>
+
+
+<p>
+bucket通过 <code>Cursor()</code> 方法来生成Cursor对象
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #b9ca4a;">func</span> <span style="color: #eaeaea;">(</span>b *<span style="color: #7aa6da;">bucket</span><span style="color: #eaeaea;">)</span> <span style="color: #e78c45;">Cursor</span><span style="color: #eaeaea;">()</span> <span style="color: #7aa6da;">database.Cursor</span> <span style="color: #eaeaea;">{</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Ensure transaction state is valid.</span>
+        <span style="color: #b9ca4a;">if</span> err := b.tx.<span style="color: #e78c45;">checkClosed</span><span style="color: #70c0b1;">()</span>; err != <span style="color: #7aa6da;">nil</span> <span style="color: #70c0b1;">{</span>
+                <span style="color: #b9ca4a;">return</span> &amp;<span style="color: #7aa6da;">cursor</span><span style="color: #e7c547;">{</span>bucket: b<span style="color: #e7c547;">}</span>
+        <span style="color: #70c0b1;">}</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Create the cursor and setup a runtime finalizer to ensure the</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">iterators are released when the cursor is garbage collected.</span>
+        c := <span style="color: #e78c45;">newCursor</span><span style="color: #70c0b1;">(</span>b, b.id<span style="color: #e7c547;">[</span>:<span style="color: #e7c547;">]</span>, ctFull<span style="color: #70c0b1;">)</span>
+        runtime.<span style="color: #e78c45;">SetFinalizer</span><span style="color: #70c0b1;">(</span>c, cursorFinalizer<span style="color: #70c0b1;">)</span>
+        <span style="color: #b9ca4a;">return</span> c
+<span style="color: #eaeaea;">}</span>
+
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">newCursor &#26041;&#27861;&#26412;&#36136;&#26159;&#21019;&#24314;&#38190;&#20540;&#23545;&#30340;iterators</span>
+
+</pre>
+</div>
+</div>
+</li>
+
+
+
+<li><a id="org7dae8e1"></a>cursor<br />
+<div class="outline-text-5" id="text-1-2-1-4">
+<p>
+cursor是上面bucket创建的各种iterators的组合，然后再其基础上实现 Cursor 接口所需的 <code>First,Last,Next</code> 等遍历方法。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">cursor is an internal type used to represent a cursor over key/value pairs</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">and nested buckets of a bucket and implements the database.Cursor interface.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">cursor</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    bucket      *bucket
+    dbIter      iterator.Iterator
+    pendingIter iterator.Iterator
+    currentIter iterator.Iterator
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org8c8a55f" class="outline-4">
+<h4 id="org8c8a55f"><span class="section-number-4">1.2.2</span> blockio.go</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+DB采用文件存储block相关数据的实现。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">blockStore houses information used to handle reading and writing blocks (and</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">part of blocks) into flat files with support for multiple concurrent readers.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">blockStore</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">network is the specific network to use in the flat files for each</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">block.</span>
+        network wire.BitcoinNet
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#25991;&#20214;&#23384;&#25918;&#30446;&#24405;</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">basePath is the base path used for the flat block files and metadata.</span>
+        basePath string
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#27599;&#20010;&#25991;&#20214;&#26368;&#22823;&#23384;&#20648;blocks&#25968;&#37327;</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">maxBlockFileSize is the maximum size for each file used to store</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">blocks.  It is defined on the store so the whitebox tests can</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">override the value.</span>
+        maxBlockFileSize uint32
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#19968;&#20123;&#32531;&#23384;&#35760;&#24405;&#21644;&#24182;&#21457;&#25511;&#21046;</span>
+        obfMutex         sync.RWMutex
+        lruMutex         sync.Mutex
+        openBlocksLRU    *list.List <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Contains uint32 block file numbers.</span>
+        fileNumToLRUElem <span style="color: #b9ca4a;">map</span><span style="color: #70c0b1;">[</span><span style="color: #7aa6da;">uint32</span><span style="color: #70c0b1;">]</span>*<span style="color: #7aa6da;">list.Element</span>
+        openBlockFiles   <span style="color: #b9ca4a;">map</span><span style="color: #70c0b1;">[</span><span style="color: #7aa6da;">uint32</span><span style="color: #70c0b1;">]</span>*<span style="color: #7aa6da;">lockableFile</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#35835;&#20889;&#25991;&#20214;&#30340;&#27833;&#34920;</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">writeCursor houses the state for the current file and location that</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">new blocks are written to.</span>
+        writeCursor *writeCursor
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#25805;&#20316;&#24213;&#23618;&#23384;&#20648;&#25991;&#20214;&#30340;&#26041;&#27861;</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">These functions are set to openFile, openWriteFile, and deleteFile by</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">default, but are exposed here to allow the whitebox tests to replace</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">them when working with mock files.</span>
+        openFileFunc      <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>fileNum <span style="color: #7aa6da;">uint32</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span>*<span style="color: #7aa6da;">lockableFile</span>, <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span>
+        openWriteFileFunc <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>fileNum <span style="color: #7aa6da;">uint32</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">filer</span>, <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span>
+        deleteFileFunc    <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>fileNum <span style="color: #7aa6da;">uint32</span><span style="color: #70c0b1;">)</span> <span style="color: #7aa6da;">error</span>
+<span style="color: #eaeaea;">}</span>
+
+
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orge742730" class="outline-4">
+<h4 id="orge742730"><span class="section-number-4">1.2.3</span> dbcache.go</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+dbcache.go 里主要的结构有 <code>dbCache</code> 和 <code>dbCacheSnapshot</code>
+</p>
+
+<p>
+dbCache是db关联的存储metadata的结构
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">dbCache</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#24213;&#23618;&#23384;&#20648;&#30340;leveldb</span>
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">ldb is the underlying leveldb DB for metadata.</span>
+    ldb *leveldb.DB
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">store is used to sync blocks to flat files.</span>
+    store *blockStore
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#32531;&#23384;&#22823;&#23567;&#21644;&#26102;&#38388;&#30456;&#20851;</span>
+    maxSize       uint64
+    flushInterval time.Duration
+    lastFlush     time.Time
+
+    <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#32531;&#23384;</span>
+    cacheLock    sync.RWMutex
+    cachedKeys   *treap.Immutable
+    cachedRemove *treap.Immutable
+<span style="color: #eaeaea;">}</span>
+
+
+</pre>
+</div>
+
+
+
+<p>
+dbCacheSnapshot是每个Transaction创建时生成的对于dbCache的一个快照:
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">dbCacheSnapshot defines a snapshot of the database cache and underlying</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">database at a particular point in time.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">dbCacheSnapshot</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    dbSnapshot    *leveldb.Snapshot
+    pendingKeys   *treap.Immutable
+    pendingRemove *treap.Immutable
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div id="outline-container-org0e82f02" class="outline-4">
+<h4 id="org0e82f02"><span class="section-number-4">1.2.4</span> 其它</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<ul class="org-ul">
+<li>driver.go: 对database/driver.go的里的Driver类型的实现。</li>
+<li>ldbtreapiter.go: 相关iterators的包装层</li>
+<li>reconcile.go: 保证metadata和flat block files一致性的一些操作</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org5cf0e10" class="outline-3">
+<h3 id="org5cf0e10"><span class="section-number-3">1.3</span> internal/treap</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+主要实现了可变的和不可变的treap数据类型，用来存储metadata。
+</p>
+
+<blockquote>
+<p>
+Treap（Tree + Heap）是一种平衡二叉树，
+不过Treap会记录一个优先级（一般来说是随机生成），即Treap在以关键码构成二叉搜索树的同时，还会按照优先级的高低满足堆的性质。
+</p>
+
+<p>
+对于每个结点，该结点的优先级不大于其所有孩子的优先级。Treap引入优先级的原因就是防止BST（二叉搜索树）退化成一条链，从而影响查询效率。
+</p>
+
+<p>
+所以对于结点上的关键字来说，它是一颗BST，而对于结点上的优先级来讲，它是一个小顶堆。其平均查找长度为 O(logn) 。
+</p>
+
+<p>
+Treap有插入、删除、旋转和查询等基本操作，进而可以实现查询第 k 大和查询关键字 x 排名等功能。
+</p>
+</blockquote>
+</div>
+
+
+<div id="outline-container-org6ebdbd5" class="outline-4">
+<h4 id="org6ebdbd5"><span class="section-number-4">1.3.1</span> common.go</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+包含了实现treap的基本数据结构: <code>treapNode</code> 和 <code>parentStack</code> :
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">treapNode represents a node in the treap.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">treapNode</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    key      <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">byte</span>
+    value    <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">byte</span>
+    priority int
+    left     *treapNode
+    right    *treapNode
+<span style="color: #eaeaea;">}</span>
+
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">parentStack</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+    index    int
+    items    <span style="color: #70c0b1;">[</span>staticDepth<span style="color: #70c0b1;">]</span>*treapNode
+    overflow <span style="color: #70c0b1;">[]</span>*<span style="color: #7aa6da;">treapNode</span>
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f9cf4c" class="outline-4">
+<h4 id="org1f9cf4c"><span class="section-number-4">1.3.2</span> mutable.go, imutable.go</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+分别实现了可变的treap和不可变的treap。 不可变的treap每次插入或者删除均返回新的treap。
+两者均实现了: <code>Len, Size, Has, Get, Put, Delete, ForEach</code> 等方法用来实现对treap的基本操作
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgf759f3f" class="outline-4">
+<h4 id="orgf759f3f"><span class="section-number-4">1.3.3</span> treapiter.go</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+实现了对treap的遍历方法，包括: <code>First,Last, Next, Prev,Seek,Key, Value, Valid, ForceReseek</code> 等
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+<div id="outline-container-org34c0844" class="outline-3">
+<h3 id="org34c0844"><span class="section-number-3">1.4</span> cmd/dbtool</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+提供了命令行操作DB的一些方法，暂时略去
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org5a95336" class="outline-2">
+<h2 id="org5a95336"><span class="section-number-2">2</span> 流程示意图</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+一图抵千言:)，下面是我尝试梳理事务流程时画的一张示意图，供参考：
+</p>
+
+<p>
+图片较大适合新建窗口浏览： <a href="static/images/btcd-code-database.jpg">存储结构和流程示意图</a>
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgc99b083" class="outline-2">
+<h2 id="orgc99b083"><span class="section-number-2">3</span> 参考列表</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>source code <a href="https://github.com/btcsuite/btcd/tree/master/blockchain">https://github.com/btcsuite/btcd/tree/master/blockchain</a></li>
+<li>treap <a href="https://blog.csdn.net/yang_yulei/article/details/46005845">https://blog.csdn.net/yang_yulei/article/details/46005845</a></li>
+<li>treap <a href="https://www.lizhechen.com/2017/02/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E5%B9%B3%E8%A1%A1%E6%A0%91%20Treap/">https://www.lizhechen.com/2017/02/18/数据结构——平衡树 Treap/</a></li>
+<li>treap <a href="https://www.jianshu.com/p/6fd2cd3a574a">https://www.jianshu.com/p/6fd2cd3a574a</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3ce273c" class="outline-2">
+<h2 id="org3ce273c"><span class="section-number-2">4</span> End</h2>
+<div class="outline-text-2" id="text-4">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

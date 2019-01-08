@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Go语言编程踩坑</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2020-08-25</p>
+</div>
+<div id="content">
+<h1 class="title">Go语言编程踩坑</h1>
+
+
+
+<div id="outline-container-org2a63a09" class="outline-2">
+<h2 id="org2a63a09"><span class="section-number-2">1</span> 遇到的问题和排查</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+最近调试代码的时候遇到了类似下面这样的错误:
+</p>
+
+<pre class="example">
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x1095520]
+
+</pre>
+
+
+<p>
+通过日志，观察到error的值比较奇怪(前后不一致)。下面以一个示例代码来说明。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org454e28f" class="outline-2">
+<h2 id="org454e28f"><span class="section-number-2">2</span> 示例代码及说明</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-go">
+
+<span style="color: #00bfff;">package</span> main
+
+<span style="color: #00bfff;">import</span> <span style="color: #8c8c8c;">(</span>
+        <span style="color: #deb887;">"errors"</span>
+        <span style="color: #deb887;">"fmt"</span>
+        <span style="color: #deb887;">"log"</span>
+<span style="color: #8c8c8c;">)</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#31034;&#20363;&#30340;&#32467;&#26500;&#20307;</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">S</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        a int
+<span style="color: #8c8c8c;">}</span>
+
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">main&#37324;&#30340;&#26465;&#20214;&#21028;&#26029;</span>
+<span style="color: #00bfff;">func</span> <span style="color: #daa520;">checkCondition</span><span style="color: #8c8c8c;">()</span> <span style="color: #98f5ff;">bool</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #00bfff;">return</span> <span style="color: #a2cd5a;">false</span>
+<span style="color: #8c8c8c;">}</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">main&#37324;&#30340;&#19968;&#20010;&#25191;&#34892;&#20998;&#25903;</span>
+<span style="color: #00bfff;">func</span> <span style="color: #daa520;">doOne</span><span style="color: #8c8c8c;">()</span> <span style="color: #8c8c8c;">(</span>*<span style="color: #98f5ff;">S</span>, <span style="color: #98f5ff;">error</span><span style="color: #8c8c8c;">)</span> <span style="color: #8c8c8c;">{</span>
+
+        <span style="color: #00bfff;">return</span> &amp;<span style="color: #98f5ff;">S</span><span style="color: #93a8c6;">{</span>a:1<span style="color: #93a8c6;">}</span>, <span style="color: #a2cd5a;">nil</span>
+<span style="color: #8c8c8c;">}</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">main&#37324;&#30340;&#21478;&#19968;&#20010;&#25191;&#34892;&#20998;&#25903;&#25152;&#38656;&#35201;&#30340;&#21442;&#25968;</span>
+<span style="color: #00bfff;">func</span> <span style="color: #daa520;">getParam</span><span style="color: #8c8c8c;">()</span> <span style="color: #8c8c8c;">(</span><span style="color: #98f5ff;">string</span>, <span style="color: #98f5ff;">error</span><span style="color: #8c8c8c;">)</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #00bfff;">return</span> <span style="color: #deb887;">"bad"</span>, <span style="color: #a2cd5a;">nil</span>
+
+<span style="color: #8c8c8c;">}</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">main&#37324;&#30340;&#21478;&#19968;&#20010;&#25191;&#34892;&#20998;&#25903;</span>
+<span style="color: #00bfff;">func</span> <span style="color: #daa520;">doAnother</span><span style="color: #8c8c8c;">(</span>param <span style="color: #98f5ff;">string</span><span style="color: #8c8c8c;">)</span> <span style="color: #8c8c8c;">(</span>*<span style="color: #98f5ff;">S</span>, <span style="color: #98f5ff;">error</span><span style="color: #8c8c8c;">)</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #00bfff;">if</span> param == <span style="color: #deb887;">"good"</span> <span style="color: #93a8c6;">{</span>
+                <span style="color: #00bfff;">return</span> &amp;<span style="color: #98f5ff;">S</span><span style="color: #b0b1a3;">{</span>a:2<span style="color: #b0b1a3;">}</span>, <span style="color: #a2cd5a;">nil</span>
+        <span style="color: #93a8c6;">}</span> <span style="color: #00bfff;">else</span> <span style="color: #93a8c6;">{</span>
+                <span style="color: #00bfff;">return</span> <span style="color: #a2cd5a;">nil</span>, errors.<span style="color: #daa520;">New</span><span style="color: #b0b1a3;">(</span><span style="color: #deb887;">"error in doAnother"</span><span style="color: #b0b1a3;">)</span>
+        <span style="color: #93a8c6;">}</span>
+
+<span style="color: #8c8c8c;">}</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#20027;&#20989;&#25968;</span>
+<span style="color: #00bfff;">func</span> <span style="color: #daa520;">main</span><span style="color: #8c8c8c;">()</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #00bfff;">var</span> <span style="color: #93a8c6;">(</span>
+                value *S
+                err   error
+        <span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#26816;&#26597;&#26465;&#20214;&#26159;&#21542;&#28385;&#36275;</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#22312;&#25105;&#20204;&#30340;&#31034;&#20363;&#20013;&#65292;&#35813;&#26465;&#20214;&#24635;&#26159;&#19981;&#28385;&#36275;&#12290;&#20043;&#25152;&#20197;&#21152;&#19978;&#36825;&#20010;&#65292;&#26159;&#22240;&#20026;&#25105;&#20204;&#38656;&#35201;&#20004;&#20010;&#20998;&#25903;&#65292;&#30001;&#27492;&#20135;&#29983;&#23558;&#21516;&#26679;&#30340;&#36820;&#22238;&#20540;value&#21644;err&#22312;&#22806;&#37096;&#22768;&#26126;</span>
+        <span style="color: #00bfff;">if</span> <span style="color: #daa520;">checkCondition</span><span style="color: #93a8c6;">()</span> <span style="color: #93a8c6;">{</span>
+                value, err = <span style="color: #daa520;">doOne</span><span style="color: #b0b1a3;">()</span>
+        <span style="color: #93a8c6;">}</span> <span style="color: #00bfff;">else</span> <span style="color: #93a8c6;">{</span>
+                <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#20808;&#33719;&#21462;&#25152;&#38656;&#21442;&#25968;</span>
+                param, err := <span style="color: #daa520;">getParam</span><span style="color: #b0b1a3;">()</span>
+                <span style="color: #00bfff;">if</span> err != <span style="color: #a2cd5a;">nil</span> <span style="color: #b0b1a3;">{</span>
+                        log.<span style="color: #daa520;">Fatalf</span><span style="color: #97b098;">(</span><span style="color: #deb887;">"error occurs when getParam:% v</span><span style="color: #deb887; font-weight: bold;">\</span><span style="color: #deb887; font-weight: bold;">n</span><span style="color: #deb887;">"</span>, err<span style="color: #97b098;">)</span>
+                <span style="color: #b0b1a3;">}</span>
+
+                <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#25191;&#34892;&#31532;&#20108;&#20010;&#20998;&#25903;</span>
+                value, err = <span style="color: #daa520;">doAnother</span><span style="color: #b0b1a3;">(</span>param<span style="color: #b0b1a3;">)</span>
+        <span style="color: #93a8c6;">}</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#19968;&#36215;&#21028;&#26029;&#19978;&#38754;&#20004;&#20010;&#20998;&#25903;&#30340;err</span>
+        <span style="color: #00bfff;">if</span> err != <span style="color: #a2cd5a;">nil</span> <span style="color: #93a8c6;">{</span>
+                log.<span style="color: #daa520;">Fatalf</span><span style="color: #b0b1a3;">(</span><span style="color: #deb887;">"error occurs when doThings: %v</span><span style="color: #deb887; font-weight: bold;">\</span><span style="color: #deb887; font-weight: bold;">n</span><span style="color: #deb887;">"</span>, err<span style="color: #b0b1a3;">)</span>
+        <span style="color: #93a8c6;">}</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#22914;&#26524;&#27809;&#26377;err&#65292;&#37027;&#20040;&#35775;&#38382;value&#30340;a&#23383;&#27573;</span>
+        fmt.<span style="color: #daa520;">Println</span><span style="color: #93a8c6;">(</span><span style="color: #deb887;">"value filed is"</span>, value.a<span style="color: #93a8c6;">)</span>
+
+<span style="color: #8c8c8c;">}</span>
+
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#36816;&#34892;&#32467;&#26524;&#65306;</span>
+
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">panic: runtime error: invalid memory address or nil pointer dereference</span>
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x109d00b]</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">goroutine 1 [running]:</span>
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">main.main()</span>
+<span style="color: #7f7f7f;">///</span><span style="color: #7f7f7f;">Users/nisen/Projects/ethtools/test/demo.go:70 +0x4b</span>
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">exit status 2</span>
+
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#38382;&#39064;&#20998;&#26512;:</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#38382;&#39064;&#20986;&#22312;&#20102; := &#36171;&#20540;&#31526;&#65292;getParam() &#37324;&#20026;&#20102;&#26032;&#20351;&#29992;&#30340;&#21464;&#37327;param&#37319;&#29992;:=&#26469;&#25509;&#21463;&#20540;&#30340;&#21516;&#26102;&#65292;&#30001;&#20110;&#22788;&#22312;else&#30340;{}&#37324;&#23558;err&#20063;&#37325;&#26032;&#30003;&#26126;&#20102;&#65292;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#36825;&#23601;&#23548;&#33268;&#20102;doAnother()&#36820;&#22238;&#30340;error&#22797;&#21046;&#21040;&#20102;&#36825;&#20010;&#26032;&#22768;&#26126;&#30340;err&#37324;&#65288;&#32780;&#19981;&#26159;&#25972;&#20010;if&#35821;&#21477;&#19978;&#38754;&#23450;&#20041;&#30340;error&#65289;&#12290;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#36825;&#23601;&#23548;&#33268;&#20102;if&#35821;&#21477;&#19979;&#38754;&#23545;err&#26816;&#26597;&#30340;&#26102;&#20505;&#65292;doAnother(param)&#36820;&#22238;&#30340;&#38169;&#35823;&#20540;&#30001;&#20110;&#36229;&#20986;&#20316;&#29992;&#22495;&#26080;&#27861;&#33719;&#21462;&#21040;&#65292;&#25152;&#20197;&#36825;&#37324;&#30340;&#34987;&#26816;&#26597;&#30340;err&#26159;nil&#65292;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#36825;&#20063;&#26159;&#20026;&#20160;&#20040;&#22312;&#26085;&#24535;&#20013;&#35266;&#23519;&#21040;&#20043;&#21069;&#30340;err&#26159;&#23384;&#22312;&#30340;&#65292;&#21040;&#26816;&#26597;&#30340;&#26102;&#20505;&#23601;&#21464;&#25104;&#20102;nil&#12290;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#36825;&#23601;&#23548;&#33268;&#20102;&#19979;&#38754;value.a&#23454;&#38469;&#19978;&#23545;&#20110;nil&#30340;&#35299;&#24341;&#29992;&#35775;&#38382;&#65292;&#23548;&#33268;&#20102;&#38169;&#35823;&#12290;</span>
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#36825;&#20010;&#38382;&#39064;&#22312;&#32593;&#19978;&#25628;&#32034;&#19968;&#19979;&#36935;&#21040;&#30340;&#20154;&#19981;&#23569;&#65292;&#32780;&#19988;&#27604;&#36739;&#38590;&#21457;&#29616;&#65292;&#22240;&#20026;&#23427;&#21644;&#30452;&#35273;&#26377;&#20123;&#36829;&#32972;&#12290;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#23545;&#20110;&#25805;&#20316;&#31526;:=&#65292;&#22914;&#26524;&#26032;&#21464;&#37327;&#19982;&#37027;&#20010;&#21516;&#21517;&#24050;&#23450;&#20041;&#21464;&#37327;&#19981;&#22312;&#19968;&#20010;&#20316;&#29992;&#22495;&#20013;&#26102;&#65292;&#37027;&#20040;golang&#20250;&#37325;&#26032;&#23450;&#20041;&#36825;&#20010;&#21464;&#37327;&#12290;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#26377;&#26102;&#20505;&#65292;&#21069;&#38754;&#32479;&#19968;&#23450;&#20041;&#20102;err&#65292;&#32780;&#21518;&#30001;&#20110;&#20854;&#20182;&#21464;&#37327;&#26032;&#23450;&#20041;&#30340;&#38656;&#27714;&#25165;&#37319;&#29992;&#20102;:=&#65292;&#21103;&#20316;&#29992;&#23601;&#26159;&#23558;&#20197;&#20026;&#32479;&#19968;&#19981;&#20250;&#21464;&#30340;err&#20063;&#25913;&#21464;&#20102;&#12290;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">&#20877;&#21152;&#19978;&#36328;&#20316;&#29992;&#22495;(if else&#31561;)&#65292;&#23548;&#33268;&#38169;&#35823;&#19981;&#33021;&#25429;&#25417;&#21040;&#12290;</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25d06f7" class="outline-2">
+<h2 id="org25d06f7"><span class="section-number-2">3</span> END</h2>
+<div class="outline-text-2" id="text-3">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

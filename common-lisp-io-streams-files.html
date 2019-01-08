@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Common lisp I/O、流和文件</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-09-12</p>
+</div>
+<div id="content">
+<h1 class="title">Common lisp I/O、流和文件</h1>
+<div class="abstract">
+<p>
+本文介绍了common lisp I/O操作相关的一些操作符。参考了Hyperspec和Common Lisp Recipes。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org12ed868">1. with-open-stream</a></li>
+<li><a href="#orgdac4d98">2. 字符串流</a>
+<ul>
+<li><a href="#org6f088da">2.1. with-input-from-string</a></li>
+<li><a href="#orge46ac31">2.2. with-output-to-string</a></li>
+<li><a href="#orgbba5b16">2.3. make-string-input-stream, make-string-output-stream</a></li>
+</ul>
+</li>
+<li><a href="#org80845d8">3. let临时改变动态变量绑定</a>
+<ul>
+<li><a href="#orge59f31e">3.1. Synonym stream</a></li>
+</ul>
+</li>
+<li><a href="#org308d67a">4. Flush output to stream</a></li>
+<li><a href="#orgd9f856e">5. 读取文件相关</a>
+<ul>
+<li><a href="#org6ce6d4a">5.1. with-open-file</a></li>
+<li><a href="#orgcf876eb">5.2. alexandria: read-file-into-byte-vector read-file-into-string</a></li>
+<li><a href="#org66f4f59">5.3. 自定义函数: file-at-once 一次性读取文件内容</a></li>
+</ul>
+</li>
+<li><a href="#org30bdf50">6. 广播流 make-broadcast-stream</a></li>
+<li><a href="#orgc9e0ed1">7. END</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org12ed868" class="outline-2">
+<h2 id="org12ed868"><span class="section-number-2">1</span> with-open-stream</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+将流绑定到变量上然后在表达式求值，最后关闭这个流。 相当于临时创建一个变量绑定来方便使用传入的流，最后再自动关闭
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Syntax:</span>
+
+with-open-stream <span style="color: #4d4d4c;">(</span>var stream<span style="color: #4d4d4c;">)</span> declaration* form*
+
+=&gt; result*
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Examples:</span>
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-open-stream</span> <span style="color: #3e999f;">(</span>s <span style="color: #eab700;">(</span>make-string-input-stream <span style="color: #3e999f;">"1 2 3 4 5"</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+    <span style="color: #3e999f;">(</span>+ <span style="color: #eab700;">(</span>read s<span style="color: #eab700;">)</span> <span style="color: #eab700;">(</span>read s<span style="color: #eab700;">)</span> <span style="color: #eab700;">(</span>read s<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  6</span>
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Side Effects:</span>
+
+The stream is closed <span style="color: #4d4d4c;">(</span>upon exit<span style="color: #4d4d4c;">)</span>.
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orge2b5d39" class="outline-4">
+<h4 id="orge2b5d39"><span class="section-number-4">1.0.1</span> get-output-stream-string</h4>
+<div class="outline-text-4" id="text-1-0-1">
+<p>
+注意：该方法每次调用会清空stream
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp">Examples:
+
+ <span style="color: #4d4d4c;">(</span>setq a-stream <span style="color: #3e999f;">(</span>make-string-output-stream<span style="color: #3e999f;">)</span>
+        a-string <span style="color: #3e999f;">"abcdefghijklm"</span><span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">"abcdefghijklm"</span>
+ <span style="color: #4d4d4c;">(</span>write-string a-string a-stream<span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">"abcdefghijklm"</span>
+ <span style="color: #4d4d4c;">(</span>get-output-stream-string a-stream<span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">"abcdefghijklm"</span>
+ <span style="color: #4d4d4c;">(</span>get-output-stream-string a-stream<span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">""</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdac4d98" class="outline-2">
+<h2 id="orgdac4d98"><span class="section-number-2">2</span> 字符串流</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org6f088da" class="outline-3">
+<h3 id="org6f088da"><span class="section-number-3">2.1</span> with-input-from-string</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+创建一个字符串输入流供在表达式中求值使用。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Syntax:</span>
+
+with-input-from-string <span style="color: #4d4d4c;">(</span>var string <span style="color: #4271ae;">&amp;key</span> index start end<span style="color: #4d4d4c;">)</span> declaration* form*
+
+=&gt; result* <span style="color: #4d4d4c;">(</span>&#36820;&#22238;forms&#30340;&#27714;&#20540;&#32467;&#26524;<span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Examples:</span>
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-input-from-string</span> <span style="color: #3e999f;">(</span>s <span style="color: #3e999f;">"XXX1 2 3 4xxx"</span>
+                             <span style="color: #8959a8;">:index</span> ind
+                             <span style="color: #8959a8;">:start</span> 3 <span style="color: #8959a8;">:end</span> 10<span style="color: #3e999f;">)</span>
+    <span style="color: #3e999f;">(</span>+ <span style="color: #eab700;">(</span>read s<span style="color: #eab700;">)</span> <span style="color: #eab700;">(</span>read s<span style="color: #eab700;">)</span> <span style="color: #eab700;">(</span>read s<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  6</span>
+ ind =&gt;  9
+
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-input-from-string</span> <span style="color: #3e999f;">(</span>s <span style="color: #3e999f;">"Animal Crackers"</span> <span style="color: #8959a8;">:index</span> j <span style="color: #8959a8;">:start</span> 6<span style="color: #3e999f;">)</span>
+   <span style="color: #3e999f;">(</span>read s<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  CRACKERS</span>
+The variable j is set to 15.
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgfc92429" class="outline-4">
+<h4 id="orgfc92429"><span class="section-number-4">2.1.1</span> index参数</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+作用：读取内容的时候同时设置index为读取到的位置的后一位，用做标记
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">loop</span> with ptr = 0
+      with eof = <span style="color: #3e999f;">(</span>gensym<span style="color: #3e999f;">)</span>
+      for from = ptr
+      for object = <span style="color: #3e999f;">(</span><span style="color: #718c00;">with-input-from-string</span>
+                       <span style="color: #eab700;">(</span>s <span style="color: #3e999f;">"41  42 43"</span> <span style="color: #8959a8;">:start</span> ptr <span style="color: #8959a8;">:index</span> ptr<span style="color: #eab700;">)</span>
+                     <span style="color: #eab700;">(</span>read s nil eof<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+      until <span style="color: #3e999f;">(</span>eq object eof<span style="color: #3e999f;">)</span>
+      do <span style="color: #3e999f;">(</span>format t <span style="color: #3e999f;">"~A-~A: ~A~%"</span> from ptr object<span style="color: #3e999f;">)</span>
+      finally <span style="color: #3e999f;">(</span><span style="color: #718c00;">return</span> <span style="color: #eab700;">(</span>values<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+0-3: 41
+3-7: 42
+7-9: 43
+
+</pre>
+</div>
+
+<p>
+注意点:
+</p>
+<ol class="org-ol">
+<li>read的行为，为什么ptr依次是3,7,9</li>
+<li>eof设置为gensym，来判断是否到达结尾</li>
+<li>loop宏里通过设置until来达到遇到eof终止</li>
+<li>loop里通过两个with设置初始变量，两个for来设置循环时变量的改动</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge46ac31" class="outline-3">
+<h3 id="orge46ac31"><span class="section-number-3">2.2</span> with-output-to-string</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+创建一个输出流，所有输出到该流上的内容转化成字符串。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Syntax:</span>
+
+with-output-to-string <span style="color: #4d4d4c;">(</span>var <span style="color: #4271ae;">&amp;optional</span> string-form <span style="color: #4271ae;">&amp;key</span> element-type<span style="color: #4d4d4c;">)</span> declaration* form*
+
+=&gt; result* <span style="color: #4d4d4c;">&#65288;</span>&#22914;&#26524;&#25552;&#20379;&#20102;string-form, &#37027;&#20040;&#32467;&#26524;&#26159;forms&#30340;&#27714;&#20540;&#32467;&#26524;&#65307;&#22914;&#26524;&#27809;&#26377;&#25552;&#20379;&#21442;&#25968;string-form&#65292;&#37027;&#20040;&#36755;&#20986;&#27969;&#29983;&#25104;&#30340;&#23383;&#31526;&#20018;&#20250;&#34987;&#36820;&#22238;<span style="color: #4d4d4c;">&#65289;</span>
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Example:</span>
+<span style="color: #4d4d4c;">(</span>setq fstr <span style="color: #3e999f;">(</span>make-array '<span style="color: #eab700;">(</span>0<span style="color: #eab700;">)</span> <span style="color: #8959a8;">:element-type</span> 'base-char
+                             <span style="color: #8959a8;">:fill-pointer</span> 0 <span style="color: #8959a8;">:adjustable</span> t<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">""</span>
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-output-to-string</span> <span style="color: #3e999f;">(</span>s fstr<span style="color: #3e999f;">)</span>
+    <span style="color: #3e999f;">(</span>format s <span style="color: #3e999f;">"here's some output"</span><span style="color: #3e999f;">)</span>
+    <span style="color: #3e999f;">(</span>input-stream-p s<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  false</span>
+ fstr =&gt;  <span style="color: #3e999f;">"here's some output"</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbba5b16" class="outline-3">
+<h3 id="orgbba5b16"><span class="section-number-3">2.3</span> make-string-input-stream, make-string-output-stream</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+<code>make-string-input-stream</code> : 从字符串创建一个输入流，然后返回这个流
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">
+Examples:
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">let</span> <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>string-stream <span style="color: #718c00;">(</span>make-string-input-stream <span style="color: #3e999f;">"1 one "</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+   <span style="color: #3e999f;">(</span>list <span style="color: #eab700;">(</span>read string-stream nil nil<span style="color: #eab700;">)</span>
+         <span style="color: #eab700;">(</span>read string-stream nil nil<span style="color: #eab700;">)</span>
+         <span style="color: #eab700;">(</span>read string-stream nil nil<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+=&gt;  <span style="color: #4d4d4c;">(</span>1 ONE NIL<span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #4d4d4c;">(</span>read <span style="color: #3e999f;">(</span>make-string-input-stream <span style="color: #3e999f;">"prefixtargetsuffix"</span> 6 12<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> =&gt;  TARGET
+
+</pre>
+</div>
+
+<p>
+<code>make-string-output-stream</code> : 生成一个字符串输出流。可以用 <code>get-output-stream-string</code> 取得字符串输出流的内容
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp">Examples:
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">let</span> <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>s <span style="color: #718c00;">(</span>make-string-output-stream<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+   <span style="color: #3e999f;">(</span>write-string <span style="color: #3e999f;">"testing... "</span> s<span style="color: #3e999f;">)</span>
+   <span style="color: #3e999f;">(</span>prin1 1234 s<span style="color: #3e999f;">)</span>
+   <span style="color: #3e999f;">(</span>get-output-stream-string s<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+=&gt;  <span style="color: #3e999f;">"testing... 1234"</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org80845d8" class="outline-2">
+<h2 id="org80845d8"><span class="section-number-2">3</span> let临时改变动态变量绑定</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+临时将标准输入流和标准输出流绑定到某一流变量上，改变标准输入流的来源和标准输出流去向
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">
+CL-USER&gt; <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-input-from-string</span> <span style="color: #3e999f;">(</span>s <span style="color: #3e999f;">"abcde"</span><span style="color: #3e999f;">)</span>
+           <span style="color: #3e999f;">(</span><span style="color: #718c00;">let</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>*standard-input* s<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+             <span style="color: #eab700;">(</span>make-list 3 <span style="color: #8959a8;">:initial-element</span> <span style="color: #718c00;">(</span>read<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+=&gt; <span style="color: #4d4d4c;">(</span>ABCDE ABCDE ABCDE<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+</div>
+<div id="outline-container-orge59f31e" class="outline-3">
+<h3 id="orge59f31e"><span class="section-number-3">3.1</span> Synonym stream</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+当需要一个根据求值环境动态求值到不同值的流是， synonym stream 就发挥作用。看下面例子：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#35774;&#32622;&#23383;&#31526;&#20018;&#27969; a-stream &#21644; b-stream</span>
+ <span style="color: #4d4d4c;">(</span>setq a-stream <span style="color: #3e999f;">(</span>make-string-input-stream <span style="color: #3e999f;">"a-stream"</span><span style="color: #3e999f;">)</span>
+        b-stream <span style="color: #3e999f;">(</span>make-string-input-stream <span style="color: #3e999f;">"b-stream"</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+=&gt;  #&lt;String Input Stream&gt;
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#35774;&#32622;s-stream&#26159;&#19968;&#20010;&#31526;&#21495;'c-stream&#30340;&#21516;&#20041;&#27969;</span>
+ <span style="color: #4d4d4c;">(</span>setq s-stream <span style="color: #3e999f;">(</span>make-synonym-stream 'c-stream<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+=&gt;  #&lt;SYNONYM-STREAM for C-STREAM&gt;
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#23558;c-stream &#20540;&#35774;&#20026; a-stream</span>
+ <span style="color: #4d4d4c;">(</span>setq c-stream a-stream<span style="color: #4d4d4c;">)</span>
+=&gt;  #&lt;String Input Stream&gt;
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#36825;&#26102;&#35835;&#21462;s-stream &#23601;&#30456;&#24403;&#20110;&#35835;&#21462;&#30340; c-stream &#32465;&#23450;&#30340; a-stream</span>
+ <span style="color: #4d4d4c;">(</span>read s-stream<span style="color: #4d4d4c;">)</span> =&gt;  A-STREAM
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#21448;&#23558;c-stream&#35774;&#32622;&#20026;b-stream</span>
+ <span style="color: #4d4d4c;">(</span>setq c-stream b-stream<span style="color: #4d4d4c;">)</span>
+=&gt;  #&lt;String Input Stream&gt;
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#36825;&#26102;&#35835;&#21462;s-stream &#23601;&#30456;&#24403;&#20110;&#35835;&#21462;&#30340; c-stream &#32465;&#23450;&#30340; b-stream</span>
+ <span style="color: #4d4d4c;">(</span>read s-stream<span style="color: #4d4d4c;">)</span> =&gt;  B-STREAM
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org308d67a" class="outline-2">
+<h2 id="org308d67a"><span class="section-number-2">4</span> Flush output to stream</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Lisp输出流通常是buffered，所以发送给输出流的内容不一定会立即在物理设备上显示出来，想立即显示可以用
+<code>finish-output</code> 和 <code>force-output</code> ，两者区别是前者会等待输出流的buffer清空后再返回，而后者当启动清空的流程就返回了
+这导致后者不会报告任何写出到流的错误
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd9f856e" class="outline-2">
+<h2 id="orgd9f856e"><span class="section-number-2">5</span> 读取文件相关</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org6ce6d4a" class="outline-3">
+<h3 id="org6ce6d4a"><span class="section-number-3">5.1</span> with-open-file</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+使用open方法打开一个一个文件，绑定到一个流变量上
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Syntax:</span>
+
+with-open-file <span style="color: #4d4d4c;">(</span>stream filespec options*<span style="color: #4d4d4c;">)</span> declaration* form*
+
+=&gt; results
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">Examples:</span>
+
+ <span style="color: #4d4d4c;">(</span>setq p <span style="color: #3e999f;">(</span>merge-pathnames <span style="color: #3e999f;">"test"</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+=&gt;  #&lt;PATHNAME <span style="color: #8959a8;">:HOST</span> NIL <span style="color: #8959a8;">:DEVICE</span> device-name <span style="color: #8959a8;">:DIRECTORY</span> directory-name
+    <span style="color: #8959a8;">:NAME</span> <span style="color: #3e999f;">"test"</span> <span style="color: #8959a8;">:TYPE</span> NIL <span style="color: #8959a8;">:VERSION</span> <span style="color: #8959a8;">:NEWEST&gt;</span>
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-open-file</span> <span style="color: #3e999f;">(</span>s p <span style="color: #8959a8;">:direction</span> <span style="color: #8959a8;">:output</span> <span style="color: #8959a8;">:if-exists</span> <span style="color: #8959a8;">:supersede</span><span style="color: #3e999f;">)</span>
+    <span style="color: #3e999f;">(</span>format s <span style="color: #3e999f;">"Here are a couple~%of test data lines~%"</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  NIL</span>
+
+ <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">with-open-file</span> <span style="color: #3e999f;">(</span>s p<span style="color: #3e999f;">)</span>
+    <span style="color: #3e999f;">(</span><span style="color: #718c00;">do</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>l <span style="color: #4271ae;">(</span>read-line s<span style="color: #4271ae;">)</span> <span style="color: #4271ae;">(</span>read-line s nil 'eof<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+        <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>eq l 'eof<span style="color: #718c00;">)</span> <span style="color: #3e999f;">"Reached end of file."</span><span style="color: #eab700;">)</span>
+     <span style="color: #eab700;">(</span>format t <span style="color: #3e999f;">"~&amp;*** ~A~%"</span> l<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+&gt;&gt;  *** Here are a couple
+&gt;&gt;  *** of test data lines
+=&gt;  <span style="color: #3e999f;">"Reached end of file."</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf876eb" class="outline-3">
+<h3 id="orgcf876eb"><span class="section-number-3">5.2</span> alexandria: read-file-into-byte-vector read-file-into-string</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-src">— Function: read-file-into-string pathname &amp;key buffer-size external-format
+将pathname指定的文件内容读取，返回一个新建的字符串。内部实际调用with-open-file
+
+
+— Function: read-file-into-byte-vector pathname
+将pathname指定的文件内容读取，返回一个新建的octets。
+
+参考： https://common-lisp.net/project/alexandria/draft/alexandria.html#IO
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org66f4f59" class="outline-3">
+<h3 id="org66f4f59"><span class="section-number-3">5.3</span> 自定义函数: file-at-once 一次性读取文件内容</h3>
+<div class="outline-text-3" id="text-5-3">
+</div>
+<div id="outline-container-org74c8f28" class="outline-4">
+<h4 id="org74c8f28"><span class="section-number-4">5.3.1</span> 实现</h4>
+<div class="outline-text-4" id="text-5-3-1">
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">file-at-once</span> <span style="color: #3e999f;">(</span>filespec <span style="color: #4271ae;">&amp;rest</span> open-args<span style="color: #3e999f;">)</span>
+           <span style="color: #3e999f;">(</span><span style="color: #718c00;">with-open-stream</span> <span style="color: #eab700;">(</span>stream <span style="color: #718c00;">(</span>apply #'open filespec open-args<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+             <span style="color: #eab700;">(</span><span style="color: #718c00;">let*</span> <span style="color: #718c00;">(</span><span style="color: #4271ae;">(</span>buffer
+                      <span style="color: #4d4d4c;">(</span>make-array <span style="color: #3e999f;">(</span>file-length stream<span style="color: #3e999f;">)</span>
+                                  <span style="color: #8959a8;">:element-type</span> <span style="color: #3e999f;">(</span>stream-element-type stream<span style="color: #3e999f;">)</span>
+                                  <span style="color: #8959a8;">:fill-pointer</span> t<span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+                    <span style="color: #4271ae;">(</span>position <span style="color: #4d4d4c;">(</span>read-sequence buffer stream<span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+               <span style="color: #718c00;">(</span>setf <span style="color: #4271ae;">(</span>fill-pointer buffer<span style="color: #4271ae;">)</span> position<span style="color: #718c00;">)</span>
+               buffer<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgfc0c8c3" class="outline-4">
+<h4 id="orgfc0c8c3"><span class="section-number-4">5.3.2</span> stream-element-type</h4>
+<div class="outline-text-4" id="text-5-3-2">
+<p>
+返回可能从流对象读取或写入的对象类型
+</p>
+</div>
+</div>
+<div id="outline-container-org4dfad5d" class="outline-4">
+<h4 id="org4dfad5d"><span class="section-number-4">5.3.3</span> file-length</h4>
+<div class="outline-text-4" id="text-5-3-3">
+<p>
+输入一个绑定到文件的流，返回它的长度
+如果是二进制文件，那么长度是根据流里的 <code>element type</code> 衡量的
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org30bdf50" class="outline-2">
+<h2 id="org30bdf50"><span class="section-number-2">6</span> 广播流 make-broadcast-stream</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+当需要同时向多个流发送数据时，可以采用此函数.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #4d4d4c;">(</span>setq a-stream <span style="color: #3e999f;">(</span>make-string-output-stream<span style="color: #3e999f;">)</span>
+       b-stream <span style="color: #3e999f;">(</span>make-string-output-stream<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  #&lt;String Output Stream&gt;</span>
+<span style="color: #4d4d4c;">(</span>format <span style="color: #3e999f;">(</span>make-broadcast-stream a-stream b-stream<span style="color: #3e999f;">)</span>
+         <span style="color: #3e999f;">"this will go to both streams"</span><span style="color: #4d4d4c;">)</span> <span style="color: #c82829; font-weight: bold;">=&gt;  NIL</span>
+<span style="color: #4d4d4c;">(</span>get-output-stream-string a-stream<span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">"this will go to both streams"</span>
+<span style="color: #4d4d4c;">(</span>get-output-stream-string b-stream<span style="color: #4d4d4c;">)</span> =&gt;  <span style="color: #3e999f;">"this will go to both streams"</span>
+
+</pre>
+</div>
+
+<p>
+注意，如果 <code>make-broadcast-stream</code> 不接受参数，那么发送给该流的内容会被发送给"/dev/null",也就是会丢弃。
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgc9e0ed1" class="outline-2">
+<h2 id="orgc9e0ed1"><span class="section-number-2">7</span> END</h2>
+<div class="outline-text-2" id="text-7">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

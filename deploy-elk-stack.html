@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>搭建ELK技术栈</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-02-15</p>
+</div>
+<div id="content">
+<h1 class="title">搭建ELK技术栈</h1>
+<div class="abstract">
+<p>
+ELK技术栈主要由Elasticsearch、Logstash 和 Kibana组成，分别针对解决存储（查询）、存储、可视化问题。
+</p>
+
+<p>
+ELK经常用于收集和分析日志，最近自己尝试搭建了一套 "ELK+filebeat"日志系统，这里总结下经验。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga7e5f8a">1. 搭建与基本使用</a>
+<ul>
+<li><a href="#org477c2d0">1.1. 基于Docker 搭建</a></li>
+<li><a href="#org348bb52">1.2. Elasticsearch</a>
+<ul>
+<li><a href="#org6545558">1.2.1. seach-guard users</a></li>
+<li><a href="#org96edefa">1.2.2. seach-guard roles</a></li>
+<li><a href="#orge549835">1.2.3. 其它</a></li>
+</ul>
+</li>
+<li><a href="#orge6b358d">1.3. Logstash</a>
+<ul>
+<li><a href="#org08eafc3">1.3.1. Input</a></li>
+<li><a href="#orgc40c605">1.3.2. Filter</a></li>
+<li><a href="#orgfd8d881">1.3.3. Output</a></li>
+</ul>
+</li>
+<li><a href="#orgb281f40">1.4. Kibana</a></li>
+<li><a href="#org76776b1">1.5. Filebeat</a></li>
+</ul>
+</li>
+<li><a href="#org889ea4d">2. 其他推荐</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga7e5f8a" class="outline-2">
+<h2 id="orga7e5f8a"><span class="section-number-2">1</span> 搭建与基本使用</h2>
+<div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img src="static/images/elk_01.png" alt="elk_01.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org477c2d0" class="outline-3">
+<h3 id="org477c2d0"><span class="section-number-3">1.1</span> 基于Docker 搭建</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+ELK可以在官网分别<a href="https://www.elastic.co/cn/downloads">下载</a> 软件包运行，软件依赖jvm。或者可以使用docker来方便地部署。
+</p>
+
+<p>
+我采用的是<a href="https://github.com/deviantony/docker-elk">github:docker-elk</a> 这里的docker配置, 该项目有几个分支，除了单纯elk还有配备<a href="https://github.com/floragunncom/search-guard">searchguard</a> 权限加密系统的elk、配备x-pack的elk 和结合vagrant的elk。
+</p>
+
+<p>
+我使用了searchguard版的，可以看下其项目结构，还是挺清楚的，主要结构如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">➜  tree
+.
+├── docker-compose.yml                    # docker compose 文件
+├── elasticsearch                         # elasticsearch相关目录
+│   ├── Dockerfile
+│   ├── bin
+│   │   └── init_sg.sh
+│   └── config
+│       ├── elasticsearch.yml
+│       └── sg
+│           ├── kirk-keystore.jks
+│           ├── node-0-keystore.jks
+│           ├── sg_action_groups.yml
+│           ├── sg_config.yml
+│           ├── sg_internal_users.yml
+│           ├── sg_roles.yml
+│           ├── sg_roles_mapping.yml
+│           └── truststore.jks
+├── extensions                            # 额外扩展
+│   ├── README.md
+│   └── logspout
+│       ├── Dockerfile
+│       ├── README.md
+│       ├── build.sh
+│       ├── logspout-compose.yml
+│       └── modules.go
+├── kibana                                # kibana相关目录
+│   ├── Dockerfile
+│   └── config
+│       └── kibana.yml
+└── logstash                              # logstash相关目录
+    ├── Dockerfile
+    ├── config
+    │   └── logstash.yml
+    └── pipeline
+        └── logstash.conf
+
+</pre>
+</div>
+
+<p>
+docker-compose.yaml 内容如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-example">version: '2'
+
+services:
+
+  elasticsearch:
+    build:
+      context: elasticsearch/
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+
+  logstash:
+    build:
+      context: logstash/
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: kibana/
+    volumes:
+      - ./kibana/config/:/usr/share/kibana/config:ro
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+networks:
+
+  elk:
+    driver: bridge
+
+
+</pre>
+</div>
+
+<p>
+可以看到由3部分组成，每部分分别有Dockerfile构建而成，elasticseach和kibana的Dockerfile都是基于官方镜像，然后安装了searchguard插件，logstash仅是基于官方镜像。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org348bb52" class="outline-3">
+<h3 id="org348bb52"><span class="section-number-3">1.2</span> Elasticsearch</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Elasticsearch的目录结构
+</p>
+<div class="org-src-container">
+<pre class="src src-example">➜  tree
+.
+├── Dockerfile
+├── bin
+│   └── init_sg.sh
+└── config
+    ├── elasticsearch.yml           # elasticsearch 配置文件
+    └── sg                          # seachguard配置目录
+        ├── kirk-keystore.jks
+        ├── node-0-keystore.jks
+        ├── sg_action_groups.yml
+        ├── sg_config.yml
+        ├── sg_internal_users.yml   # 配置seachguard用户
+        ├── sg_roles.yml            # 配置seachguard角色
+        ├── sg_roles_mapping.yml
+        └── truststore.jks
+
+</pre>
+</div>
+
+<p>
+elasticseach支持集群部署，目前这里简单起见采用的单节点部署。
+</p>
+
+<p>
+为了持久化数据存储存储，可以将数据卷挂载到容器默认的 <code>/usr/share/elasticsearch/data</code> ，当然也可以在 <code>elasticsearch.yaml</code> 额外配置
+</p>
+</div>
+
+
+<div id="outline-container-org6545558" class="outline-4">
+<h4 id="org6545558"><span class="section-number-4">1.2.1</span> seach-guard users</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+searchguard 相关配置在 <code>config/sg</code> 下，其中 <code>sg_internal_users.yaml</code> 文件配置权限系统中的用户:
+</p>
+
+<p>
+文件内容类似如下这样的，
+</p>
+<div class="org-src-container">
+<pre class="src src-example">admin:
+  readonly: true
+  hash: $2a$12$VcCDgh2NDk07JGN0rjGbM.Ad41qVR/YFJcgHp0UGns5JDymv..TOG
+  roles:
+    - admin
+
+
+</pre>
+</div>
+<p>
+这是一个用户的配置，用户名 <code>admin</code>, 密码加密后是hash字段那一长串，该用户还配置了只读，角色是 <code>admin</code>.
+</p>
+
+<p>
+密码加密的字段我是通过 <code>htpasswd</code> 生成的, 采用bcrypt加密:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">htpasswd -bnB your_username your_password
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org96edefa" class="outline-4">
+<h4 id="org96edefa"><span class="section-number-4">1.2.2</span> seach-guard roles</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+该项目使用了searchguard默认的示例用户和角色，可以参考<a href="https://docs.search-guard.com/latest/demo-users-roles.html">这里</a>。
+</p>
+
+<p>
+<code>sg_roles.yaml</code> 文件配置角色内容，如下这样
+</p>
+<div class="org-src-container">
+<pre class="src src-example"># For logstash and beats
+sg_logstash:
+  readonly: true
+  cluster:
+    - CLUSTER_MONITOR
+    - CLUSTER_COMPOSITE_OPS
+    - indices:admin/template/get
+    - indices:admin/template/put
+  indices:
+    'logstash-*':
+      '*':
+        - CRUD
+        - CREATE_INDEX
+    '*beat*':
+      '*':
+        - CRUD
+        - CREATE_INDEX
+
+
+</pre>
+</div>
+
+<p>
+该配置配置了 <code>logstash</code> 这个角色对 <code>logstash-</code> 开头的index和包含 <code>beat</code> 的index的相关权限，cluster配置参考<a href="https://docs.search-guard.com/latest/roles-permissions">文档</a>。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orge549835" class="outline-4">
+<h4 id="orge549835"><span class="section-number-4">1.2.3</span> 其它</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+整个项目以 <code>docker-compose up</code> 启动后，需要执行初始化命令来执行 <code>elasticseach/bin/init_sg.sh</code> , 来初始化searchhuard
+</p>
+<div class="org-src-container">
+<pre class="src src-example">$ docker-compose exec -T elasticsearch bin/init_sg.sh
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div id="outline-container-orge6b358d" class="outline-3">
+<h3 id="orge6b358d"><span class="section-number-3">1.3</span> Logstash</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Logstash的目录结构
+</p>
+<div class="org-src-container">
+<pre class="src src-example">➜  tree
+.
+├── Dockerfile
+├── config
+│   └── logstash.yml
+└── pipeline
+    └── logstash.conf
+
+</pre>
+</div>
+
+<p>
+logstash 的配置文件在 <code>logstash/config/logstash.yaml</code> 里
+</p>
+
+<p>
+实际使用的时候需要使用多个pipline, 就可以在 <code>logstash/pipline</code> 下配置，该目录下所有配置文件会被当成配置文件
+</p>
+
+<p>
+logstash配置了数据从哪里来，然后经过一些中间处理，然后输出到哪里，结构如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">input {}
+
+filter {}
+
+output {}
+
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org08eafc3" class="outline-4">
+<h4 id="org08eafc3"><span class="section-number-4">1.3.1</span> Input</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+Input支持很多类型，详细可以参考<a href="https://www.elastic.co/guide/en/logstash/current/input-plugins.html">input plugins</a>，常见的有
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="org40e407b"></a>file input<br />
+<div class="outline-text-5" id="text-1-3-1-1">
+<p>
+从一个文件输入:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">file {
+  path =&gt; ["/var/log/postgresql/postgresql-9.6-main.log"]
+  start_position =&gt; "beginning"
+  codec =&gt; multiline {
+    pattern =&gt; "^%{TIMESTAMP_ISO8601} "
+    negate =&gt; true
+    what =&gt; "previous"
+  }
+}
+
+</pre>
+</div>
+<p>
+该配置指定了监听文件 <code>/var/log/postgresql/postgresql-9.6-main.log</code> ，而且是从头开始。
+</p>
+
+<p>
+<code>codec</code> 插件是用来实现：如果这行日志开头不是ISO8601的格式，那么认为这行日志属于上一行。因为日志中有时候为了更好地可读性，会将同一个事件输出到多行，比如异常traceback等。
+</p>
+</div>
+</li>
+
+<li><a id="org4d52599"></a>rabbitmq input<br />
+<div class="outline-text-5" id="text-1-3-1-2">
+<p>
+从rabbitmq输入:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">rabbitmq {
+    user =&gt; 'elk'
+    password =&gt; 'changeme'
+    durable =&gt; true
+    host =&gt; 'changeme'
+    port =&gt; 5672
+    ssl =&gt; false
+    queue =&gt; 'changeme'
+    vhost =&gt; '/'
+    metadata_enabled =&gt; true
+    metadata_enabled =&gt; true
+}
+
+</pre>
+</div>
+<p>
+该配置指定了监听rabbitmq的'changeme'队列
+</p>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-orgc40c605" class="outline-4">
+<h4 id="orgc40c605"><span class="section-number-4">1.3.2</span> Filter</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+filter下面支持很多插件，甚至还支持"if else" 逻辑。
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="org8ce640c"></a>grok 和 mutate<br />
+<div class="outline-text-5" id="text-1-3-2-1">
+<p>
+常用的有grok插件, 用来从日志中提取提取结构，假设有这么样的日志:
+</p>
+<pre class="example">
+2018-03-12 06:25:21 CST [11195-74894] ning@learning LOG:  statement: SET SESSION AUTHORIZATION DEFAULT
+2018-03-12 06:25:21 CST [11195-74895] ning@learning LOG:  statement: SHOW default_transaction_isolation
+2018-03-12 06:25:21 CST [11195-74896] ning@learning LOG:  statement: SET default_transaction_isolation TO 'read uncommitted'
+2018-03-12 06:25:21 CST [11195-74897] ning@learning LOG:  statement: BEGIN
+2018-03-12 06:25:21 CST [11195-74898] ning@learning LOG:  statement: SELECT 1 FROM ir_module_module WHERE name='base' AND latest_version='8.0.1.3'
+2018-03-12 06:25:21 CST [11195-74899] ning@learning LOG:  statement: SELECT * FROM ir_cron
+                                      WHERE numbercall != 0
+                                          AND active AND nextcall &lt;= now()
+                                      ORDER BY priority08:10.056 * 1 changes in 900 seconds. Saving...
+</pre>
+
+<p>
+这是一个postgresql日志, 为了便于之后分析，需要将每条日志切成结构化的信息，类似下面这样配置:
+</p>
+<pre class="example">
+grok {
+      match =&gt; {"message" =&gt; ["%{TIMESTAMP_ISO8601:timestamp} %{TZ:tz} \[%{NUMBER:process_id}\-%{DATA:line_number:int}\] (?:%{DATA:db_owner}@%{DATA:db_name} )?%{WORD:log_level}:  %{GREEDYDATA:log_data}"]
+     }
+}
+</pre>
+<p>
+会将整体信息匹配到 <code>message, tz, process_id, line_number...</code> 等字段上，然后elasticsearch就可以结构化存储。
+</p>
+
+<p>
+其中可以看到 <code>[</code> 和 <code>]</code> 需要转义，每个匹配格式如 <code>%{pattern:filed}</code> 这样，会按照 <code>pattern</code> 来匹配成 <code>filed</code> 。
+</p>
+
+<p>
+空格数量敏感，不计数量空格也可以用 <code>%{SPACE}</code> 来表示，grok插件已经包括的pattern和常用的可以参考<a href="https://github.com/elastic/logstash/blob/v1.4.0/patterns/grok-patterns">这里</a> 和<a href="https://github.com/elastic/logstash/tree/v1.4.0/patterns">这里</a>。
+</p>
+
+<p>
+另外，<a href="http://grokconstructor.appspot.com/do/match">这里</a> 有一个辅助工具帮助调试grok的匹配时是否能正常工作，非常方便！
+</p>
+
+
+<p>
+使用下载包安装的时候，在 <code>logstash/config/patterns</code> 里可以添加自定义的pattern， 但换成docker部署后，还没有找到配置的地方，留待以后研究(TODO)
+</p>
+
+<p>
+mutate插件用来对提取的结构做一些动作，比如转化字段类型或者添加删减字段等,
+</p>
+<pre class="example">
+filter {
+    mutate {
+      add_field =&gt; {
+        "index_field" =&gt; "test"
+        }
+    }
+}
+
+</pre>
+<p>
+上面的例子是添加一个字段 <code>index_field</code>,值是"test"
+</p>
+</div>
+</li>
+
+<li><a id="org4b1ae82"></a>复杂case1<br />
+<div class="outline-text-5" id="text-1-3-2-2">
+<p>
+有时候需要区分不同的input来应用不同的grok的模式:
+</p>
+<pre class="example">
+input {
+    file {
+      path =&gt; ["/var/log/rabbitmq/rabbit1@dev.log"]
+      type =&gt; "fromfile1"
+    }
+    file {
+      path =&gt; ["/var/log/rabbitmq/rabbit2@dev.log"]
+      type =&gt; "fromfile2"
+    }
+
+}
+
+filter {
+    if [type] == "fromfile1" {
+      grok {
+        match =&gt; {"message" =&gt; ["%{TIMESTAMP_ISO8601:timestamp} %{TZ:tz} \[%{NUMBER:process_id}\-%{DATA:line_number:int}\] (?:%{DATA:db_owner}@%{DATA:db_name} )?%{WORD:log_level}:  %{GREEDYDATA:log_data}"]
+        }
+      }
+    } else if [type] == "fromfilr2" {
+      grok {
+        match =&gt; {"message" =&gt; ["\[%{POSINT:pid}\] %{MONTHDAY} %{MONTH} %{TIME} %{DATA:level} %{GREEDYDATA:log_data}"]
+        }
+      }
+    }
+}
+
+</pre>
+<p>
+这里，根据来源不同的文件来源应用不同的匹配模式。
+</p>
+</div>
+</li>
+
+
+
+<li><a id="orgdc9df5f"></a>复杂case2<br />
+<div class="outline-text-5" id="text-1-3-2-3">
+<p>
+有时候同一个日志文件里有多种日志格式:
+</p>
+<pre class="example">
+filter {
+
+    if "grokked" not in [tags] {
+        grok {
+          match =&gt; {"message" =&gt; ["%{DATA:docker_prefix}\[%{TIMESTAMP_ISO8601:log_datetime} \+0800\] - \(%{DATA:logger}\) \[%{NUMBER:process}\] \[%{LOGLEVEL:level}\] : \"Request\" =&gt; PATH\:%{URIPATH:uri_path}, METHOD\:%{DATA:method}, ARGS\:%{DATA:args}, BODY\:%{GREEDYDATA:body}"]}
+          add_tag =&gt; ["grokked"]
+          tag_on_failure =&gt; []
+        }
+      }
+
+     if "grokked" not in [tags] {
+        grok {
+          match =&gt; {"message" =&gt; ["%{DATA:docker_prefix}\[%{TIMESTAMP_ISO8601:log_datetime} \+0800\] - \(%{DATA:logger}\) \[%{NUMBER:process}\] \[%{LOGLEVEL:level}\] : \"Response\" &lt;= STATUS:%{NUMBER:status}, BODY\:%{GREEDYDATA:body}"]}
+          add_tag =&gt; ["grokked"]
+          tag_on_failure =&gt; []
+        }
+      }
+
+      if "grokked" not in [tags] {
+        grok {
+          match =&gt; {"message" =&gt; ["%{DATA:docker_prefix}\[%{TIMESTAMP_ISO8601:log_datetime} \+0800\] - \(%{DATA:logger}\)\[%{WORD:level}\]\[%{DATA:access_host}\]\: %{WORD:method} %{URI:log_message}  %{NUMBER:status} %{NUMBER:bytes}"]}
+          add_tag =&gt; ["grokked"]
+        }
+      }
+
+}
+
+</pre>
+<p>
+这里一个日志文件里可能有3个模式，所以人为在匹配成功后的文档里添加tag <code>grokked</code> ，这样如果第一个匹配成功了就不会应用到接下里的匹配中，另外因为默认匹配失败的doc会添加上 <code>_grokparsefailure</code> 标签，所以在前两个我们将失败时添加的标签设置成空。
+</p>
+</div>
+</li>
+
+
+
+<li><a id="org5e2b16d"></a>复杂case3<br />
+<div class="outline-text-5" id="text-1-3-2-4">
+<p>
+有时候如果是从rabbimq获取输入，需要根据元信息来做不同的事情，比如:
+</p>
+<pre class="example">
+filter {
+    if [@metadata][rabbitmq_headers][index_header] {
+       mutate {
+        add_field =&gt; {
+          "index_field" =&gt; "%{[@metadata][rabbitmq_headers][index_header]}"
+        }
+       }
+    } else {
+      mutate {
+        add_field =&gt; {
+          "index_field" =&gt; "unknown"
+        }
+      }
+    }
+}
+</pre>
+<p>
+上面例子根据rabbitmq每条消息的headers里判断有没有 <code>index_header</code> 来给新字段的值添加不同的值
+</p>
+</div>
+</li>
+
+<li><a id="orgc512939"></a>复杂case4<br />
+<div class="outline-text-5" id="text-1-3-2-5">
+<p>
+有时候需要根据不同的字段采取不同的模式匹配
+</p>
+<pre class="example">
+filter {
+    if [fields][logtype] == "pglog" {
+      grok {
+        match =&gt; {"message" =&gt; ["%{TIMESTAMP_ISO8601:timestamp} %{TZ:tz} \[%{NUMBER:process_id}\-%{DATA:line_number:int}\] (?:%{DATA:db_owner}@%{DATA:db_name} )?%{WORD:log_level}:  %{GREEDYDATA:log_data}"]
+        }
+      }
+    } else if [fields][logtype] == "redislog" {
+      grok {
+        match =&gt; {"message" =&gt; ["\[%{POSINT:pid}\] %{MONTHDAY} %{MONTH} %{TIME} %{DATA:level} %{GREEDYDATA:log_data}"]
+        }
+      }
+    }
+
+}
+</pre>
+</div>
+</li>
+</ol>
+</div>
+
+
+<div id="outline-container-orgfd8d881" class="outline-4">
+<h4 id="orgfd8d881"><span class="section-number-4">1.3.3</span> Output</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+Output用来配置logstash将信息发往何处，可支持插件参考<a href="https://www.elastic.co/guide/en/logstash/current/output-plugins.html">文档</a> ，常用的有elasticseach和stdout.
+</p>
+
+<pre class="example">
+output{
+  elasticsearch {
+    hosts =&gt; ["127.0.0.1:9200"]
+    index =&gt; "logstash-%{[@metadata][beat]}-%{[fields][env]}-%{[fields][logtype]}-%{+YYYY.MM.dd}"
+    document_type =&gt; "%{[@metadata][type]}"
+    user =&gt; logstash
+    password =&gt; logstash
+
+  }
+}
+
+</pre>
+<p>
+上述配置将信息发往elasticseach, 并且index和type是根据每条信息动态设置的。
+</p>
+
+<pre class="example">
+stdout { codec =&gt; rubydebug { metadata =&gt; true } }
+</pre>
+<p>
+上述配置将信息输出到标准输出，用于调试目的
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb281f40" class="outline-3">
+<h3 id="orgb281f40"><span class="section-number-3">1.4</span> Kibana</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Kibana的目录结构
+</p>
+<div class="org-src-container">
+<pre class="src src-example">➜  tree
+.
+├── Dockerfile
+└── config
+    └── kibana.yml
+
+</pre>
+</div>
+
+
+<p>
+kibana的配置文件在 <code>kibana/config/kibana.yml</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">server.name: kibana
+server.host: "0"
+elasticsearch.url: http://elasticsearch:9200
+
+## Custom configuration
+#
+elasticsearch.username: "kibanaserver"
+elasticsearch.password: "kibanaserver"
+
+searchguard.cookie.password: "123567818187654rwrwfsfshdhdhtegdhfzftdhncn"
+
+</pre>
+</div>
+
+<p>
+主要用来配置连接到的elasticseach地址和用户名密码
+</p>
+
+
+<p>
+kibana web界面的使用博大精深，看其他资源吧;)
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org76776b1" class="outline-3">
+<h3 id="org76776b1"><span class="section-number-3">1.5</span> Filebeat</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+Filebeat是elastic的beats产品家族的一员，用来收集文件日志，相比于logstash的file input插件，它非常轻量，消耗地资源很少。通常可以用来和elk搭配使用，在需要收集的机器上使用beats，然后发送到logstash或者直接发到elasticsearch上，有时考虑到稳定性等因素，也可以发送到消息队列里，filebeat不支持rabbitmq输出,支持kafa,github上对此事有一些讨论。
+</p>
+
+<p>
+示例简单配置文件
+</p>
+<pre class="example">
+filebeat.prospectors:
+- type: log
+  enabled: true
+  paths:
+    - /mnt/postgresql-9.6-main.log
+  fields:
+    logtype: pglog
+    env: dev
+  multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'   # 配置多行输入
+  multiline.negate: true
+  multiline.match: after
+
+- type: log
+  enabled: true
+  paths:
+    - /mnt/redis-server.log
+  fields:
+    logtype: redislog
+    env: dev
+
+output.logstash:         # 直接输出到logstash
+  # The Logstash hosts
+  hosts: ["10.47.52.122:5044"]
+
+</pre>
+
+
+<pre class="example">
+# logstash 的 beats 输入插件
+input {
+    beats {
+        port =&gt; 5044
+    }
+}
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org889ea4d" class="outline-2">
+<h2 id="org889ea4d"><span class="section-number-2">2</span> 其他推荐</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-elk-filebeat/index.html">ELK架构文章</a></li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

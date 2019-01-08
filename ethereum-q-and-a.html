@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>以太坊(ethereum) Q&amp;A</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-05-08</p>
+</div>
+<div id="content">
+<h1 class="title">以太坊(ethereum) Q&amp;A</h1>
+<div class="abstract">
+<p>
+对于不熟悉的事务提问题是了解它最快最有效的方式。
+这是一篇记录<a href="https://www.ethereum.org/">以太坊</a> 相关内容的Q&amp;A，基于我对相关技术的疑问和解惑。
+本文还只是草稿和零碎的记录，会不断补充完善。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcd26655">1. 以太坊是什么</a></li>
+<li><a href="#org8f27e55">2. geth是什么</a></li>
+<li><a href="#org1715703">3. geth如何交互</a></li>
+<li><a href="#org5fa2a46">4. 常用javascript console命令</a></li>
+<li><a href="#org059dfe4">5. truffle 常用命令</a></li>
+<li><a href="#org8c3a14f">6. 如何初始化区块链，并且新建有资金的账号</a></li>
+<li><a href="#org72ad5b8">7. 如何发起一个交易</a></li>
+<li><a href="#org04e220b">8. 为什么私有区块链旷工一直在挖空交易的区块</a></li>
+<li><a href="#orgc595ca1">9. 如何修改以太坊私有链的miner奖励发放金额</a></li>
+<li><a href="#orgf7866db">10. solidity里什么是 events</a></li>
+<li><a href="#org54e06af">11. 什么是智能合约的ABI(Application Binary Interface)</a></li>
+<li><a href="#org8b5a082">12. mist启动时寻找自定义ipc</a></li>
+<li><a href="#orgb3bf317">13. remix ide如何连到local geth</a></li>
+<li><a href="#org2ca9dea">14. what is erc20 tokens</a></li>
+<li><a href="#org99971e0">15. solidity里关键字 <code>payable</code> 作用是什么</a></li>
+<li><a href="#org031897e">16. 以太坊里挖矿的难度是怎么计算的</a></li>
+<li><a href="#org6024d3e">17. geth new account时填的passphrase是什么，什么是keystore</a></li>
+<li><a href="#orgd994ad2">18. truffle migrate做了哪些事，是怎么管理升级的</a></li>
+<li><a href="#orga0b6dfd">19. truffle开发中如何获得合约abi</a></li>
+<li><a href="#org9f778f1">20. truffle console中怎么调用合约</a></li>
+<li><a href="#orga4bee41">21. How to access contract storage</a></li>
+<li><a href="#org414deb7">22. Contract account 和 external account 差异</a></li>
+<li><a href="#org2f69e48">23. 合约的创建也是一个tracnsaction</a></li>
+<li><a href="#orgb03099a">24. Storage, Memory and the Stack 差异</a></li>
+<li><a href="#orgb99b2c3">25. message calls and transaction 差异</a></li>
+<li><a href="#org7352f32">26. Difference between CALL, CALLCODE and DELEGATECALL</a></li>
+<li><a href="#org82505ee">27. logs和events可以做什么</a></li>
+<li><a href="#org29df86a">28. 清楚gas的花费和区块的gas limit</a></li>
+<li><a href="#org12134f3">29. assert和require</a></li>
+<li><a href="#orged15b87">30. Abstract合约和Interfaces</a></li>
+<li><a href="#org5d53fd2">31. 常见攻击</a></li>
+<li><a href="#orgfe77da0">32. 如何处理合约升级</a></li>
+<li><a href="#org5a6777f">33. 合约有问题的控制手段</a></li>
+<li><a href="#orga49e39b">34. 优化代码 减少gas消耗</a></li>
+<li><a href="#org5b9689f">35. 相关连接</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcd26655" class="outline-2">
+<h2 id="orgcd26655"><span class="section-number-2">1</span> 以太坊是什么</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+以太坊是一个去中心化的平台，在上面可以运行应用程序而不会出现宕机、审查、欺骗和第三方的干扰。
+这样的程序又称为“智能合约”。
+</p>
+
+<p>
+Ethereum is a decentralized platform that runs smart contracts, applications that run exactly as programmed without possibility of downtime, censorship, fraud or third party interference.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8f27e55" class="outline-2">
+<h2 id="org8f27e55"><span class="section-number-2">2</span> geth是什么</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<code>geth</code> 是以太坊协议的官方Go语言实现版本。
+</p>
+</div>
+</div>
+<div id="outline-container-org1715703" class="outline-2">
+<h2 id="org1715703"><span class="section-number-2">3</span> geth如何交互</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+使用 <code>geth</code> 命令启动时，可以加上许多命令行参数来以不同方式运行。<a href="https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options">参数wiki</a>。
+</p>
+
+<p>
+采用 <code>json-rpc</code> 方式，<a href="https://github.com/ethereum/wiki/wiki/JSON-RPC">文档</a>。
+</p>
+
+<p>
+当 <code>geth</code> 启动后，亦可以通过 <code>javascript console</code> 来和 <code>geth</code> 交互。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5fa2a46" class="outline-2">
+<h2 id="org5fa2a46"><span class="section-number-2">4</span> 常用javascript console命令</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>web3.eth.coinbase
+查看coinbase</li>
+<li>web3.eth.accounts
+查看本节点所有账户</li>
+<li>web3.eth.getBalance
+查看某账户余额</li>
+<li>web3.fromWei
+余额单位转换:wei-&gt;ether</li>
+<li>web3.eth.blockNumber
+查看当前区块数</li>
+<li>web3.eth.mining
+查看是否在挖矿</li>
+<li>miner.start(2)
+启动两个线程开始挖矿</li>
+<li>miner.setEtherbase
+设置挖矿的奖励给某个账户</li>
+<li>web3.eth.pendingTransactions
+查看当前未写到区块的交易情况</li>
+<li>admin.nodeInfo.enode
+查看node信息</li>
+<li>admin.peers
+查看配对的peer</li>
+<li>personal.unlockAccount(some<sub>address</sub>, 'type your password')
+解锁账户</li>
+<li>eth.sendTransaction({from: some<sub>address</sub>, to: another<sub>address</sub>, value: web3.toWei(2, "ether")})
+发起交易</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org059dfe4" class="outline-2">
+<h2 id="org059dfe4"><span class="section-number-2">5</span> truffle 常用命令</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>truffle init</li>
+<li>truffle compile</li>
+<li>truffle migrate &#x2013;reset</li>
+<li>truffle console [SmartToken.address ;  JSON.stringify(SmartToken.abi)]</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8c3a14f" class="outline-2">
+<h2 id="org8c3a14f"><span class="section-number-2">6</span> 如何初始化区块链，并且新建有资金的账号</h2>
+<div class="outline-text-2" id="text-6">
+<pre class="example">
+
+geth --datadir=./data account new
+
+geth --datadir=./data init genesis.json
+
+geth --datadir=./data --networkid 10092
+
+geth attach data/geth.ipc  # 连接console
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org72ad5b8" class="outline-2">
+<h2 id="org72ad5b8"><span class="section-number-2">7</span> 如何发起一个交易</h2>
+<div class="outline-text-2" id="text-7">
+<pre class="example">
+personal.unlockAccount(some_address, account_password, 0)
+
+var tx = {from: some_address, to: target_address, value: web3.toWei(how_much, "ether")}
+
+personal.sendTransaction(tx, account_password)
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org04e220b" class="outline-2">
+<h2 id="org04e220b"><span class="section-number-2">8</span> 为什么私有区块链旷工一直在挖空交易的区块</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+why a private blockchain keeps mining empty transcation blocks?
+</p>
+
+<p>
+<a href="https://ethereum.stackexchange.com/questions/6648/in-a-private-blockchain-why-do-miners-keep-adding-empty-blocks-to-the-blockchai">https://ethereum.stackexchange.com/questions/6648/in-a-private-blockchain-why-do-miners-keep-adding-empty-blocks-to-the-blockchai</a>
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgc595ca1" class="outline-2">
+<h2 id="orgc595ca1"><span class="section-number-2">9</span> 如何修改以太坊私有链的miner奖励发放金额</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+<a href="https://ethereum.stackexchange.com/questions/31875/where-and-how-can-i-set-the-mining-reward?rq=1">https://ethereum.stackexchange.com/questions/31875/where-and-how-can-i-set-the-mining-reward?rq=1</a>
+<a href="https://ethereum.stackexchange.com/questions/23877/disable-block-mining-reward-in-private-testnet">https://ethereum.stackexchange.com/questions/23877/disable-block-mining-reward-in-private-testnet</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf7866db" class="outline-2">
+<h2 id="orgf7866db"><span class="section-number-2">10</span> solidity里什么是 events</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+<a href="https://ethereum.stackexchange.com/questions/11228/what-is-an-event">https://ethereum.stackexchange.com/questions/11228/what-is-an-event</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54e06af" class="outline-2">
+<h2 id="org54e06af"><span class="section-number-2">11</span> 什么是智能合约的ABI(Application Binary Interface)</h2>
+<div class="outline-text-2" id="text-11">
+<p>
+ABI是与合约交互的接口。当和调用合约时，需要知道合约地址和合约ABI
+</p>
+</div>
+</div>
+<div id="outline-container-org8b5a082" class="outline-2">
+<h2 id="org8b5a082"><span class="section-number-2">12</span> mist启动时寻找自定义ipc</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+默认IPC地址是:
+/Users/me/Library/Ethereum/geth.ipc
+</p>
+
+<p>
+从非默认位置寻找ipc:
+/Applications/Mist.app/Contents/MacOS/Mist &#x2013;rpc path/to/ipc
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3bf317" class="outline-2">
+<h2 id="orgb3bf317"><span class="section-number-2">13</span> remix ide如何连到local geth</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+<a href="https://ethereum.stackexchange.com/questions/20973/how-to-connect-remix-ide-to-geth-running-on-localhost">https://ethereum.stackexchange.com/questions/20973/how-to-connect-remix-ide-to-geth-running-on-localhost</a>
+</p>
+
+<p>
+连接localhost没有用，用127.0.0.0
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ca9dea" class="outline-2">
+<h2 id="org2ca9dea"><span class="section-number-2">14</span> what is erc20 tokens</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+ERC20 defines a set of rules which need to be met in order for a token to be accepted and called an 'ERC20 Token'. The standard rules apply to all ERC20 Tokens since these rules are required to interact with each other on the Ethereum network. These tokens are blockchain assets that can have value and can be sent and received, like Bitcoin, Litecoin, Ethereum, or any other cryptocurrency.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org99971e0" class="outline-2">
+<h2 id="org99971e0"><span class="section-number-2">15</span> solidity里关键字 <code>payable</code> 作用是什么</h2>
+<div class="outline-text-2" id="text-15">
+<p>
+<a href="https://medium.com/@kidinamoto/payable-keyword-in-solidity-375b5c9044df">https://medium.com/@kidinamoto/payable-keyword-in-solidity-375b5c9044df</a>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org031897e" class="outline-2">
+<h2 id="org031897e"><span class="section-number-2">16</span> 以太坊里挖矿的难度是怎么计算的</h2>
+<div class="outline-text-2" id="text-16">
+<p>
+<a href="https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum">https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6024d3e" class="outline-2">
+<h2 id="org6024d3e"><span class="section-number-2">17</span> geth new account时填的passphrase是什么，什么是keystore</h2>
+<div class="outline-text-2" id="text-17">
+<p>
+创建示例
+</p>
+<pre class="example">
+➜  ~ geth account new
+INFO [07-30|17:01:21] Maximum peer count                       ETH=25 LES=0 total=25
+Your new account is locked with a password. Please give a password. Do not forget this password.
+Passphrase:
+Repeat passphrase:
+Address: {496b86eb87dd71f7f927b18bc86d4a5eaedbf1c6}
+
+</pre>
+
+<p>
+简而言之， keystore文件是存储在本地的私钥加密后的文件，想要使用私钥，必须提供创建账户时输入的passphrase。
+</p>
+
+
+<p>
+具体keystore文件各部分作用参见：
+<a href="https://medium.com/@julien.maffre/what-is-an-ethereum-keystore-file-86c8c5917b97">https://medium.com/@julien.maffre/what-is-an-ethereum-keystore-file-86c8c5917b97</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd994ad2" class="outline-2">
+<h2 id="orgd994ad2"><span class="section-number-2">18</span> truffle migrate做了哪些事，是怎么管理升级的</h2>
+<div class="outline-text-2" id="text-18">
+<p>
+简言之是通过Migrations.sol合约管理migrations/下面的升级脚本的执行
+</p>
+
+<p>
+合约主要方法
+</p>
+<pre class="example">
+// 记录当前执行到的脚本
+function setCompleted(uint completed) public restricted {
+    last_completed_migration = completed;
+}
+
+// 更新migrations.sol脚本自身
+function upgrade(address new_address) public restricted {
+    Migrations upgraded = Migrations(new_address);
+    upgraded.setCompleted(last_completed_migration);
+}
+
+</pre>
+
+<p>
+详细参见<a href="https://medium.com/@blockchain101/demystifying-truffle-migrate-21afbcdf3264">https://medium.com/@blockchain101/demystifying-truffle-migrate-21afbcdf3264</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga0b6dfd" class="outline-2">
+<h2 id="orga0b6dfd"><span class="section-number-2">19</span> truffle开发中如何获得合约abi</h2>
+<div class="outline-text-2" id="text-19">
+<p>
+请看demo code
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #718c00;">const</span> <span style="color: #eab700;">fs</span> = require<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'fs'</span><span style="color: #4d4d4c;">)</span>;
+<span style="color: #718c00;">const</span> <span style="color: #eab700;">contract</span> = JSON.parse<span style="color: #4d4d4c;">(</span>fs.readFileSync<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'./build/contracts/Bookshop.json'</span>, <span style="color: #3e999f;">'utf8'</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>;
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">abi</span> = JSON.parse<span style="color: #4d4d4c;">(</span>fs.readFileSync<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'./build/contracts/Bookshop.json'</span>, <span style="color: #3e999f;">'utf8'</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>.abi;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9f778f1" class="outline-2">
+<h2 id="org9f778f1"><span class="section-number-2">20</span> truffle console中怎么调用合约</h2>
+<div class="outline-text-2" id="text-20">
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Bookshop&#20026;&#21512;&#32422;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">address</span> = <span style="color: #3e999f;">'some-address'</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">i</span> = Bookshop.at<span style="color: #4d4d4c;">(</span>address<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#35774;&#32622;&#20004;&#20010;&#36134;&#25143;</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">account1</span> = web3.eth.accounts<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+<span style="color: #718c00;">var</span> <span style="color: #eab700;">account2</span> = web3.eth.accounts<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20197;account2&#36523;&#20221;&#35843;&#29992;&#21512;&#32422;&#30340;bookRegister&#26041;&#27861;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#27880;&#24847;&#21040;&#32467;&#26524;&#26159;&#20010;promise, &#35843;&#29992;&#20854;.then&#26041;&#27861;&#33719;&#24471;&#32467;&#26524;</span>
+i.bookRegister<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"some-params"</span>, <span style="color: #3e999f;">{</span>from:account2<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>.then<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">function</span> <span style="color: #3e999f;">(</span><span style="color: #eab700;">r</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>console.log<span style="color: #eab700;">(</span>r.toNumber<span style="color: #718c00;">()</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26597;&#30475;&#21512;&#32422;&#29256;&#26412;</span>
+Migrations.deployed<span style="color: #4d4d4c;">()</span>.then<span style="color: #4d4d4c;">(</span> <span style="color: #718c00;">function</span><span style="color: #3e999f;">(</span><span style="color: #eab700;">ins</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>ins.last_completed_migration.call<span style="color: #eab700;">()</span>.then<span style="color: #eab700;">(</span><span style="color: #718c00;">function</span><span style="color: #718c00;">(</span>v<span style="color: #718c00;">)</span> <span style="color: #718c00;">{</span>console.log<span style="color: #4271ae;">(</span>v<span style="color: #4271ae;">)</span><span style="color: #718c00;">}</span> <span style="color: #eab700;">)</span><span style="color: #3e999f;">}</span> <span style="color: #4d4d4c;">)</span>
+
+=&gt; <span style="color: #4d4d4c;">{</span> <span style="color: #3e999f;">[</span>String: <span style="color: #3e999f;">'2'</span><span style="color: #3e999f;">]</span> s: 1, e: 0, c: <span style="color: #3e999f;">[</span> 2 <span style="color: #3e999f;">]</span> <span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga4bee41" class="outline-2">
+<h2 id="orga4bee41"><span class="section-number-2">21</span> How to access contract storage</h2>
+<div class="outline-text-2" id="text-21">
+<p>
+<a href="https://medium.com/aigang-network/how-to-read-ethereum-contract-storage-44252c8af925">https://medium.com/aigang-network/how-to-read-ethereum-contract-storage-44252c8af925</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org414deb7" class="outline-2">
+<h2 id="org414deb7"><span class="section-number-2">22</span> Contract account 和 external account 差异</h2>
+<div class="outline-text-2" id="text-22">
+<p>
+there are some differences between these two kinds of accounts.
+For instance, the code and storage of external accounts are empty, while contract accounts store their bytecode and the merkle root hash of the entire state tree.
+Moreover, while external addresses have a corresponding private key, contract accounts don’
+</p>
+</div>
+</div>
+<div id="outline-container-org2f69e48" class="outline-2">
+<h2 id="org2f69e48"><span class="section-number-2">23</span> 合约的创建也是一个tracnsaction</h2>
+<div class="outline-text-2" id="text-23">
+<p>
+The creation of a contract is simply a transaction in which the receiver address is empty and its data field contains the compiled bytecode of the contract to be created (this makes sense — contracts can create contracts too).
+</p>
+</div>
+</div>
+<div id="outline-container-orgb03099a" class="outline-2">
+<h2 id="orgb03099a"><span class="section-number-2">24</span> Storage, Memory and the Stack 差异</h2>
+<div class="outline-text-2" id="text-24">
+<p>
+<a href="http://solidity.readthedocs.io/zh/latest/introduction-to-smart-contracts.html#storage-memory-and-the-stack">http://solidity.readthedocs.io/zh/latest/introduction-to-smart-contracts.html#storage-memory-and-the-stack</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgb99b2c3" class="outline-2">
+<h2 id="orgb99b2c3"><span class="section-number-2">25</span> message calls and transaction 差异</h2>
+<div class="outline-text-2" id="text-25">
+<p>
+Contracts can call other contracts or send Ether to non-contract accounts by the means of message calls. Message calls are similar to transactions, in that they have a source, a target, data payload, Ether, gas and return data. In fact, every transaction consists of a top-level message call which in turn can create further message calls.
+</p>
+</div>
+</div>
+<div id="outline-container-org7352f32" class="outline-2">
+<h2 id="org7352f32"><span class="section-number-2">26</span> Difference between CALL, CALLCODE and DELEGATECALL</h2>
+<div class="outline-text-2" id="text-26">
+<p>
+<a href="https://ethereum.stackexchange.com/questions/3667/difference-between-call-callcode-and-delegatecall">https://ethereum.stackexchange.com/questions/3667/difference-between-call-callcode-and-delegatecall</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org82505ee" class="outline-2">
+<h2 id="org82505ee"><span class="section-number-2">27</span> logs和events可以做什么</h2>
+<div class="outline-text-2" id="text-27">
+<p>
+<a href="https://media.consensys.net/technical-introduction-to-events-and-logs-in-ethereum-a074d65dd61e">https://media.consensys.net/technical-introduction-to-events-and-logs-in-ethereum-a074d65dd61e</a>
+Three use cases have been presented for events. First, using an event to simply get a return value from a contract function invoked with sendTransaction(). Second, using an event as an asynchronous trigger with data, that can notify an observer such as a UI. Third, using an event to write logs in the blockchain as a cheaper form of storage.
+</p>
+</div>
+</div>
+<div id="outline-container-org29df86a" class="outline-2">
+<h2 id="org29df86a"><span class="section-number-2">28</span> 清楚gas的花费和区块的gas limit</h2>
+<div class="outline-text-2" id="text-28">
+<p>
+<a href="https://vomtom.at/what-exactly-is-the-gas-limit-and-the-gas-price-in-ethereum/">https://vomtom.at/what-exactly-is-the-gas-limit-and-the-gas-price-in-ethereum/</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org12134f3" class="outline-2">
+<h2 id="org12134f3"><span class="section-number-2">29</span> assert和require</h2>
+<div class="outline-text-2" id="text-29">
+<p>
+在Solidity 0.4.10 中assert()和require()被加入。require(condition)被用来验证用户的输入，如果条件不满足便会抛出异常，应当使用它验证所有用户的输入。 assert(condition) 在条件不满足也会抛出异常，但是最好只用于固定变量：内部错误或你的智能合约陷入无效的状态。
+</p>
+</div>
+</div>
+<div id="outline-container-orged15b87" class="outline-2">
+<h2 id="orged15b87"><span class="section-number-2">30</span> Abstract合约和Interfaces</h2>
+<div class="outline-text-2" id="text-30">
+<p>
+<a href="https://blog.upstate.agency/solidity-how-to-know-when-to-use-abstract-contracts-vs-interfaces-874cab860c56">https://blog.upstate.agency/solidity-how-to-know-when-to-use-abstract-contracts-vs-interfaces-874cab860c56</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org5d53fd2" class="outline-2">
+<h2 id="org5d53fd2"><span class="section-number-2">31</span> 常见攻击</h2>
+<div class="outline-text-2" id="text-31">
+<p>
+重入
+</p>
+
+<p>
+跨函数竞态
+</p>
+
+<p>
+交易顺序依赖(TOD) / 前面的先运行
+</p>
+
+<p>
+时间戳依赖
+</p>
+
+<p>
+整数上溢和下溢
+</p>
+
+<p>
+通过(Unexpected) Throw发动DoS
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgfe77da0" class="outline-2">
+<h2 id="orgfe77da0"><span class="section-number-2">32</span> 如何处理合约升级</h2>
+<div class="outline-text-2" id="text-32">
+<p>
+使用注册合约存储合约的最新版本
+</p>
+
+<p>
+使用DELEGATECALL 转发数据和调用
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org5a6777f" class="outline-2">
+<h2 id="org5a6777f"><span class="section-number-2">33</span> 合约有问题的控制手段</h2>
+<div class="outline-text-2" id="text-33">
+<p>
+断路器（暂停合约功能）
+</p>
+
+<p>
+速度碰撞（延迟合约动作）
+</p>
+
+<p>
+速率限制
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orga49e39b" class="outline-2">
+<h2 id="orga49e39b"><span class="section-number-2">34</span> 优化代码 减少gas消耗</h2>
+<div class="outline-text-2" id="text-34">
+<p>
+<a href="https://ethereum.stackexchange.com/questions/28813/how-to-write-an-optimized-gas-cost-smart-contract/28848">https://ethereum.stackexchange.com/questions/28813/how-to-write-an-optimized-gas-cost-smart-contract/28848</a>
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org5b9689f" class="outline-2">
+<h2 id="org5b9689f"><span class="section-number-2">35</span> 相关连接</h2>
+<div class="outline-text-2" id="text-35">
+</div>
+<div id="outline-container-org6325082" class="outline-3">
+<h3 id="org6325082"><span class="section-number-3">35.1</span> 创世纪区块 genesis.json 文件含义</h3>
+<div class="outline-text-3" id="text-35-1">
+<p>
+<a href="https://gist.github.com/0mkara/b953cc2585b18ee098cd#file-genesis-md">https://gist.github.com/0mkara/b953cc2585b18ee098cd#file-genesis-md</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgbf956a1" class="outline-3">
+<h3 id="orgbf956a1"><span class="section-number-3">35.2</span> go-ethereum 官方docker镜像</h3>
+<div class="outline-text-3" id="text-35-2">
+<p>
+<a href="https://hub.docker.com/r/ethereum/client-go/">https://hub.docker.com/r/ethereum/client-go/</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org6efb2ec" class="outline-3">
+<h3 id="org6efb2ec"><span class="section-number-3">35.3</span> 一个有用的docker镜像编排</h3>
+<div class="outline-text-3" id="text-35-3">
+<p>
+<a href="https://github.com/Capgemini-AIE/ethereum-docker">https://github.com/Capgemini-AIE/ethereum-docker</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgf648f00" class="outline-3">
+<h3 id="orgf648f00"><span class="section-number-3">35.4</span> remix-ide</h3>
+<div class="outline-text-3" id="text-35-4">
+<p>
+<a href="https://github.com/ethereum/remix-ide">https://github.com/ethereum/remix-ide</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org6b82b84" class="outline-3">
+<h3 id="org6b82b84"><span class="section-number-3">35.5</span> json-rpc</h3>
+<div class="outline-text-3" id="text-35-5">
+<p>
+<a href="https://github.com/ethereum/wiki/wiki/JSON-RPC">https://github.com/ethereum/wiki/wiki/JSON-RPC</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org5d04181" class="outline-3">
+<h3 id="org5d04181"><span class="section-number-3">35.6</span> go-ethereum management api</h3>
+<div class="outline-text-3" id="text-35-6">
+<p>
+<a href="https://github.com/ethereum/go-ethereum/wiki/Management-APIs">https://github.com/ethereum/go-ethereum/wiki/Management-APIs</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org42324ae" class="outline-3">
+<h3 id="org42324ae"><span class="section-number-3">35.7</span> web3 javascript api 0.2x.x</h3>
+<div class="outline-text-3" id="text-35-7">
+<p>
+<a href="https://github.com/ethereum/wiki/wiki/JavaScript-API">https://github.com/ethereum/wiki/wiki/JavaScript-API</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org64c7b59" class="outline-3">
+<h3 id="org64c7b59"><span class="section-number-3">35.8</span> web3 javascript api 1.0</h3>
+<div class="outline-text-3" id="text-35-8">
+<p>
+<a href="http://web3js.readthedocs.io/en/1.0/index.html">http://web3js.readthedocs.io/en/1.0/index.html</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgb3cdc45" class="outline-3">
+<h3 id="orgb3cdc45"><span class="section-number-3">35.9</span> geth私有网络</h3>
+<div class="outline-text-3" id="text-35-9">
+<p>
+<a href="https://github.com/ethereum/go-ethereum/wiki/Private-network">https://github.com/ethereum/go-ethereum/wiki/Private-network</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org156387b" class="outline-3">
+<h3 id="org156387b"><span class="section-number-3">35.10</span> geth私有网络miner配对</h3>
+<div class="outline-text-3" id="text-35-10">
+<p>
+<a href="http://chainskills.com/2017/03/10/part-3-setup-the-private-chain-miners/">http://chainskills.com/2017/03/10/part-3-setup-the-private-chain-miners/</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgfdfa899" class="outline-3">
+<h3 id="orgfdfa899"><span class="section-number-3">35.11</span> 以太坊官方示例</h3>
+<div class="outline-text-3" id="text-35-11">
+<ul class="org-ul">
+<li>发布新币 <a href="https://ethereum.org/token#the-code">https://ethereum.org/token#the-code</a></li>
+<li>股票 <a href="https://ethereum.org/dao#the-shareholder-association">https://ethereum.org/dao#the-shareholder-association</a></li>
+<li>拍卖 <a href="https://ethereum.org/crowdsale">https://ethereum.org/crowdsale</a></li>
+<li>民主 <a href="https://ethereum.org/dao#the-code">https://ethereum.org/dao#the-code</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc2f67b0" class="outline-3">
+<h3 id="orgc2f67b0"><span class="section-number-3">35.12</span> erc20 list</h3>
+<div class="outline-text-3" id="text-35-12">
+<p>
+<a href="https://eidoo.io/erc20-tokens-list/">https://eidoo.io/erc20-tokens-list/</a>
+</p>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

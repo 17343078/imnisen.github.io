@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>夸夸其谈者</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2017-06-07</p>
+</div>
+<div id="content">
+<h1 class="title">夸夸其谈者</h1>
+<div class="abstract">
+<p>
+本文刻画了一类我日常生活中观察到的人:)
+</p>
+
+</div>
+
+<div id="outline-container-org7ac09f9" class="outline-2">
+<h2 id="org7ac09f9">定义</h2>
+<div class="outline-text-2" id="text-org7ac09f9">
+<p>
+组织中有类人，暂且称之为“夸夸其谈”者，他们的特性是喜欢不停地对外界谈论自己的事情，借助所述事情的光环之处凸显自己的牛逼。
+</p>
+
+<p>
+这类人中有“善意”和“恶意”之分，以夸夸其谈者目的和程度为划分标准，善意者单纯为了炫耀自己的“博学”而满足自己需求，而恶意者在此基础上尝试造成更远的影响，比如攫取名望、资源等。
+</p>
+
+<p>
+这里讨论的是恶意的夸夸其谈者。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org466ca4a" class="outline-2">
+<h2 id="org466ca4a">常用手段</h2>
+<div class="outline-text-2" id="text-org466ca4a">
+</div>
+<div id="outline-container-org9efb005" class="outline-3">
+<h3 id="org9efb005">叶公好龙</h3>
+<div class="outline-text-3" id="text-org9efb005">
+<p>
+公共场合对着组织周围成员谈论“高深”的名词，让(有意或者无意的)听者产生自己牛逼的错觉。而且大部分情况下，叶公真以为自己喜欢龙。
+常用高深词类别有"业界大咖"，"基础原理"，"底层"，"行业准则"，"市场潮流"等。
+而且，经常显示除了其专业方面其它领域的“精通”。
+</p>
+
+<p>
+应对之策：只要深入“夸夸其谈者”所谈论的名词提问，借助光环的手段就会变成显得自己无知的手段。
+</p>
+</div>
+</div>
+<div id="outline-container-org273bd96" class="outline-3">
+<h3 id="org273bd96">关怀下属</h3>
+<div class="outline-text-3" id="text-org273bd96">
+<p>
+如果夸夸其谈者处于小团队的领导者，通过在大家面前“关怀指导下属”他们通常可以将其影响力放大数倍。
+</p>
+
+<p>
+应对之策法：其领导团队外的人暂无办法
+</p>
+</div>
+</div>
+<div id="outline-container-orgc88456b" class="outline-3">
+<h3 id="orgc88456b">以经验者自居</h3>
+<div class="outline-text-3" id="text-orgc88456b">
+<p>
+通过前面的手段使众人形成基本印象后，再自封一些名号，比如“有某一领域丰富的经验”、“师傅、大牛、大咖”等，使不知情的人有意无意听到这些“封号”，近一步提升自己的影响力。
+</p>
+
+<p>
+应对之策: 毕竟没办法阻碍别人自嗨，只能拒绝做帮凶。与其打交道时，撇除其虚假光环，就事论事。
+</p>
+</div>
+</div>
+<div id="outline-container-org7fd79dd" class="outline-3">
+<h3 id="org7fd79dd">占用组织资源</h3>
+<div class="outline-text-3" id="text-org7fd79dd">
+<p>
+利用组织资源加强自己“影响力”。
+</p>
+
+<p>
+应对之策: 这种情况需要组织领导者有明察秋毫的眼力
+</p>
+</div>
+</div>
+<div id="outline-container-orgcf767f6" class="outline-3">
+<h3 id="orgcf767f6">虚张声势</h3>
+<div class="outline-text-3" id="text-orgcf767f6">
+<p>
+夸夸其谈者也会遇到实际问题，当遇到他们外在形象应该可以解决而实际上自己不能解决的问题时，就会采用糊弄大法。
+</p>
+
+<p>
+惯用手法有：
+</p>
+<ul class="org-ul">
+<li>虚夸问题复杂度高</li>
+<li>诉说自己付出了很多努力以努力博取认同</li>
+<li>向外行人说内行话阻止别人了解实况</li>
+<li>（有时故作惊讶地）指出别人的不足，宽于待己严于律人，以此掩盖自己问题</li>
+<li>情感手段（抱怨，无奈，惊讶，时而情绪高涨，为显示自己高大的关心）</li>
+</ul>
+<p>
+手法综合使用威力无穷防不胜防。
+</p>
+
+<p>
+应对之策: 需要懂行者以实事求是的原则摒除杂音，见招拆招，抓住原本问题。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc1c1b53" class="outline-2">
+<h2 id="orgc1c1b53">对组织造成的危害</h2>
+<div class="outline-text-2" id="text-orgc1c1b53">
+</div>
+<div id="outline-container-org19bcec2" class="outline-3">
+<h3 id="org19bcec2">组织噪音</h3>
+<div class="outline-text-3" id="text-org19bcec2">
+<p>
+使组织间充满杂音噪音，在信息传输带宽不变的情况下，会使有价值信息传播受阻。
+</p>
+</div>
+</div>
+<div id="outline-container-org5fd332b" class="outline-3">
+<h3 id="org5fd332b">资源浪费</h3>
+<div class="outline-text-3" id="text-org5fd332b">
+<p>
+“成功”的夸夸其谈者通常比周围一般人拥有大一些的话语权或者影响力，如果组织的决策者不慎便可能使的资源集中于他们手中。而夸夸奇谈者只是显得厉害，有比较大的可能性会造成这部分资源得不到充分利用。
+</p>
+</div>
+</div>
+<div id="outline-container-orgfaab64b" class="outline-3">
+<h3 id="orgfaab64b">劣币驱逐良币</h3>
+<div class="outline-text-3" id="text-orgfaab64b">
+<p>
+通常情况下，如果夸夸其谈者的危害到达一定程度，组织中的务实者会因此对其或者组织领导者产生失望甚至离开团队。
+</p>
+
+<p>
+同样的，劣币还会影响未铸币向劣币发展。所谓带坏新手，或者让新手觉得“前途艰难”（因为大牛描述的前进道路上听起来充满了“高深的学问”）。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf69a29c" class="outline-2">
+<h2 id="orgf69a29c">结论</h2>
+<div class="outline-text-2" id="text-orgf69a29c">
+<p>
+Focus on the origin. 关注问题本质，摒弃杂音。Eval with value, not side effect!
+</p>
+
+<p>
+向实干者致敬！
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

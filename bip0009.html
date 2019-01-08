@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BIP9(Version Bits)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-12-09</p>
+</div>
+<div id="content">
+<h1 class="title">BIP9(Version Bits)</h1>
+
+
+<div id="outline-container-orgb48a69b" class="outline-2">
+<h2 id="orgb48a69b"><span class="section-number-2">1</span> BIP地址</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP9</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">BIP: 9
+Title: Version bits with timeout and delay
+Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+        Peter Todd &lt;pete@petertodd.org&gt;
+        Greg Maxwell &lt;greg@xiph.org&gt;
+        Rusty Russell &lt;rusty@rustcorp.com.au&gt;
+Comments-Summary: No comments yet.
+Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0009
+Status: Final
+Type: Informational
+Created: 2015-10-04
+License: PD
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org559362f" class="outline-2">
+<h2 id="org559362f"><span class="section-number-2">2</span> 原因和目的</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+BIP9通过对区块 <code>version</code> 语义的重新解释(按bit位而不是数字)，提出了一种部署soft-fork的方法，使得多个fork可以同时进行。
+</p>
+
+<p>
+BIP34提供了一种soft-fork升级的机制，矿工通过在挖出的区块的version数字的大小来表明是否支持某一改变。
+但是这种机制只能同时支持一个改动，这就需要不同的提案之间互相配合。
+此外，BIP34通过比较 <code>nVersion &gt;= 2</code> 的方式，每一次改变，可选的version集就会越来越少。
+</p>
+
+<p>
+BIP9通过将version解释称bits，每一个bit代表着一个改动。每个soft fork也分为 <code>DEFINED, STARTED, LOCKED_IN, ACTIVE, FAILED</code> 等不同的阶段。矿工通过在挖出的区块的相应bit位设置1来表明对soft-fork的支持。
+当在一个区间内有超过一定比例的区块支持soft-fork则表示该soft-fork进入active阶段。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org374a8af" class="outline-2">
+<h2 id="org374a8af"><span class="section-number-2">3</span> 细节</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgeb6bf29" class="outline-3">
+<h3 id="orgeb6bf29"><span class="section-number-3">3.1</span> soft-fork参数</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+每个采用BIP9的soft-fork都定义了以下几个参数：
+</p>
+<ol class="org-ol">
+<li>name: 对此次soft-fork的简述</li>
+<li>bit: 采用0-28哪一个bit位来部署</li>
+<li>starttime: 该bit位表示该soft-fork含义开始的时间（MTP），一般设置为大约包含该soft-fork软件发布后的一个月</li>
+<li>timeout: 到什么时候，该soft-fork被认为失败（到该时间的block还没进入 <code>LOCKED_IN</code> 状态），一般是starttime后一年</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgba171d0" class="outline-3">
+<h3 id="orgba171d0"><span class="section-number-3">3.2</span> 状态</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+soft-fork四个状态的含义：
+</p>
+<ol class="org-ol">
+<li><code>DEFINED</code>: 每个soft-fork开始的状态</li>
+<li><code>STARTED</code>: starttime之前的时间的block状态</li>
+<li><code>LOCKED_IN</code>: 包含 <code>STARTED</code> 的retarget period之后的retarget peroid, 如果该retarget peroid里，支持该soft-fork(通过设置对于的version bit)的区块达到临界值，那么对于该soft-fork,blocks进入 <code>LOCKED_IN</code> 状态</li>
+<li><code>ACTIVE</code>: 包含 <code>LOCKED_IN</code> 的retarget period之后的所有blocks，该soft-fork进入 <code>ACTIVE</code> 状态</li>
+<li><code>FAILED</code>: 如果有retarget peroid超过timeout时间， 该没有进入 <code>LOCKED_IN</code> 状态，那么进入 <code>FAILED</code> 状态</li>
+</ol>
+
+
+<p>
+采用BIP009上的一张图来表示状态变化：
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/bip0009-states.png" alt="bip0009-states.png" />
+</p>
+</div>
+
+
+<p>
+什么是retarget period呢？对于bitcoin mainnet来说，从genesis block开始，每2016个blocks看作一个retarget period。
+</p>
+
+
+<p>
+如何计算对于某一 soft-fork 的block的state?
+</p>
+
+<p>
+对于genesis block,总是 <code>DEFINED</code>
+</p>
+
+<p>
+对于在同一retarget peroid的blocks( <code>floor(block1.height / 2016) = floor(block2.height / 2016)</code> )来说，状态是一样的:
+</p>
+
+<pre class="example">
+if ((block.height % 2016) != 0) {
+    return GetStateForBlock(block.parent);
+}
+
+</pre>
+
+
+<p>
+其它情况下，block的state取决于上一个state，正如上图中所表示的逻辑关系那样。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd859c34" class="outline-3">
+<h3 id="orgd859c34"><span class="section-number-3">3.3</span> bit位</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Block中的version字段被解释为32位的小端数字，bit位是通过 <code>1&lt;&lt;N</code> 来判定的。
+前3位为001，010和011留作后续升级使用。如果version不是以001开始的话，它被当作所有bits都是0
+</p>
+
+<p>
+由于开头是001,所以32位的version值的范围为[0x20000000, 0x3fffffff]
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org996e4e4" class="outline-2">
+<h2 id="org996e4e4"><span class="section-number-2">4</span> 相关实现</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+下面代码来自btcd的实现。
+</p>
+
+
+<p>
+用一个 <code>thresholdConditionChecker</code> 接口将要检查的soft fork相关抽象出来
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">thresholdConditionChecker provides a generic interface that is invoked to</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">determine when a consensus rule change threshold should be changed.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">thresholdConditionChecker</span> <span style="color: #718c00;">interface</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">BeginTime returns the unix timestamp for the median block time after</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">which voting on a rule change starts (at the next window).</span>
+        <span style="color: #f5871f;">BeginTime</span><span style="color: #3e999f;">()</span> uint64
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">EndTime returns the unix timestamp for the median block time after</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">which an attempted rule change fails if it has not already been</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">locked in or activated.</span>
+        <span style="color: #f5871f;">EndTime</span><span style="color: #3e999f;">()</span> uint64
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">RuleChangeActivationThreshold is the number of blocks for which the</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">condition must be true in order to lock in a rule change.</span>
+        <span style="color: #f5871f;">RuleChangeActivationThreshold</span><span style="color: #3e999f;">()</span> uint32
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">MinerConfirmationWindow is the number of blocks in each threshold</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">state retarget window.</span>
+        <span style="color: #f5871f;">MinerConfirmationWindow</span><span style="color: #3e999f;">()</span> uint32
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Condition returns whether or not the rule change activation condition</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">has been met.  This typically involves checking whether or not the</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">bit associated with the condition is set, but can be more complex as</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">needed.</span>
+        <span style="color: #f5871f;">Condition</span><span style="color: #3e999f;">(</span>*blockNode<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">(</span>bool, error<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+实现上述接口的类型
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">deploymentChecker provides a thresholdConditionChecker which can be used to</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">test a specific deployment rule.  This is required for properly detecting</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">and activating consensus rule changes.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">deploymentChecker</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        deployment *chaincfg.ConsensusDeployment
+        chain      *BlockChain
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Ensure the deploymentChecker type implements the thresholdConditionChecker</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">interface.</span>
+<span style="color: #718c00;">var</span> _ thresholdConditionChecker = <span style="color: #4271ae;">deploymentChecker</span><span style="color: #4d4d4c;">{}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">BeginTime returns the unix timestamp for the median block time after which</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">voting on a rule change starts (at the next window).</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This implementation returns the value defined by the specific deployment the</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">checker is associated with.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This is part of the thresholdConditionChecker interface implementation.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>c <span style="color: #4271ae;">deploymentChecker</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">BeginTime</span><span style="color: #4d4d4c;">()</span> <span style="color: #4271ae;">uint64</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">return</span> c.deployment.StartTime
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">EndTime returns the unix timestamp for the median block time after which an</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">attempted rule change fails if it has not already been locked in or</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">activated.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This implementation returns the value defined by the specific deployment the</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">checker is associated with.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This is part of the thresholdConditionChecker interface implementation.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>c <span style="color: #4271ae;">deploymentChecker</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">EndTime</span><span style="color: #4d4d4c;">()</span> <span style="color: #4271ae;">uint64</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">return</span> c.deployment.ExpireTime
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">RuleChangeActivationThreshold is the number of blocks for which the condition</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">must be true in order to lock in a rule change.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This implementation returns the value defined by the chain params the checker</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">is associated with.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This is part of the thresholdConditionChecker interface implementation.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>c <span style="color: #4271ae;">deploymentChecker</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">RuleChangeActivationThreshold</span><span style="color: #4d4d4c;">()</span> <span style="color: #4271ae;">uint32</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">return</span> c.chain.chainParams.RuleChangeActivationThreshold
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">MinerConfirmationWindow is the number of blocks in each threshold state</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">retarget window.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This implementation returns the value defined by the chain params the checker</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">is associated with.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This is part of the thresholdConditionChecker interface implementation.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>c <span style="color: #4271ae;">deploymentChecker</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">MinerConfirmationWindow</span><span style="color: #4d4d4c;">()</span> <span style="color: #4271ae;">uint32</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">return</span> c.chain.chainParams.MinerConfirmationWindow
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Condition returns true when the specific bit defined by the deployment</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">associated with the checker is set.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This is part of the thresholdConditionChecker interface implementation.</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>c <span style="color: #4271ae;">deploymentChecker</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">Condition</span><span style="color: #4d4d4c;">(</span>node *<span style="color: #4271ae;">blockNode</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">bool</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        conditionMask := <span style="color: #f5871f;">uint32</span><span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span> &lt;&lt; c.deployment.BitNumber
+        version := <span style="color: #f5871f;">uint32</span><span style="color: #3e999f;">(</span>node.version<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">return</span> <span style="color: #3e999f;">(</span>version&amp;vbTopMask == vbTopBits<span style="color: #3e999f;">)</span> &amp;&amp; <span style="color: #3e999f;">(</span>version&amp;conditionMask != 0<span style="color: #3e999f;">)</span>,
+                <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+核心计算state的方法:
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">thresholdState returns the current rule change threshold state for the block</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">AFTER the given node and deployment ID.  The cache is used to ensure the</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">threshold states for previous windows are only calculated once.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This function MUST be called with the chain state lock held (for writes).</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>b *<span style="color: #4271ae;">BlockChain</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">thresholdState</span><span style="color: #4d4d4c;">(</span>prevNode *<span style="color: #4271ae;">blockNode</span>, checker <span style="color: #4271ae;">thresholdConditionChecker</span>, cache *<span style="color: #4271ae;">thresholdStateCache</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">ThresholdState</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The threshold state for the window that contains the genesis block is</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">defined by definition.</span>
+        confirmationWindow := <span style="color: #f5871f;">int32</span><span style="color: #3e999f;">(</span>checker.<span style="color: #f5871f;">MinerConfirmationWindow</span><span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">if</span> prevNode == <span style="color: #4271ae;">nil</span> || <span style="color: #3e999f;">(</span>prevNode.height+1<span style="color: #3e999f;">)</span> &lt; confirmationWindow <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> ThresholdDefined, <span style="color: #4271ae;">nil</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Get the ancestor that is the last block of the previous confirmation</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">window in order to get its threshold state.  This can be done because</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the state is the same for all blocks within a given window.</span>
+        prevNode = prevNode.<span style="color: #f5871f;">Ancestor</span><span style="color: #3e999f;">(</span>prevNode.height -
+                <span style="color: #eab700;">(</span>prevNode.height+1<span style="color: #eab700;">)</span>%confirmationWindow<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Iterate backwards through each of the previous confirmation windows</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">to find the most recently cached threshold state.</span>
+        <span style="color: #718c00;">var</span> neededStates <span style="color: #3e999f;">[]</span>*<span style="color: #4271ae;">blockNode</span>
+        <span style="color: #718c00;">for</span> prevNode != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Nothing more to do if the state of the block is already</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">cached.</span>
+                <span style="color: #718c00;">if</span> _, ok := cache.<span style="color: #f5871f;">Lookup</span><span style="color: #eab700;">(</span>&amp;prevNode.hash<span style="color: #eab700;">)</span>; ok <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">break</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The start and expiration times are based on the median block</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">time, so calculate it now.</span>
+                medianTime := prevNode.<span style="color: #f5871f;">CalcPastMedianTime</span><span style="color: #eab700;">()</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The state is simply defined if the start time hasn't been</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">been reached yet.</span>
+                <span style="color: #718c00;">if</span> <span style="color: #f5871f;">uint64</span><span style="color: #eab700;">(</span>medianTime.<span style="color: #f5871f;">Unix</span><span style="color: #718c00;">()</span><span style="color: #eab700;">)</span> &lt; checker.<span style="color: #f5871f;">BeginTime</span><span style="color: #eab700;">()</span> <span style="color: #eab700;">{</span>
+                        cache.<span style="color: #f5871f;">Update</span><span style="color: #718c00;">(</span>&amp;prevNode.hash, ThresholdDefined<span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">break</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add this node to the list of nodes that need the state</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">calculated and cached.</span>
+                neededStates = <span style="color: #8959a8;">append</span><span style="color: #eab700;">(</span>neededStates, prevNode<span style="color: #eab700;">)</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Get the ancestor that is the last block of the previous</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">confirmation window.</span>
+                prevNode = prevNode.<span style="color: #f5871f;">RelativeAncestor</span><span style="color: #eab700;">(</span>confirmationWindow<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Start with the threshold state for the most recent confirmation</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">window that has a cached state.</span>
+        state := ThresholdDefined
+        <span style="color: #718c00;">if</span> prevNode != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">var</span> ok bool
+                state, ok = cache.<span style="color: #f5871f;">Lookup</span><span style="color: #eab700;">(</span>&amp;prevNode.hash<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> !ok <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">return</span> ThresholdFailed, <span style="color: #f5871f;">AssertError</span><span style="color: #718c00;">(</span>fmt.<span style="color: #f5871f;">Sprintf</span><span style="color: #4271ae;">(</span>
+                                <span style="color: #3e999f;">"thresholdState: cache lookup failed for %v"</span>,
+                                prevNode.hash<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Since each threshold state depends on the state of the previous</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">window, iterate starting from the oldest unknown window.</span>
+        <span style="color: #718c00;">for</span> neededNum := <span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span>neededStates<span style="color: #3e999f;">)</span> - 1; neededNum &gt;= 0; neededNum-- <span style="color: #3e999f;">{</span>
+                prevNode := neededStates<span style="color: #eab700;">[</span>neededNum<span style="color: #eab700;">]</span>
+
+                <span style="color: #718c00;">switch</span> state <span style="color: #eab700;">{</span>
+                <span style="color: #718c00;">case</span> ThresholdDefined:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The deployment of the rule change fails if it expires</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">before it is accepted and locked in.</span>
+                        medianTime := prevNode.<span style="color: #f5871f;">CalcPastMedianTime</span><span style="color: #718c00;">()</span>
+                        medianTimeUnix := <span style="color: #f5871f;">uint64</span><span style="color: #718c00;">(</span>medianTime.<span style="color: #f5871f;">Unix</span><span style="color: #4271ae;">()</span><span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">if</span> medianTimeUnix &gt;= checker.<span style="color: #f5871f;">EndTime</span><span style="color: #718c00;">()</span> <span style="color: #718c00;">{</span>
+                                state = ThresholdFailed
+                                <span style="color: #718c00;">break</span>
+                        <span style="color: #718c00;">}</span>
+
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The state for the rule moves to the started state</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">once its start time has been reached (and it hasn't</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">already expired per the above).</span>
+                        <span style="color: #718c00;">if</span> medianTimeUnix &gt;= checker.<span style="color: #f5871f;">BeginTime</span><span style="color: #718c00;">()</span> <span style="color: #718c00;">{</span>
+                                state = ThresholdStarted
+                        <span style="color: #718c00;">}</span>
+
+                <span style="color: #718c00;">case</span> ThresholdStarted:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The deployment of the rule change fails if it expires</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">before it is accepted and locked in.</span>
+                        medianTime := prevNode.<span style="color: #f5871f;">CalcPastMedianTime</span><span style="color: #718c00;">()</span>
+                        <span style="color: #718c00;">if</span> <span style="color: #f5871f;">uint64</span><span style="color: #718c00;">(</span>medianTime.<span style="color: #f5871f;">Unix</span><span style="color: #4271ae;">()</span><span style="color: #718c00;">)</span> &gt;= checker.<span style="color: #f5871f;">EndTime</span><span style="color: #718c00;">()</span> <span style="color: #718c00;">{</span>
+                                state = ThresholdFailed
+                                <span style="color: #718c00;">break</span>
+                        <span style="color: #718c00;">}</span>
+
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">At this point, the rule change is still being voted</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">on by the miners, so iterate backwards through the</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">confirmation window to count all of the votes in it.</span>
+                        <span style="color: #718c00;">var</span> count uint32
+                        countNode := prevNode
+                        <span style="color: #718c00;">for</span> i := <span style="color: #f5871f;">int32</span><span style="color: #718c00;">(</span>0<span style="color: #718c00;">)</span>; i &lt; confirmationWindow; i++ <span style="color: #718c00;">{</span>
+                                condition, err := checker.<span style="color: #f5871f;">Condition</span><span style="color: #4271ae;">(</span>countNode<span style="color: #4271ae;">)</span>
+                                <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #4271ae;">{</span>
+                                        <span style="color: #718c00;">return</span> ThresholdFailed, err
+                                <span style="color: #4271ae;">}</span>
+                                <span style="color: #718c00;">if</span> condition <span style="color: #4271ae;">{</span>
+                                        count++
+                                <span style="color: #4271ae;">}</span>
+
+                                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Get the previous block node.</span>
+                                countNode = countNode.parent
+                        <span style="color: #718c00;">}</span>
+
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The state is locked in if the number of blocks in the</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">period that voted for the rule change meets the</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">activation threshold.</span>
+                        <span style="color: #718c00;">if</span> count &gt;= checker.<span style="color: #f5871f;">RuleChangeActivationThreshold</span><span style="color: #718c00;">()</span> <span style="color: #718c00;">{</span>
+                                state = ThresholdLockedIn
+                        <span style="color: #718c00;">}</span>
+
+                <span style="color: #718c00;">case</span> ThresholdLockedIn:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The new rule becomes active when its previous state</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">was locked in.</span>
+                        state = ThresholdActive
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Nothing to do if the previous state is active or failed since</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">they are both terminal states.</span>
+                <span style="color: #718c00;">case</span> ThresholdActive:
+                <span style="color: #718c00;">case</span> ThresholdFailed:
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Update the cache to avoid recalculating the state in the</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">future.</span>
+                cache.<span style="color: #f5871f;">Update</span><span style="color: #eab700;">(</span>&amp;prevNode.hash, state<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> state, <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div id="outline-container-org1c2f215" class="outline-2">
+<h2 id="org1c2f215"><span class="section-number-2">5</span> END</h2>
+<div class="outline-text-2" id="text-5">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BTCD源码阅读笔记-connmgr</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-08-26</p>
+</div>
+<div id="content">
+<h1 class="title">BTCD源码阅读笔记-connmgr</h1>
+<div class="abstract">
+<p>
+<a href="https://github.com/btcsuite/btcd">btcd</a> 是一个golang实现的比特币全节点。
+</p>
+
+<p>
+本文是阅读其connmgr包代码的笔记（有些潦草），分析其主要结构。
+</p>
+
+<p>
+基于git代码版本: 16327141da8ce4b46b5bac57ba01352943465d9e
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org684595a">1. connmgr模块</a>
+<ul>
+<li><a href="#orged0e9e3">1.1. 主要结构</a></li>
+<li><a href="#orgcb8fcbb">1.2. 主要方法</a>
+<ul>
+<li><a href="#org651296f">1.2.1. start</a></li>
+<li><a href="#orga5443e1">1.2.2. connHandler</a></li>
+<li><a href="#orgc520f33">1.2.3. handleFailedConn</a></li>
+<li><a href="#org970fa80">1.2.4. listenHandler</a></li>
+<li><a href="#org57aa588">1.2.5. NewConnReq</a></li>
+<li><a href="#org93a42b8">1.2.6. Connect</a></li>
+<li><a href="#orgb2593e6">1.2.7. Disconnect</a></li>
+<li><a href="#orgff6cbed">1.2.8. Stop</a></li>
+</ul>
+</li>
+<li><a href="#orgbc75ce5">1.3. 消息传递简图</a></li>
+</ul>
+</li>
+<li><a href="#org34faf8a">2. End</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org684595a" class="outline-2">
+<h2 id="org684595a"><span class="section-number-2">1</span> connmgr模块</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+connmgr用来处理节点的连接，定义了一个 <code>ConnManager</code> ，用来管理request connect的连接、断开、失败、重试、限制最大连接数、重试次数等情况。
+</p>
+</div>
+
+<div id="outline-container-orged0e9e3" class="outline-3">
+<h3 id="orged0e9e3"><span class="section-number-3">1.1</span> 主要结构</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">ConnManager provides a manager to handle network connections.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">ConnManager</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">The following variables must only be used atomically.</span>
+        connReqCount uint64  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#31649;&#29702;&#30340;&#36830;&#25509;&#25968;</span>
+        start        int32  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#21551;&#21160;&#26631;&#35782;</span>
+        stop         int32 <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#20572;&#27490;&#26631;&#24535;</span>
+
+        cfg            Config  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#37197;&#32622;</span>
+        wg             sync.WaitGroup  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#24182;&#21457;&#36830;&#25509;&#31649;&#29702;</span>
+        failedAttempts uint64  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#35760;&#24405;&#22833;&#36133;&#27425;&#25968;&#65292;&#22914;&#26524;&#25104;&#21151;&#36830;&#25509;&#21017;&#24402;0</span>
+        requests       <span style="color: #b9ca4a;">chan</span> <span style="color: #b9ca4a;">interface</span><span style="color: #70c0b1;">{}</span>  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#29992;&#20110;&#28040;&#24687;&#20256;&#36882;</span>
+        quit           <span style="color: #b9ca4a;">chan</span> <span style="color: #b9ca4a;">struct</span><span style="color: #70c0b1;">{}</span> <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#29992;&#20110;&#36864;&#20986;</span>
+<span style="color: #eaeaea;">}</span>
+
+
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">ConnReq is the connection request to a network address. If permanent, the</span>
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">connection will be retried on disconnection.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">ConnReq</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">The following variables must only be used atomically.</span>
+        id uint64  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36830;&#25509;id&#65292;&#37319;&#29992;connReqCoount +1 &#30340;&#26041;&#24335;&#29983;&#25104;</span>
+
+        Addr      net.Addr <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#36830;&#25509;&#22320;&#22336;</span>
+        Permanent bool  <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#26159;&#21542;&#26159;&#25345;&#20037;&#36830;&#25509;</span>
+
+        conn       net.Conn
+        state      ConnState <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#35760;&#24405;&#35813;&#36830;&#25509;&#30340;&#29366;&#24577;</span>
+        stateMtx   sync.RWMutex
+        retryCount uint32   <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">&#35760;&#24405;&#25345;&#20037;&#36830;&#25509;&#30340;&#22833;&#36133;&#37325;&#35797;&#27425;&#25968;&#65292;&#22914;&#26524;&#25104;&#21151;&#36830;&#25509;&#21017;&#24402;0</span>
+<span style="color: #eaeaea;">}</span>
+
+
+<span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Config holds the configuration options related to the connection manager.</span>
+<span style="color: #b9ca4a;">type</span> <span style="color: #7aa6da;">Config</span> <span style="color: #b9ca4a;">struct</span> <span style="color: #eaeaea;">{</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Listeners defines a slice of listeners for which the connection</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">manager will take ownership of and accept connections.  When a</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">connection is accepted, the OnAccept handler will be invoked with the</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">connection.  Since the connection manager takes ownership of these</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">listeners, they will be closed when the connection manager is</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">stopped.</span>
+        <span style="color: #969896; font-style: italic;">//</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">This field will not have any effect if the OnAccept field is not</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">also specified.  It may be nil if the caller does not wish to listen</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">for incoming connections.</span>
+        Listeners <span style="color: #70c0b1;">[]</span><span style="color: #7aa6da;">net.Listener</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">OnAccept is a callback that is fired when an inbound connection is</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">accepted.  It is the caller's responsibility to close the connection.</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Failure to close the connection will result in the connection manager</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">believing the connection is still active and thus have undesirable</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">side effects such as still counting toward maximum connection limits.</span>
+        <span style="color: #969896; font-style: italic;">//</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">This field will not have any effect if the Listeners field is not</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">also specified since there couldn't possibly be any accepted</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">connections in that case.</span>
+        OnAccept <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">net.Conn</span><span style="color: #70c0b1;">)</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">TargetOutbound is the number of outbound network connections to</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">maintain. Defaults to 8.</span>
+        TargetOutbound uint32
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">RetryDuration is the duration to wait before retrying connection</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">requests. Defaults to 5s.</span>
+        RetryDuration time.Duration
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">OnConnection is a callback that is fired when a new outbound</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">connection is established.</span>
+        OnConnection <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>*<span style="color: #7aa6da;">ConnReq</span>, <span style="color: #7aa6da;">net.Conn</span><span style="color: #70c0b1;">)</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">OnDisconnection is a callback that is fired when an outbound</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">connection is disconnected.</span>
+        OnDisconnection <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span>*<span style="color: #7aa6da;">ConnReq</span><span style="color: #70c0b1;">)</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">GetNewAddress is a way to get an address to make a network connection</span>
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">to.  If nil, no new connections will be made automatically.</span>
+        GetNewAddress <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">()</span> <span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">net.Addr</span>, <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span>
+
+        <span style="color: #969896; font-style: italic;">// </span><span style="color: #969896; font-style: italic;">Dial connects to the address on the named network. It cannot be nil.</span>
+        Dial <span style="color: #b9ca4a;">func</span><span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">net.Addr</span><span style="color: #70c0b1;">)</span> <span style="color: #70c0b1;">(</span><span style="color: #7aa6da;">net.Conn</span>, <span style="color: #7aa6da;">error</span><span style="color: #70c0b1;">)</span>
+<span style="color: #eaeaea;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb8fcbb" class="outline-3">
+<h3 id="orgcb8fcbb"><span class="section-number-3">1.2</span> 主要方法</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org651296f" class="outline-4">
+<h4 id="org651296f"><span class="section-number-4">1.2.1</span> start</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<pre class="example">
+
+1. go connHandler()
+   启动处理连接的goroutine
+2. go listenHandler()
+   启动config里注册的listeners
+3. go NewConnReq()
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orga5443e1" class="outline-4">
+<h4 id="orga5443e1"><span class="section-number-4">1.2.2</span> connHandler</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<pre class="example">
+
+pending map: 记录pending状态的连接信息
+conns map : 记录连接状态的连接信息
+
+for/select:
+1. req := &lt;-cm.requests:
+   1. registerPending  表示 有待发生待连接请求
+      如何处理:
+      1.记录该请求到一个pending map中
+   2. handleConnected  表示 连接建立
+      如何处理:
+      1.确保在pending map中添加过该连接
+      2.pengding map删除条目， conns map中添加连接条目
+      3.调用manager config配置的OnConnection方法
+
+   3. handleDisconnected 表示 连接断开
+      如何处理:
+      1.确保在pending或者conns map中添加过该连接,并删除相应条目
+      2.调用manager config配置的OnDisconnection方法
+      3.根据 该断开的消息 是否需要重试分开处理
+        1. 不需要的话，更新状态就结束
+        2. 需要的话，在一定条件下将连接加到pending map里，然后调用handleFailedConn
+   4. handleFailed 表示 失败情况
+      1.确保在pending map中添加过该连接
+      2.更新连接状态，然后调用handleFailedConn
+
+2. &lt;-cm.quit
+   退出
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orgc520f33" class="outline-4">
+<h4 id="orgc520f33"><span class="section-number-4">1.2.3</span> handleFailedConn</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<pre class="example">
+
+该方法用来处理连接断开或者其他连接失败的情况
+如果连接是持久连接，就在等待一段时间后尝试重连
+如果不是，就建立一个新的连接，当重试的次数超过最大值后，那就等待一段时间再重新建立新连接。
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org970fa80" class="outline-4">
+<h4 id="org970fa80"><span class="section-number-4">1.2.4</span> listenHandler</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<pre class="example">
+该方法等待连接，然后调用config里的OnAccept来处理连接
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org57aa588" class="outline-4">
+<h4 id="org57aa588"><span class="section-number-4">1.2.5</span> NewConnReq</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<pre class="example">
+
+该方法创建一个新连接，连接到相应的地址。
+具体逻辑:
+连接数connReqCount+1
+发送registerPending消息(由connHandler接收处理)
+connHandler处理完register后，调用config的GetNewAddress方法获取新的地址addr
+如果获取失败，发送handleFailed方法(由connHandler接收处理)
+获取addr成功后，调用connect方法来获取连接
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org93a42b8" class="outline-4">
+<h4 id="org93a42b8"><span class="section-number-4">1.2.6</span> Connect</h4>
+<div class="outline-text-4" id="text-1-2-6">
+<pre class="example">
+
+如果（根据连接id判断）该地址是个新连接，那么设置其id,然后注册到pending map连接里。
+调用config里的Dial方法，连接到addr, 如果成功则发送handleConnected方法, 失败则发送handleFailed方法到cm.requests, 由connHandler处理
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb2593e6" class="outline-4">
+<h4 id="orgb2593e6"><span class="section-number-4">1.2.7</span> Disconnect</h4>
+<div class="outline-text-4" id="text-1-2-7">
+<pre class="example">
+发送handleDisconnected消息给cm.requests
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgff6cbed" class="outline-4">
+<h4 id="orgff6cbed"><span class="section-number-4">1.2.8</span> Stop</h4>
+<div class="outline-text-4" id="text-1-2-8">
+<pre class="example">
+该方法先将config里的listeners调用close()
+在调用close(cm.quit)发送退出消息告知各个goroutine
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc75ce5" class="outline-3">
+<h3 id="orgbc75ce5"><span class="section-number-3">1.3</span> 消息传递简图</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+只有一个cm.requests channel，通过传递不同的msg来让connhandler处理，整体还是比较简明清晰，故不作图了。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org34faf8a" class="outline-2">
+<h2 id="org34faf8a"><span class="section-number-2">2</span> End</h2>
+<div class="outline-text-2" id="text-2">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

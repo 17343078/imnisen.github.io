@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>编程语言几点迷思</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2017-06-27</p>
+</div>
+<div id="content">
+<h1 class="title">编程语言几点迷思</h1>
+
+<div id="outline-container-org99eb620" class="outline-2">
+<h2 id="org99eb620">Java vs Lisp</h2>
+<div class="outline-text-2" id="text-org99eb620">
+<p>
+暂时还没有想好怎么描述这两种现象，故取代表性的两种语言。
+</p>
+</div>
+<div id="outline-container-orgeea6b99" class="outline-3">
+<h3 id="orgeea6b99">语言的表达力强的语言好于表达力弱的语言</h3>
+<div class="outline-text-3" id="text-orgeea6b99">
+<p>
+表达力强的语言一定好于表达力弱的语言吗？
+</p>
+
+<p>
+毋庸置疑，lisp的表达力是远高于java的，无论是macro, 还是对编程范式不强制性。
+</p>
+
+<p>
+什么是好，对于不同的使用者答案并不一样。在一流的hacker手里，表达力越强使用起来越自由，生产力也越高。对于普通使用者可能差异并不明显。而对于一定规模的组织使用者来说，表达力越强，代码会需要一定的规范来控制和限制，才能产生一个多人可共同维护和参与的效果，这点上可能可以部分解释为什么大型企业偏睐java这一类限制性很强的语言。
+</p>
+
+<p>
+这自然而然引出下面探讨的一点
+</p>
+</div>
+</div>
+<div id="outline-container-org8a005c2" class="outline-3">
+<h3 id="org8a005c2">限制和自由</h3>
+<div class="outline-text-3" id="text-org8a005c2">
+<p>
+java对于语言使用添加了很多限制，防止使用者做傻事，而lisp则拥有极大的自由，允许你做任何能做的事。
+</p>
+
+<p>
+这两种设计或者哲学思想在产品中也很常见，像windows和unix，apple os和android。
+</p>
+
+<p>
+站在编程语言发展的角度来看，限制的好处在于帮人们约定一定的条件，出来的代码或者软件互相之间可以方便地交流沟通借鉴，由此使得整个生态更加健康，而较低的沟通和学习成本以及健康的生态会吸引更多的人来贡献和完善，形成良性的循环。这也解释了java生态生命力如此旺盛的现象。反观lisp社区间缺乏统一的凝聚，各自分裂成几块，新生面孔少，跟语言自由的特性或许脱不了关系。
+</p>
+
+<p>
+站在个人使用者的角度来看，同样水平的人使用lisp的生产力要比使用java要高。因为使用lisp直接切中要害地解决问题，而是用java在解决问题的同时会额外承担一些限制导致的消耗。对于个人或者小型项目来说这些消耗没有必要成了累赘和繁琐，而对于一定规模的组织来说，这些消耗是使整个团队效率最大化的必要支出。
+</p>
+
+<p>
+这样推到出的结论是，同等程度熟练下，对于个人或者小项目来说，lisp使得生产力最大化，而在大型组织中，java才是团队效率的保证。
+</p>
+
+<p>
+然而如果考虑到生态这一影响，使用java仿佛站在了巨人的肩膀上，所以推到得到的结论可能更加倾向于使用java。
+</p>
+
+<p>
+所以也解释了很多人喜欢用lisp类语言快速原型，然而用java类语言具体实现。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9a1dc83" class="outline-2">
+<h2 id="org9a1dc83">万能的语言和不同领域挑选适合的语言</h2>
+<div class="outline-text-2" id="text-org9a1dc83">
+<p>
+Paul Graham 在《黑客与画家》中描述过愿意采用100年后的编程语言来作为现在的开发。作者指出编程语言存在一个进化的脉络，一些语言会进入死胡同，所以更倾向于选择靠近主干的语言。另外一方面是，编程语言可以分成两大组成部分：基本运算符的集合（扮演公里角色）以及除运算符以外的其他部分（原则上，这个部分可以用基本运算符表达出来），作者认为基本运算符是决定一种语言是否长期存在的重要因素。内核最小，最简洁干净的编程语言会存在于进化的主干上。第三点是作者看来预测100年后的编程语言可能时间靠谱的做法，因为软件发展以及走过了50年，编程语言的进化速度更响数学符号的进化而不像真正的技术（比如交通和通信）的进化速度，而且未来增长的算力会被合理“浪费掉”。
+</p>
+
+<p>
+在我目前看来，编程语言的发展更像是技术变革的选择，从系统编程选择了C, 网络编程助长了的Java, php、ruby、javascript等在web开发领域的大放异彩，虽然有很多通用型编程语言，但语言的生态已经发展出来适合做一类或者几类特定的事情。当出现新的大的技术变革时，发展一门新语言来解决特定的问题要比在原有语音上演化来得更容易，从经济角度上来说就是成本更小。或许类似于大公司和小公司，当新的浪潮来临时，大公司没有小公司行动迅速，最终会使得某些小公司成为新领域的大公司，也许是因为在大的尺度上人本身的认识倾向于不改变或者是改变本身是件风险很大是事。这容易得出一个结论，大部分通用的编程语言（特别是他们的除运算符的其他部分）更像是领域特定语言，擅长解决特定领域的问题。
+</p>
+
+<p>
+所以说，假设100年后还有编程语言，现在使用100年后的语言真的好吗？我认为从语言核心上来说是这样，但从领域或生态上来说，100年后的问题现在并不存在，挑选最能解决现在问题的语言，然后跟随着进化的主干道，挑选最适合新领域的语言思想和工具，因为学习一门新语言的成本并不太高，当100年后，使用的语言自然就是最能解决问题的最先进的。
+</p>
+
+<p>
+让我想起一个有趣的比喻手里拿着锤子，看见什么都觉得是个钉子。不禁思考，如果考虑到学习一门新语言的成本可能小于旧语言演化的成本，追寻一门统一的通吃的编程语言意义真的有那么大吗？
+</p>
+</div>
+</div>
+<div id="outline-container-orge36bdf3" class="outline-2">
+<h2 id="orge36bdf3">变种问题</h2>
+<div class="outline-text-2" id="text-orge36bdf3">
+<p>
+往小处来看的话，一个变种的问题是，编程采用普通的文本编辑器还是集成的开发环境，采用vim类还是emacs类。和编程语言不同的地方在于，编程工具更是单独面向用户的，好比在一家大的企业中你写出的程序别人需要读懂但你用的编程工具并不一定别人要理解。以后再思考整理。
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

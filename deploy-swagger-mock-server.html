@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Swagger-mock-server的一个尝试</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2017-09-10</p>
+</div>
+<div id="content">
+<h1 class="title">Swagger-mock-server的一个尝试</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb1100dd">1. 概要</a></li>
+<li><a href="#org7f32f68">2. Mock Server</a></li>
+<li><a href="#org2d7d29c">3. UI</a></li>
+<li><a href="#orgd93d429">4. Editor</a></li>
+<li><a href="#orgba6c3f9">5. 安装使用和工作流</a></li>
+<li><a href="#org0430646">6. 参考资源</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb1100dd" class="outline-2">
+<h2 id="orgb1100dd"><span class="section-number-2">1</span> 概要</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在前后端分离的企业api开发流程中，有时候会面临前端同学等待后端同学实现接口的情况。
+为了避免时间上的浪费，可以采取先制定API文档再前后端并行开发的方式。
+前端同学可以直接调用接口获得临时性的假数据，而不影响工作流畅性。
+</p>
+
+<p>
+Swagger规范是一种通用的api文档格式，本文记录的是根据swagger文档自动生成假数据的一次尝试。
+</p>
+
+<p>
+项目Github地址见: <a href="https://github.com/imnisen/swagger-mock-server">imnisen/swagger-mock-server </a>。
+</p>
+
+<p>
+声明：这个项目还不完善，目前的阶段是：“能用”。距离达到 “清晰合理的架构”，“简单明了的开发部署”，“完善的功能”目标还需要努力。如果你有更好的做法或者意见建议欢迎通过issuse或者email联系我。
+</p>
+
+<p>
+该项目实现的功能是：根据swagger文档，mock server 来生成假数据，这样便于实际开发中，定义好api后，前后端并行开发。
+</p>
+
+<p>
+该项目除了mock server以外还包含了查看接口ui和开发时使用的editor.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org7f32f68" class="outline-2">
+<h2 id="org7f32f68"><span class="section-number-2">2</span> Mock Server</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+“Mock server”的实现是基于swagger的这个node <a href="https://github.com/swagger-api/swagger-node">项目</a>， <code>server目录</code> 下面的内容是执行参考<a href="https://github.com/swagger-api/swagger-node#2-create-a-new-swagger-project">这里</a> 生成的。
+</p>
+
+<p>
+为了支持多种假数据生成的要求，对依赖的一个模块进行了hack, 所以安装使用的时候会发现有这么一步: <code>cp swagger-router.js node_modules/swagger-tools/middleware/swagger-router.js</code>, 实际上是替换了 <code>swagger-router.js</code> 里107行 <code>getMockValue</code> 函数。
+</p>
+
+<p>
+这个hack的方法是参考了<a href="http://blog.kazaff.me/2016/09/21/%E5%A6%82%E4%BD%95%E5%9F%BA%E4%BA%8E%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E6%A8%A1%E6%8B%9F%E6%95%B0%E6%8D%AE/">这篇</a> 博文，然后修复实际使用中发现的一些问题。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2d7d29c" class="outline-2">
+<h2 id="org2d7d29c"><span class="section-number-2">3</span> UI</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+UI部分是采用的<a href="https://github.com/swagger-api/swagger-ui">官方</a> 的ui工具，为了方便直接将内容提取到了 <code>ui/dist目录</code> 下，该目录对应于这个 <a href="https://github.com/swagger-api/swagger-ui/tree/master/dist">github目录</a> 便于以后“手工升级”(汗)。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd93d429" class="outline-2">
+<h2 id="orgd93d429"><span class="section-number-2">4</span> Editor</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+实际使用的体验是，mock server对于swagger语法解析的要求要比ui要求严格，也就是说有些不合swagger规范的写法ui可以辨识，但却会导致mock server 不能正常解析以至于不能正常启动，所以拥有一个严格的swagger语法编辑器显得挺重要。官方提供了<a href="https://swagger.io/swagger-editor/">swagger editor</a>，但它不能方便地选择默认编辑的文件和自动保存，所以每次使用时得手动选择要编辑的文件，编辑完之后再保存回去，这使得整体流程有些复杂。好在上面的swagger node项目里包含了 swagger editor，所以我在 <code>server/package.json</code> 里简单配置了下，可以使用 <code>npm run edit</code> 命令直接运行一个监听9999端口的editor, 该editor直接编辑 <code>doc/swagger.yaml</code> 文件，并且所有改动会自动保存。
+</p>
+
+<p>
+而且编辑swagger文件应该是开发阶段的行为，所以构建服务的时候，swagger editor并没有暴露出来对外使用（也就是说不能直接修改服务端的swagger文档）。另外一点是我还没有找到合适的方法。在服务器端使用docker部署时按需求定制swagger editor。留待以后探究。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgba6c3f9" class="outline-2">
+<h2 id="orgba6c3f9"><span class="section-number-2">5</span> 安装使用和工作流</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+分位两个阶段：开发和部署。
+</p>
+
+<p>
+开发的时候，因为要使用到editor所以推荐本地安装，依赖 <code>npm</code> ，需要全局安装npm包 <code>swagger</code>,并且在 <code>server</code> 目录下执行 <code>npm install</code> 来安装所需依赖，最后将hack的 <code>swagger-router.js</code> 复制到对应位置，启动的时候通过 <code>npm run server</code> 和 <code>npm run edit</code> 分别启动  mock server 和 打开编辑器， swagger ui 也可以启动，通过 <code>docker-compose up -d swagger_ui</code> 来启动，并且在7777端口可以查看，但因为有editor，其提供了视图所以不是很必须。
+</p>
+
+<p>
+部署的时候不需要使用editor,所以使用docker compsoe可以直接启动mocker 和 ui, 并且通过7777和8888访问， <code>server/Dockerfile</code> 里干掉了大部分上面需要手动做的事情，还是比较方便的。
+</p>
+
+<p>
+具体安装还请参考github项目里说明
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0430646" class="outline-2">
+<h2 id="org0430646"><span class="section-number-2">6</span> 参考资源</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="https://github.com/swagger-api/swagger-node">https://github.com/swagger-api/swagger-node</a></li>
+<li><a href="http://blog.kazaff.me/2016/09/21/%E5%A6%82%E4%BD%95%E5%9F%BA%E4%BA%8E%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E6%A8%A1%E6%8B%9F%E6%95%B0%E6%8D%AE/">http://blog.kazaff.me/2016/09/21/如何基于接口文档生成模拟数据/</a></li>
+<li><a href="https://github.com/swagger-api/swagger-node/blob/master/docs/mock-mode.md">https://github.com/swagger-api/swagger-node/blob/master/docs/mock-mode.md</a></li>
+<li><a href="https://github.com/swagger-api/swagger-node/issues/384">https://github.com/swagger-api/swagger-node/issues/384</a></li>
+<li>Another mock server : <a href="https://github.com/BigstickCarpet/swagger-express-middleware">https://github.com/BigstickCarpet/swagger-express-middleware</a></li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

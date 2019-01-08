@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DropDown Select In Angular</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2015-09-27</p>
+</div>
+<div id="content">
+<h1 class="title">DropDown Select In Angular</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org661c486">1. Summary</a></li>
+<li><a href="#orgb3da703">2. Single dropdown select</a></li>
+<li><a href="#org2539cbf">3. Multle-select dropdown select</a></li>
+<li><a href="#orge1ec959">4. Cascading dropdown seletion</a>
+<ul>
+<li><a href="#org334c216">4.1. First solution:</a>
+<ul>
+<li><a href="#orgfbb37bd">4.1.1. Problem left</a></li>
+</ul>
+</li>
+<li><a href="#org72fba7e">4.2. Second Solution</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org661c486" class="outline-2">
+<h2 id="org661c486"><span class="section-number-2">1</span> Summary</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+I am using angularjs as mobile web framework in my project, and when I
+use dropdown select control I find interesting things.
+</p>
+
+<p>
+<b>Enviroment</b> : angularjs 1.4.6, odoo 8.0(server side), pycharm, chrome,
+ubuntu 14.04
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3da703" class="outline-2">
+<h2 id="orgb3da703"><span class="section-number-2">2</span> Single dropdown select</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Firstly, if I want to make a single dropdown select, I using as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-html">&lt;<span style="color: #f5871f;">select</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"select1"</span> <span style="color: #eab700;">ng-model</span>=<span style="color: #3e999f;">"model1"</span> <span style="color: #eab700;">ng-options</span>=<span style="color: #3e999f;">"option1.id as option1.name for option1 in options1"</span>&gt;
+      &lt;<span style="color: #f5871f;">option</span> <span style="color: #eab700;">value</span>=<span style="color: #3e999f;">""</span>&gt;---Pick One---&lt;/<span style="color: #f5871f;">option</span>&gt;
+ &lt;/<span style="color: #f5871f;">select</span>&gt;
+</pre>
+</div>
+
+<p>
+In this case,options1 is a array containing objects, such as
+<code>[{id:1,name:'apple'},{id:2,name:'pear'}].</code> When I choose one
+option1.name, the model1 is binding to option1.id. Also, the options1
+can be a object, or <code>option1.id as option1.name</code> can write in other ways
+depend on needs, you can learn more refer to
+<a href="https://docs.angularjs.org/api/ng/directive/ngOptions">Angularjs doc</a>.
+</p>
+
+<p>
+Back to example, When I want to generate the options, data from server
+is like this: <code>[{id:1,name:'apple'},{id:2,name:'pear'}].</code>, of course
+remember dump to json. And when I <code>console.info()</code> in the browser, It
+adds <code>$$hashkey</code> to each object, the data becomes this:
+<code>[{id:1,name:'apple',$$hashKey: "object:123"},{id:2,name:'pear',$$hashKey: "object:124"}]</code>,But
+<code>$$hashkey</code> doesn't affect others. If I want the options selected when
+the page loaded, I also afferent the <code>id</code> from server side, so I can set
+the model1 to id to make it selected.
+</p>
+
+<p>
+When option is selected, just post the data of model1 to server,so the
+server knows which one is selected.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2539cbf" class="outline-2">
+<h2 id="org2539cbf"><span class="section-number-2">3</span> Multle-select dropdown select</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Secondly, I want to multle-select dropdown select. that's simple, just
+add <code>multiple</code>"multiple"= to HTML conrol like following:
+</p>
+
+<pre class="example">
+&lt;select name="select2" ng-model="model2" ng-options="option2.id as option2.name for option2 in options2" multiple="multiple"&gt;
+    &lt;option value=""&gt;---Pick Many---&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>
+From the browser side,simply,the Get data(from server) is like this
+format:
+<code>[{id:1,name:'apple'},{id:2,name:'pear'},{id:3,name:'orange'}]</code>,(also,angular
+will add <code>$$hashkey</code> in each object) and if you want pre-selected, also
+set model2 to id list ,the format like this <code>[1,3]</code>. The Post data is
+like <code>{ids:"[1,3]"}</code>, rember to tranfer to json using:
+<code>JSON.stringify()</code> before post to server.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge1ec959" class="outline-2">
+<h2 id="orge1ec959"><span class="section-number-2">4</span> Cascading dropdown seletion</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Finnally, I want make a cascading dropdown seletion, for example, I want
+to pick country, state, area in turn, here I make up two ways.
+</p>
+</div>
+
+<div id="outline-container-org334c216" class="outline-3">
+<h3 id="org334c216"><span class="section-number-3">4.1</span> First solution:</h3>
+<div class="outline-text-3" id="text-4-1">
+<pre class="example">
+&lt;!-- HTML --&gt;
+&lt;select ng-model="selectedCountry" ng-change="selectedUnit=''" ng-options="country as country.name for country in countries" &gt;
+    &lt;option value=""&gt;---Pick Country---&lt;/option&gt;
+&lt;/select&gt;
+&lt;select ng-model="selectedState" ng-change="selectedArea=''" ng-options="state as state.name for state in selectedCountry.state"&gt;
+    &lt;option value=""&gt;---Pick State---&lt;/option&gt;
+&lt;/select&gt;
+&lt;select ng-model="selectedArea" ng-options="area as area.name for area in selectedState.area"&gt;
+    &lt;option value=""&gt;---Pick Area---&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<pre class="example">
+#Get data from server like this
+[
+{id:1,name:"country1",state:[
+    {id:101,name:"state1",area:[{id:10101,name:"area1"},{id:10102,name:"area2"},{id:10103,name:"area3"}]},
+    {id:102,name:"state2",area:[{id:10201,name:"area4"},{id:10202,name:"area5"},{id:10203,name:"area6"}]},
+    {id:103,name:"state3",area:[{id:10301,name:"area7"},{id:10302,name:"area8"},{id:10303,name:"area9"}]}
+                            ]
+},
+{id:2,name:"country2",state:[
+    {id:201,name:"state4",area:[{id:20101,name:"area11"},{id:20102,name:"area12"},{id:20103,name:"area13"}]},
+    {id:202,name:"state5",area:[{id:20201,name:"area14"},{id:20202,name:"area15"},{id:20203,name:"area16"}]},
+    {id:203,name:"state6",area:[{id:20301,name:"area17"},{id:20302,name:"area18"},{id:20303,name:"area19"}]}
+                            ]
+},
+{id:3,name:"country3",state:[
+    {id:301,name:"state7",area:[{id:30101,name:"area31"},{id:30102,name:"area32"},{id:30103,name:"area33"}]},
+    {id:302,name:"state8",area:[{id:30201,name:"area34"},{id:30202,name:"area35"},{id:30203,name:"area36"}]},
+    {id:303,name:"state9",area:[{id:30301,name:"area37"},{id:30302,name:"area38"},{id:30303,name:"area39"}]}
+                            ]
+}
+]
+
+#Also,when angularjs get this data(of json format) from server,it tanfer it, and add $$haskkey to each object,including object in object.
+</pre>
+
+<p>
+So,if i want to pre-select options, I need also get the country id,state
+id,and area id from the server, and in angularjs controller, use the
+given id to get object from transfered data(in order to get
+\[haskkey also, I didn't do this on server because in server data don't contain `\]hashkey`),so
+the three object may look like this:
+</p>
+
+<pre class="example">
+//selectedCountry
+{$$hashkey:"objectxx",id:2,name:"country2",state:[
+    {$$hashkey:"objectxx",id:201,name:"state4",area:[{$$hashkey:"objectxx",id:20101,name:"area11"},{$$hashkey:"objectxx",id:20102,name:"area12"},{$$hashkey:"objectxx",id:20103,name:"area13"}]},
+    {$$hashkey:"objectxx",id:202,name:"state5",area:[{$$hashkey:"objectxx",id:20201,name:"area14"},{$$hashkey:"objectxx",id:20202,name:"area15"},{$$hashkey:"objectxx",id:20203,name:"area16"}]},
+    {$$hashkey:"objectxx",id:203,name:"state6",area:[{$$hashkey:"objectxx",id:20301,name:"area17"},{$$hashkey:"objectxx",id:20302,name:"area18"},{$$hashkey:"objectxx",id:20303,name:"area19"}]}
+                            ]
+}
+
+//selectedState
+{$$hashkey:"objectxx",id:202,name:"state5",area:[{$$hashkey:"objectxx",id:20201,name:"area14"},{$$hashkey:"objectxx",id:20202,name:"area15"},{$$hashkey:"objectxx",id:20203,name:"area16"}]}
+
+//selectedArea
+{$$hashkey:"objectxx",id:20202,name:"area15"}
+</pre>
+
+<p>
+In this case,it can work. If you set selectedCountry or selectedState or
+selectedArea without <code>$$hashkey</code>, It don't show pre-selected data I
+want.
+</p>
+
+<p>
+The <b>problem</b> of this method is:when the data gets more, each time I
+load this page, the server will caculate to generate this format data(or
+you can store it depend on your need), and the client side will caculate
+also to get the hash key.It is slow and waste performance because in
+most case, the data is the same(also depend on your situation).
+</p>
+
+<p>
+What is <code>$$hashkey</code>? I find this answer from
+<a href="http://stackoverflow.com/questions/18826320/what-is-the-hashkey-added-to-my-json-stringify-result">stackoverflow</a>:
+&gt;Angular adds this to keep track of your changes, so it knows when it
+needs to update the DOM.If you use angular.toJson(obj) instead of
+JSON.stringify(obj) then Angular will strip out these internal-use
+values for you.
+</p>
+
+<blockquote>
+<p>
+Also, if you change your repeat expression to use the track by
+{uniqueProperty} suffix, Angular won't have to add $$hashKey at all.
+For example
+</p>
+</blockquote>
+
+<pre class="example">
+&lt;ul&gt;
+    &lt;li ng-repeat="link in navLinks track by link.href"&gt;
+        &lt;a ng-href="link.href"&gt;{{link.title}}&lt;/a&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<blockquote>
+<p>
+Just always remember you need the "link." part of the expression - I
+always tend to forget that. Just track by href will surely not work.
+</p>
+</blockquote>
+
+<p>
+Another helpful: &gt;In my use case (feeding the resulting object to X2JS)
+the recommended approach
+</p>
+
+<blockquote>
+<p>
+data = angular.toJson(source); help to remove the $$hashKey
+properties, but the result could then no longer be processed by X2JS.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+data = angular.copy(source); removed the $$hashKey properties as well,
+but the result remained usable as a parameter for X2JS.
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-orgfbb37bd" class="outline-4">
+<h4 id="orgfbb37bd"><span class="section-number-4">4.1.1</span> Problem left</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+Then I wonder if I remove <code>$$hashkey</code> all, would it work and be simpler
+for data processing?
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org72fba7e" class="outline-3">
+<h3 id="org72fba7e"><span class="section-number-3">4.2</span> Second Solution</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+However, I choose the second solution:
+</p>
+
+<pre class="example">
+&lt;!--HTML--&gt;
+&lt;select ng-model="vm.newCountryId" ng-change="vm.getState()" ng-options="country.id as country.name for country in vm.countrys" &gt;
+    &lt;option value=""&gt;--select country--&lt;/option&gt;
+&lt;/select&gt;
+&lt;select ng-model="vm.newStateId" ng-change="vm.getArea()" ng-options="state.id as state.name for state in vm.states" &gt;
+    &lt;option value=""&gt;--select state--&lt;/option&gt;
+&lt;/select&gt;
+&lt;select ng-model="vm.newAreaId" ng-options="area.id as area.name for area in vm.areas" &gt;
+    &lt;option value=""&gt;--select area--&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>
+And function (also getCountry()),getState(),vm.getArea() I write in
+angular controller to get data list from server. So each time when i
+select a value, it trigger a funtion to get data from server.Also in the
+funtion I use the Id to point what data I want get from server.The code
+is some like this:
+</p>
+
+<pre class="example">
+//  In controller
+vm.getArea = function(){
+
+            //Needs attention here
+            if(vm.newStateId==null){
+                vm.newAreaId=null;
+                return;
+            }
+
+            dataService.getArea(vm.newStateId)
+            .then(function (data)
+            {
+                vm.areas = data;
+                $timeout(function () {
+                }, 1000);
+            },
+            function (error) {
+                toaster.pop('error', "errormsg", "errormsg...");
+            });
+        };
+</pre>
+
+<pre class="example">
+//process pre-select data from server. Just get 3 id from the server, and the get one by one from server
+if(data['country_id']){
+    vm.newCountryId = data['country_id'];
+    vm.getState();
+    if(data['state_id']){
+        vm.newStateId = data['state_id'];
+        vm.getArea();
+        if(data['area_id']){
+            vm.newAreaId = data['area_id'];
+        }
+    }
+}
+</pre>
+
+<p>
+In this method, Post data is just 3 ids. This is simple, and speed fast
+comparing the former solution.And the data and logic is also simple and
+clear.
+</p>
+
+<p>
+This is my first blog, maybe it looks verbose and not clearly, I am
+sorry for that, I will keep trying to make it better.:)
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

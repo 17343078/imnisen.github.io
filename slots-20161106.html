@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python类的 <code>__slots__</code> 属性</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-10</p>
+</div>
+<div id="content">
+<h1 class="title">Python类的 <code>__slots__</code> 属性</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org82789c8">1. 为什么有 <code>__slots__</code> 属性?</a></li>
+<li><a href="#orge72bebb">2. 用法</a></li>
+<li><a href="#org31e19e5">3. 测试</a>
+<ul>
+<li><a href="#org5828a77">3.1. 访问速度测试</a></li>
+<li><a href="#org1ba5cc9">3.2. 内存占用参考</a></li>
+</ul>
+</li>
+<li><a href="#orgd2b1a81">4. 注意事项</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org82789c8" class="outline-2">
+<h2 id="org82789c8"><span class="section-number-2">1</span> 为什么有 <code>__slots__</code> 属性?</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+默认情况下，python对象队象的每个实例(instance)都会有一个字典来存储该实例的属性，这样做的好处在于运行时期每个对象可以任意设置新的属性。而相对应的坏处是，当创建成百上千个这样的实例的时候回很浪费内存。所以引入 <code>__slots__</code> ，用来指定实例只拥有固定的属性，因此python会给每个实例对象分配固定的内存空间，从而减少内存消耗。而且使用 <code>__slots__</code> 可以加快属性的访问。
+</p>
+</div>
+</div>
+<div id="outline-container-orge72bebb" class="outline-2">
+<h2 id="orge72bebb"><span class="section-number-2">2</span> 用法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<code>__slots__</code> 可以被设置成属性名称的字符串，可遍历的对象或者序列。
+之前在看odoo源码缓存相关的内容时，看到过下面这个例子：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">class</span> <span style="color: #4271ae;">ormcache_counter</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">object</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">""" Statistic counters for cache entries. """</span>
+    <span style="color: #eab700;">__slots__</span> = <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'hit'</span>, <span style="color: #3e999f;">'miss'</span>, <span style="color: #3e999f;">'err'</span><span style="color: #4d4d4c;">]</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__init__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.hit = 0
+        <span style="color: #718c00;">self</span>.miss = 0
+        <span style="color: #718c00;">self</span>.err = 0
+
+    <span style="color: #4271ae;">@property</span>
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">ratio</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">return</span> 100.0 * <span style="color: #718c00;">self</span>.hit / <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>.hit + <span style="color: #718c00;">self</span>.miss <span style="color: #718c00;">or</span> 1<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+这里创建了一个用来记录每个方法缓存情况的对象，因为对于需要每个缓存的方法，都会创建一个该实例来记录缓存的状况(比如缓存用到或没用的次数等)，所以为了节省内存加快访问速度这里指定了该对象拥有的三个属性。
+</p>
+</div>
+</div>
+<div id="outline-container-org31e19e5" class="outline-2">
+<h2 id="org31e19e5"><span class="section-number-2">3</span> 测试</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org5828a77" class="outline-3">
+<h3 id="org5828a77"><span class="section-number-3">3.1</span> 访问速度测试</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+timeit是python一个用来简单测试运行时间的模块，详细可参见<a href="https://docs.python.org/2/library/timeit.html">官方文档</a>。
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">In Python2.7</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">test1.py</span>
+<span style="color: #718c00;">import</span> timeit
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">Foo</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">object</span><span style="color: #4d4d4c;">)</span>: <span style="color: #eab700;">__slots__</span> = <span style="color: #3e999f;">'foo'</span>,
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">Bar</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">object</span><span style="color: #4d4d4c;">)</span>: <span style="color: #718c00;">pass</span>
+
+<span style="color: #eab700;">slotted</span> = Foo<span style="color: #4d4d4c;">()</span>
+<span style="color: #eab700;">not_slotted</span> = Bar<span style="color: #4d4d4c;">()</span>
+
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_set_delete_fn</span><span style="color: #4d4d4c;">(</span>obj<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_set_delete</span><span style="color: #4d4d4c;">()</span>:
+        <span style="color: #eab700;">obj.foo</span> = <span style="color: #3e999f;">'foo'</span>
+        obj.foo
+        <span style="color: #718c00;">del</span> obj.foo
+    <span style="color: #718c00;">return</span> get_set_delete
+
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">In REPL</span>
+&gt;&gt;&gt; <span style="color: #718c00;">from</span> test1 <span style="color: #718c00;">import</span> *
+&gt;&gt;&gt; <span style="color: #8959a8;">min</span><span style="color: #4d4d4c;">(</span>timeit.repeat<span style="color: #3e999f;">(</span>get_set_delete_fn<span style="color: #eab700;">(</span>not_slotted<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #8959a8;">min</span><span style="color: #4d4d4c;">(</span>timeit.repeat<span style="color: #3e999f;">(</span>get_set_delete_fn<span style="color: #eab700;">(</span>not_slotted<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+0.24305510520935059
+&gt;&gt;&gt; <span style="color: #8959a8;">min</span><span style="color: #4d4d4c;">(</span>timeit.repeat<span style="color: #3e999f;">(</span>get_set_delete_fn<span style="color: #eab700;">(</span>slotted<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #8959a8;">min</span><span style="color: #4d4d4c;">(</span>timeit.repeat<span style="color: #3e999f;">(</span>get_set_delete_fn<span style="color: #eab700;">(</span>slotted<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+0.21287798881530762
+</pre>
+</div>
+<p>
+可以看见，使用 <code>__slots__</code> 的对象有更快的访问速度，虽然在python2.7中差别没有在python3中那么明显
+</p>
+</div>
+</div>
+<div id="outline-container-org1ba5cc9" class="outline-3">
+<h3 id="org1ba5cc9"><span class="section-number-3">3.2</span> 内存占用参考</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+关于内存占用情况的测试我还没测，但可以参考 <a href="http://stackoverflow.com/questions/472000/usage-of-slots"> stackoverflow上的测试</a>，我这里机(无)智(耻)地取个结果：
+</p>
+<div class="org-src-container">
+<pre class="src src-example"># 单位 bytes
+attrs  __slots__    no slots declared + __dict__
+none       16        64 (+ 280 if __dict__ referenced)
+one        56        64 + 280
+two        64        64 + 280
+six        96        64 + 1048
+22        224        64 + 3352
+</pre>
+</div>
+<p>
+可以明显看到内存占用减少的情况。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd2b1a81" class="outline-2">
+<h2 id="orgd2b1a81"><span class="section-number-2">4</span> 注意事项</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<code>__dict__</code> 可以理解成类里面存储属性的字典，
+</p>
+<ol class="org-ol">
+<li>当一个类A继承自一个没有定义 <code>__slots__</code> 的类B时，A是有 <code>__dict__</code> 属性，这是再定义 <code>__slots__</code> 属性没有意义， 不能达到限制内存的作用</li>
+<li>当尝试给一个定义了 <code>__slots__</code> 的类，而没有定义 <code>__dict__</code> 的类设置不在 <code>__slots__</code> 指定的那些属性时，会导致一个"AttributeError"</li>
+</ol>
+<p>
+其它注意请参照<a href="https://docs.python.org/3/reference/datamodel.html#notes-on-using-slots">文档</a>
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

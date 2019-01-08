@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BIP68(nSequence)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-12-17</p>
+</div>
+<div id="content">
+<h1 class="title">BIP68(nSequence)</h1>
+
+
+<div id="outline-container-org6513d70" class="outline-2">
+<h2 id="org6513d70"><span class="section-number-2">1</span> BIP地址</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki">BIP65</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">BIP: 68
+Layer: Consensus (soft fork)
+Title: Relative lock-time using consensus-enforced sequence numbers
+Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
+        BtcDrak &lt;btcdrak@gmail.com&gt;
+        Nicolas Dorier &lt;nicolas.dorier@gmail.com&gt;
+        kinoshitajona &lt;kinoshitajona@gmail.com&gt;
+Comments-Summary: No comments yet.
+Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0068
+Status: Final
+Type: Standards Track
+Created: 2015-05-28
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org28c8824" class="outline-2">
+<h2 id="org28c8824"><span class="section-number-2">2</span> 原因和目的</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+BIP68重新定义了 <code>TxIn.Sequence</code> 的语义。影响miner在挖矿时，是否挖该transaction。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #718c00;">type</span> <span style="color: #4271ae;">MsgTx</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        Version  int32
+        TxIn     <span style="color: #3e999f;">[]</span>*<span style="color: #4271ae;">TxIn</span>
+        TxOut    <span style="color: #3e999f;">[]</span>*<span style="color: #4271ae;">TxOut</span>
+        LockTime uint32
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">TxIn defines a bitcoin transaction input.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">TxIn</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        PreviousOutPoint OutPoint
+        SignatureScript  <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>
+        Witness          TxWitness
+        Sequence         uint32   <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&lt;----- Here</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">OutPoint defines a bitcoin data type that is used to track previous</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transaction outputs.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">OutPoint</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        Hash  chainhash.Hash
+        Index uint32
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+<p>
+原始的 <code>TxIn.Sequence</code> 的目的是，在内存池中的transaction会被指向同一个input但拥有较高的Sequence的transaction替换。
+但由于奖励机制（原来的transaction奖励更多），矿工不一定会遵守这个规则。所以BIP68重新定义了sequence字段。
+</p>
+
+
+
+<p>
+<code>MsgTx.LockTime</code> 用来保证该transaction在某一locktime后才会被挖出。
+</p>
+
+<p>
+<code>MsgTx.TxIn.Sequence</code> 用来保证该transaction在花费的TxIn指向的block后的一定blocks或者时间后才会被挖出。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgbb17976" class="outline-2">
+<h2 id="orgbb17976"><span class="section-number-2">3</span> 细节</h2>
+<div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li><code>MsgTx.Version</code> 要&gt;=2</li>
+
+<li>用到了bip113(TODO add link)里定义的median-time-past(MTP)</li>
+
+<li>由于sequence字段是32位的， 1&lt;&lt;31的bit(Disable Flag)， 用来表示是否禁用该bip定义的relative lock time语义</li>
+
+<li>1&lt;&lt;22的bit(Type Flag)， 用来区分该relative lock-time是基于时间的还是区块的</li>
+
+<li>1&lt;&lt;22的bit为1，那么该定义的relative lock time是基于时间的，基本的时间单位是512s（因为一个Block的生成需要600s,为了保证大概相同的时间用time-based和lock-based需要的bit差不多，所以取了最近的 <code>512=2^9</code> 为基本单位）。
+如果该值为0， 则表示该input可以被包含到任意block。
+如果该值为n, 那么表示可以被包含到MTP在， <code>TxIn.PreviousOutPoint.Hash</code> 指代的transaction所在的Block的MTP+n*512s 之后的blocks</li>
+
+<li>1&lt;&lt;22的bit为0，那么该定义的relative lock time是基于Block数量的，
+如果该值为0， 则表示该input可以被包含到任意block。
+如果该值为n, 那么表示可以被包含到， <code>TxIn.PreviousOutPoint.Hash</code> 指代的transaction所在的Block的n个blocks之后的blocks</li>
+
+<li>BIP65仅定义了sequence32位中的16位，所以计算relative lock time时需要 <code>0x0000ffff</code> 掩码，16位保证了大概 <code>(2^16-1)*512 / 2600 / 24 =388.35days</code> 一年的时间</li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-org828880c" class="outline-2">
+<h2 id="org828880c"><span class="section-number-2">4</span> 其它</h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li>采用BIP9定义的"versionbits"的bit 0来部署</li>
+<li>Bitcoin主网，开始时间为midnight 1st May 2016 UTC (Epoch timestamp 1462060800), timeout时间为midnight 1st May 2017 UTC (Epoch timestamp 1493596800).</li>
+<li>需要和BIP112,BIP113同时部署</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org6be5870" class="outline-2">
+<h2 id="org6be5870"><span class="section-number-2">5</span> 代码示例</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+代码来自btcd的blockchain/chain.go
+</p>
+
+<p>
+计算sequenceLock
+</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">calcSequenceLock computes the relative lock-times for the passed</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transaction. See the exported version, CalcSequenceLock for further details.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This function MUST be called with the chain state lock held (for writes).</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>b *<span style="color: #4271ae;">BlockChain</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">calcSequenceLock</span><span style="color: #4d4d4c;">(</span>node *<span style="color: #4271ae;">blockNode</span>, tx *<span style="color: #4271ae;">btcutil.Tx</span>, utxoView *<span style="color: #4271ae;">UtxoViewpoint</span>, mempool <span style="color: #4271ae;">bool</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span>*<span style="color: #4271ae;">SequenceLock</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">A value of -1 for each relative lock type represents a relative time</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">lock value that will allow a transaction to be included in a block</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">at any given height or time. This value is returned as the relative</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">lock time in the case that BIP 68 is disabled, or has not yet been</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">activated.</span>
+        sequenceLock := &amp;<span style="color: #4271ae;">SequenceLock</span><span style="color: #3e999f;">{</span>Seconds: -1, BlockHeight: -1<span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The sequence locks semantics are always active for transactions</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">within the mempool.</span>
+        csvSoftforkActive := mempool
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If we're performing block validation, then we need to query the BIP9</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">state.</span>
+        <span style="color: #718c00;">if</span> !csvSoftforkActive <span style="color: #3e999f;">{</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Obtain the latest BIP9 version bits state for the</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">CSV-package soft-fork deployment. The adherence of sequence</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">locks depends on the current soft-fork state.</span>
+                csvState, err := b.<span style="color: #f5871f;">deploymentState</span><span style="color: #eab700;">(</span>node.parent, chaincfg.DeploymentCSV<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">return</span> <span style="color: #4271ae;">nil</span>, err
+                <span style="color: #eab700;">}</span>
+                csvSoftforkActive = csvState == ThresholdActive
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If the transaction's version is less than 2, and BIP 68 has not yet</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">been activated then sequence locks are disabled. Additionally,</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">sequence locks don't apply to coinbase transactions Therefore, we</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">return sequence lock values of -1 indicating that this transaction</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">can be included within a block at any given height or time.</span>
+        mTx := tx.<span style="color: #f5871f;">MsgTx</span><span style="color: #3e999f;">()</span>
+        sequenceLockActive := mTx.Version &gt;= 2 &amp;&amp; csvSoftforkActive
+        <span style="color: #718c00;">if</span> !sequenceLockActive || <span style="color: #f5871f;">IsCoinBase</span><span style="color: #3e999f;">(</span>tx<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> sequenceLock, <span style="color: #4271ae;">nil</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Grab the next height from the PoV of the passed blockNode to use for</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">inputs present in the mempool.</span>
+        nextHeight := node.height + 1
+
+        <span style="color: #718c00;">for</span> txInIndex, txIn := <span style="color: #718c00;">range</span> mTx.TxIn <span style="color: #3e999f;">{</span>
+                utxo := utxoView.<span style="color: #f5871f;">LookupEntry</span><span style="color: #eab700;">(</span>txIn.PreviousOutPoint<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> utxo == <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+                        str := fmt.<span style="color: #f5871f;">Sprintf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"output %v referenced from "</span>+
+                                <span style="color: #3e999f;">"transaction %s:%d either does not exist or "</span>+
+                                <span style="color: #3e999f;">"has already been spent"</span>, txIn.PreviousOutPoint,
+                                tx.<span style="color: #f5871f;">Hash</span><span style="color: #4271ae;">()</span>, txInIndex<span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">return</span> sequenceLock, <span style="color: #f5871f;">ruleError</span><span style="color: #718c00;">(</span>ErrMissingTxOut, str<span style="color: #718c00;">)</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If the input height is set to the mempool height, then we</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">assume the transaction makes it into the next block when</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">evaluating its sequence blocks.</span>
+                inputHeight := utxo.<span style="color: #f5871f;">BlockHeight</span><span style="color: #eab700;">()</span>
+                <span style="color: #718c00;">if</span> inputHeight == 0x7fffffff <span style="color: #eab700;">{</span>
+                        inputHeight = nextHeight
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Given a sequence number, we apply the relative time lock</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">mask in order to obtain the time lock delta required before</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">this input can be spent.</span>
+                sequenceNum := txIn.Sequence
+                relativeLock := <span style="color: #f5871f;">int64</span><span style="color: #eab700;">(</span>sequenceNum &amp; wire.SequenceLockTimeMask<span style="color: #eab700;">)</span>
+
+                <span style="color: #718c00;">switch</span> <span style="color: #eab700;">{</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Relative time locks are disabled for this input, so we can</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">skip any further calculation.</span>
+                <span style="color: #718c00;">case</span> sequenceNum&amp;wire.SequenceLockTimeDisabled == wire.SequenceLockTimeDisabled:
+                        <span style="color: #718c00;">continue</span>
+                <span style="color: #718c00;">case</span> sequenceNum&amp;wire.SequenceLockTimeIsSeconds == wire.SequenceLockTimeIsSeconds:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This input requires a relative time lock expressed</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">in seconds before it can be spent.  Therefore, we</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">need to query for the block prior to the one in</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">which this input was included within so we can</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">compute the past median time for the block prior to</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the one which included this referenced output.</span>
+                        prevInputHeight := inputHeight - 1
+                        <span style="color: #718c00;">if</span> prevInputHeight &lt; 0 <span style="color: #718c00;">{</span>
+                                prevInputHeight = 0
+                        <span style="color: #718c00;">}</span>
+                        blockNode := node.<span style="color: #f5871f;">Ancestor</span><span style="color: #718c00;">(</span>prevInputHeight<span style="color: #718c00;">)</span>
+                        medianTime := blockNode.<span style="color: #f5871f;">CalcPastMedianTime</span><span style="color: #718c00;">()</span>
+
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Time based relative time-locks as defined by BIP 68</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">have a time granularity of RelativeLockSeconds, so</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">we shift left by this amount to convert to the</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">proper relative time-lock. We also subtract one from</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the relative lock to maintain the original lockTime</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">semantics.</span>
+                        timeLockSeconds := <span style="color: #718c00;">(</span>relativeLock &lt;&lt; wire.SequenceLockTimeGranularity<span style="color: #718c00;">)</span> - 1
+                        timeLock := medianTime.<span style="color: #f5871f;">Unix</span><span style="color: #718c00;">()</span> + timeLockSeconds
+                        <span style="color: #718c00;">if</span> timeLock &gt; sequenceLock.Seconds <span style="color: #718c00;">{</span>
+                                sequenceLock.Seconds = timeLock
+                        <span style="color: #718c00;">}</span>
+                <span style="color: #718c00;">default</span>:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">The relative lock-time for this input is expressed</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">in blocks so we calculate the relative offset from</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the input's height as its converted absolute</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">lock-time. We subtract one from the relative lock in</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">order to maintain the original lockTime semantics.</span>
+                        blockHeight := inputHeight + <span style="color: #f5871f;">int32</span><span style="color: #718c00;">(</span>relativeLock-1<span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">if</span> blockHeight &gt; sequenceLock.BlockHeight <span style="color: #718c00;">{</span>
+                                sequenceLock.BlockHeight = blockHeight
+                        <span style="color: #718c00;">}</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> sequenceLock, <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+检查sequence是否满足条件
+</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#33410;&#36873;&#33258; blockchain/validate.go &#30340; checkConnectBlock&#26041;&#27861;</span>
+<span style="color: #718c00;">if</span> csvState == ThresholdActive <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If the CSV soft-fork is now active, then modify the</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">scriptFlags to ensure that the CSV op code is properly</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">validated during the script checks bleow.</span>
+        scriptFlags |= txscript.ScriptVerifyCheckSequenceVerify
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">We obtain the MTP of the *previous* block in order to</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">determine if transactions in the current block are final.</span>
+        medianTime := node.parent.<span style="color: #f5871f;">CalcPastMedianTime</span><span style="color: #3e999f;">()</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Additionally, if the CSV soft-fork package is now active,</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">then we also enforce the relative sequence number based</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">lock-times within the inputs of all transactions in this</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">candidate block.</span>
+        <span style="color: #718c00;">for</span> _, tx := <span style="color: #718c00;">range</span> block.<span style="color: #f5871f;">Transactions</span><span style="color: #3e999f;">()</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">A transaction can only be included within a block</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">once the sequence locks of *all* its inputs are</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">active.</span>
+                sequenceLock, err := b.<span style="color: #f5871f;">calcSequenceLock</span><span style="color: #eab700;">(</span>node, tx, view,
+                        <span style="color: #4271ae;">false</span><span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">return</span> err
+                <span style="color: #eab700;">}</span>
+                <span style="color: #718c00;">if</span> !<span style="color: #f5871f;">SequenceLockActive</span><span style="color: #eab700;">(</span>sequenceLock, node.height,
+                        medianTime<span style="color: #eab700;">)</span> <span style="color: #eab700;">{</span>
+                        str := fmt.<span style="color: #f5871f;">Sprintf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"block contains "</span> +
+                                <span style="color: #3e999f;">"transaction whose input sequence "</span> +
+                                <span style="color: #3e999f;">"locks are not met"</span><span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">return</span> <span style="color: #f5871f;">ruleError</span><span style="color: #718c00;">(</span>ErrUnfinalizedTx, str<span style="color: #718c00;">)</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">SequenceLockActive determines if a transaction's sequence locks have been</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">met, meaning that all the inputs of a given transaction have reached a</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">height or time sufficient for their relative lock-time maturity.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">SequenceLockActive</span><span style="color: #4d4d4c;">(</span>sequenceLock *<span style="color: #4271ae;">SequenceLock</span>, blockHeight <span style="color: #4271ae;">int32</span>,
+        medianTimePast <span style="color: #4271ae;">time.Time</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">bool</span> <span style="color: #4d4d4c;">{</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If either the seconds, or height relative-lock time has not yet</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">reached, then the transaction is not yet mature according to its</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">sequence locks.</span>
+        <span style="color: #718c00;">if</span> sequenceLock.Seconds &gt;= medianTimePast.<span style="color: #f5871f;">Unix</span><span style="color: #3e999f;">()</span> ||
+                sequenceLock.BlockHeight &gt;= blockHeight <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">false</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> <span style="color: #4271ae;">true</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48526d6" class="outline-2">
+<h2 id="org48526d6"><span class="section-number-2">6</span> END</h2>
+<div class="outline-text-2" id="text-6">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

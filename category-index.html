@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keeping Looking, Don't Settle</title>
+<meta name="generator" content="Org mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./static/css/orgcss-customize.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div style="float:right;"><span style="margin-right:10px"><a href="index.html" style="color: #333;font-size: .8em;">主页</a></span><span><a href="about-me.html" style="color: #333;font-size: .8em;">关于</a></span></div>
+</div>
+<div id="content">
+<h1 class="title">Keeping Looking, Don't Settle</h1>
+
+<div id="outline-container-org6703d32" class="outline-2">
+<h2 id="org6703d32">区块链</h2>
+<div class="outline-text-2" id="text-org6703d32">
+</div>
+<div id="outline-container-org4fecd18" class="outline-3">
+<h3 id="org4fecd18"><a href="borromean-ring-signature.html">Borromean环形签名探究</a></h3>
+</div>
+<div id="outline-container-org03d4283" class="outline-3">
+<h3 id="org03d4283"><a href="near-contract-to-chain.html">NEAR应用与区块链交互解析</a></h3>
+</div>
+<div id="outline-container-org6b5389b" class="outline-3">
+<h3 id="org6b5389b"><a href="near-contract-develop.html">浅尝NEAR智能合约开发</a></h3>
+</div>
+<div id="outline-container-org55186ee" class="outline-3">
+<h3 id="org55186ee"><a href="decred-pos-ticket.html">Decred买票、中票、退票的设计</a></h3>
+</div>
+<div id="outline-container-org305c5b6" class="outline-3">
+<h3 id="org305c5b6"><a href="read-go-ethereum.html">go-ethereum源码阅读笔记</a></h3>
+</div>
+<div id="outline-container-org24e882f" class="outline-3">
+<h3 id="org24e882f"><a href="btcd-code-connmgr.html">BTCD源码阅读笔记-connmgr</a></h3>
+</div>
+<div id="outline-container-org55857d6" class="outline-3">
+<h3 id="org55857d6"><a href="btcd-code-netsync.html">BTCD源码阅读笔记-netsync</a></h3>
+</div>
+<div id="outline-container-org0f90003" class="outline-3">
+<h3 id="org0f90003"><a href="btcd-code-peer.html">BTCD源码阅读笔记-peer</a></h3>
+</div>
+<div id="outline-container-org2aeb0eb" class="outline-3">
+<h3 id="org2aeb0eb"><a href="btcd-code-database.html">BTCD源码分析之database存储</a></h3>
+</div>
+<div id="outline-container-org526feee" class="outline-3">
+<h3 id="org526feee"><a href="lightning-network-htlcs.html">理解闪电网络2——引入HTLCs</a></h3>
+</div>
+<div id="outline-container-org9beab79" class="outline-3">
+<h3 id="org9beab79"><a href="lightning-network-payment-channel.html">理解闪电网络1——支付通道(payment channel)</a></h3>
+</div>
+<div id="outline-container-org62e9c79" class="outline-3">
+<h3 id="org62e9c79"><a href="bip0112.html">BIP112(CHECKSEQUENCEVERIFY)</a></h3>
+</div>
+<div id="outline-container-org81815d3" class="outline-3">
+<h3 id="org81815d3"><a href="bip0068.html">BIP68(nSequence)</a></h3>
+</div>
+<div id="outline-container-org4f74464" class="outline-3">
+<h3 id="org4f74464"><a href="bip0065.html">BIP65(CHECKLOCKTIMEVERIFY)</a></h3>
+</div>
+<div id="outline-container-org41b7044" class="outline-3">
+<h3 id="org41b7044"><a href="bip0113.html">BIP113(Median Time Past)</a></h3>
+</div>
+<div id="outline-container-org24a238f" class="outline-3">
+<h3 id="org24a238f"><a href="bip0034.html">BIP34(Block v2, Height in Coinbase)</a></h3>
+</div>
+<div id="outline-container-org1069e07" class="outline-3">
+<h3 id="org1069e07"><a href="bip0030.html">BIP30(duplicate transactions)</a></h3>
+</div>
+<div id="outline-container-orga2bf356" class="outline-3">
+<h3 id="orga2bf356"><a href="bip0009.html">BIP9(Version Bits)</a></h3>
+</div>
+<div id="outline-container-org4bbeaad" class="outline-3">
+<h3 id="org4bbeaad"><a href="bip0016.html">BIP16(P2SH)</a></h3>
+</div>
+<div id="outline-container-org910cdbc" class="outline-3">
+<h3 id="org910cdbc"><a href="bitcoin-malleability.html">比特币交易的延展性问题(Transaction Malleability)</a></h3>
+</div>
+<div id="outline-container-org002b23a" class="outline-3">
+<h3 id="org002b23a"><a href="kademlia.html">Kademlia协议简述</a></h3>
+</div>
+<div id="outline-container-org06d8138" class="outline-3">
+<h3 id="org06d8138"><a href="fabric-build-test-network.html">搭建一个Fabric网络</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-org2662e05" class="outline-3">
+<h3 id="org2662e05"><a href="fabric-configtxgen.html">Fabric configtxgen的配置文件简介</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-org58c6a73" class="outline-3">
+<h3 id="org58c6a73"><a href="fabric-cryptogen.html">Fabric账号、cryptogen和fabirc-ca</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-orgb8be15d" class="outline-3">
+<h3 id="orgb8be15d"><a href="ethereum-q-and-a.html">以太坊(ethereum) Q&amp;A</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="updated">updated</span></span></h3>
+</div>
+</div>
+
+<div id="outline-container-orge381ba0" class="outline-2">
+<h2 id="orge381ba0">Common Lisp</h2>
+<div class="outline-text-2" id="text-orge381ba0">
+</div>
+<div id="outline-container-org654f0fa" class="outline-3">
+<h3 id="org654f0fa"><a href="common-lisp-tips.html">Common Lisp Tips</a></h3>
+</div>
+<div id="outline-container-org97d1266" class="outline-3">
+<h3 id="org97d1266"><a href="learn-onlisp.html">阅读 OnLisp</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span>&#xa0;<span class="updated">updated</span></span></h3>
+</div>
+<div id="outline-container-org9bbac81" class="outline-3">
+<h3 id="org9bbac81"><a href="udp-usocket.html">CommonLisp UDP库usocket使用心得</a></h3>
+</div>
+<div id="outline-container-orgbac7508" class="outline-3">
+<h3 id="orgbac7508"><a href="hunchentoot-main-architecture.html">Hunchentoot源码分析之架构流程</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">源码阅读</span></span></h3>
+</div>
+<div id="outline-container-org01aa7c3" class="outline-3">
+<h3 id="org01aa7c3"><a href="slime-multi-lisp.html">Slime多lisp启动</a></h3>
+</div>
+<div id="outline-container-orgb6cfd01" class="outline-3">
+<h3 id="orgb6cfd01"><a href="create-tcp-server-in-asyncio-cl-async.html">Asyncio与cl-async创建TCPServer对比</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">源码阅读</span></span></h3>
+</div>
+</div>
+
+<div id="outline-container-orga3c1ee4" class="outline-2">
+<h2 id="orga3c1ee4">Python</h2>
+<div class="outline-text-2" id="text-orga3c1ee4">
+</div>
+<div id="outline-container-org0a09cd8" class="outline-3">
+<h3 id="org0a09cd8"><a href="bytes-string-convert.html">Python3和golang中bytes与string的转换</a></h3>
+</div>
+<div id="outline-container-org93201ec" class="outline-3">
+<h3 id="org93201ec"><a href="python-profile-thoughts.html">Python性能分析思路</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-org84d9730" class="outline-3">
+<h3 id="org84d9730"><a href="sqlalchemy-alembic.html">Python数据模型构建和迁移方案：SQLAlchemy&amp;Alembic</a></h3>
+</div>
+<div id="outline-container-org06b0e86" class="outline-3">
+<h3 id="org06b0e86"><a href="decorator_order-20161217.html">Python装饰器顺序探究</a></h3>
+</div>
+<div id="outline-container-org8661392" class="outline-3">
+<h3 id="org8661392"><a href="decorator_parameters-20161217.html">Python装饰器参数探究</a></h3>
+</div>
+<div id="outline-container-orga2cbda4" class="outline-3">
+<h3 id="orga2cbda4"><a href="python_call_c-20161128.html">Python外部函数调用库ctypes</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-org6697acc" class="outline-3">
+<h3 id="org6697acc"><a href="locale_problem-20161124.html">locale多语言模块和我遇到的坑</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+<div id="outline-container-org20e2cde" class="outline-3">
+<h3 id="org20e2cde"><a href="image_type-20161123.html">Python探测图片文件类型</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+<div id="outline-container-org5f21d2a" class="outline-3">
+<h3 id="org5f21d2a"><a href="optimise_tips-20161118.html">Python代码优化技巧</a></h3>
+</div>
+<div id="outline-container-org4b741fa" class="outline-3">
+<h3 id="org4b741fa"><a href="profiling-20161117.html">Python性能分析工具简介</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-orgf8e283c" class="outline-3">
+<h3 id="orgf8e283c"><a href="slots-20161106.html">Python类的 <code>__slots__</code> 属性</a></h3>
+</div>
+<div id="outline-container-org9cb4f53" class="outline-3">
+<h3 id="org9cb4f53"><a href="odoo-new-api.html">Odoo新式api心得</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+<div id="outline-container-org98a3342" class="outline-3">
+<h3 id="org98a3342"><a href="odoo-notes.html">Odoo Tips or Tricks</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+<div id="outline-container-org1c4b802" class="outline-3">
+<h3 id="org1c4b802"><a href="generate-static-files-with-pelican.html">Pelican使用经验总结</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-org7be1536" class="outline-3">
+<h3 id="org7be1536"><a href="odoo-model.html">Using Odoo(about Model)</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-org1a956bc" class="outline-3">
+<h3 id="org1a956bc"><a href="develop-blog-with-flask.html">Develop Blog With Flask</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+</div>
+
+<div id="outline-container-org079d156" class="outline-2">
+<h2 id="org079d156">算法</h2>
+<div class="outline-text-2" id="text-org079d156">
+</div>
+<div id="outline-container-org0d08ab8" class="outline-3">
+<h3 id="org0d08ab8"><a href="gcd.html">最大公约数算法</a></h3>
+</div>
+</div>
+<div id="outline-container-orgad47a99" class="outline-2">
+<h2 id="orgad47a99">系统搭建</h2>
+<div class="outline-text-2" id="text-orgad47a99">
+</div>
+<div id="outline-container-org8fd3b06" class="outline-3">
+<h3 id="org8fd3b06"><a href="deploy-elk-stack.html">搭建ELK技术栈</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+<div id="outline-container-org7363d6f" class="outline-3">
+<h3 id="org7363d6f"><a href="deploy-docker-registry.html">搭建Docker私有仓库</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+<div id="outline-container-orgf253f41" class="outline-3">
+<h3 id="orgf253f41"><a href="deploy-swagger-mock-server.html">Swagger-mock-server的一个尝试</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h3>
+</div>
+</div>
+
+<div id="outline-container-org6e135c3" class="outline-2">
+<h2 id="org6e135c3">杂谈</h2>
+<div class="outline-text-2" id="text-org6e135c3">
+</div>
+<div id="outline-container-orge411a92" class="outline-3">
+<h3 id="orge411a92"><a href="funny-regex.html">正则趣谈</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">杂谈</span></span></h3>
+</div>
+<div id="outline-container-orgcdbaa7d" class="outline-3">
+<h3 id="orgcdbaa7d"><a href="some-confusion.html">编程语言几点迷思</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">杂谈</span></span></h3>
+</div>
+<div id="outline-container-orgdf6fea7" class="outline-3">
+<h3 id="orgdf6fea7"><a href="hello-lisp-again.html">Hello Lisp Again</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+</div>
+
+<div id="outline-container-orgf773357" class="outline-2">
+<h2 id="orgf773357">其它</h2>
+<div class="outline-text-2" id="text-orgf773357">
+</div>
+<div id="outline-container-org7c78b21" class="outline-3">
+<h3 id="org7c78b21"><a href="golang-programing-traps.html">Go语言编程踩坑</a></h3>
+</div>
+<div id="outline-container-org88eb18e" class="outline-3">
+<h3 id="org88eb18e"><a href="read-gfs-paper.html">GFS论文阅读笔记</a></h3>
+</div>
+<div id="outline-container-org72f37ba" class="outline-3">
+<h3 id="org72f37ba"><a href="understanding-cryptography.html">读《深入浅出密码学》</a></h3>
+</div>
+<div id="outline-container-orge0bdbec" class="outline-3">
+<h3 id="orge0bdbec"><a href="lock-semphore-condition-variable-monitor.html">Lock,Semphore,Condition Variable和Monitor</a></h3>
+</div>
+<div id="outline-container-org632c7c3" class="outline-3">
+<h3 id="org632c7c3"><a href="table-join.html">数据库表join查询的几种方式</a></h3>
+</div>
+<div id="outline-container-orgffab042" class="outline-3">
+<h3 id="orgffab042"><a href="read-go-in-action.html">Go in Action 不完全阅读笔记</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h3>
+</div>
+<div id="outline-container-orgd8a4f8f" class="outline-3">
+<h3 id="orgd8a4f8f"><a href="read-eopl3-chapter2.html">读EOPL3第二章(Data Abstraction)</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-org57210a9" class="outline-3">
+<h3 id="org57210a9"><a href="read-eopl3-chapter1.html">读EOPL3第一章(可归纳的数据集)</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-org5f33424" class="outline-3">
+<h3 id="org5f33424"><a href="recognize-device-in-android-studio.html">Recognize Device Error In Android Studio</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-org30cea26" class="outline-3">
+<h3 id="org30cea26"><a href="collapsible-panel-in-angular.html">Collapsible Panel In Angular</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-org29a0a1e" class="outline-3">
+<h3 id="org29a0a1e"><a href="dropdown-select-in-angular.html">DropDown Select In Angular</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+</div>
+<div id="outline-container-orgc4cdfc2" class="outline-3">
+<h3 id="orgc4cdfc2"><a href="nodejs-explore.html">Nodejs初探</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h3>
+<div class="outline-text-3" id="text-orgc4cdfc2">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="validation"></p>
+</div>
+</body>
+</html>

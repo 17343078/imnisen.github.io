@@ -1,0 +1,1585 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Go in Action 不完全阅读笔记</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2017-02-08</p>
+</div>
+<div id="content">
+<h1 class="title">Go in Action 不完全阅读笔记</h1>
+<div class="abstract">
+<p>
+最近为了了解Go语言，翻阅了<a href="https://www.amazon.cn/dp/1617291781/ref=sr_1_2?ie=UTF8&amp;qid=1518097011&amp;sr=8-2&amp;keywords=go+in+action">Go in Action</a>大部分内容，这里做个阅读笔记，内容大部分取自原书。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org543be7e">1. packaging and tooling</a>
+<ul>
+<li><a href="#orgdd8b88e">1.1. package</a></li>
+<li><a href="#org22ae8f2">1.2. tool</a></li>
+</ul>
+</li>
+<li><a href="#org2dcd911">2. Arrays,slices, and maps</a>
+<ul>
+<li><a href="#orgbddbe34">2.1. Array</a>
+<ul>
+<li><a href="#org5674f31">2.1.1. 声明和初始化数组</a></li>
+<li><a href="#org6b7573d">2.1.2. 做参数传递时考虑传递数组的地址</a></li>
+</ul>
+</li>
+<li><a href="#org4507bc0">2.2. Slice</a>
+<ul>
+<li><a href="#orgd60f8b8">2.2.1. 创建slice</a></li>
+<li><a href="#org094b4a8">2.2.2. 操作slice的方法</a></li>
+</ul>
+</li>
+<li><a href="#org80579d5">2.3. Map</a>
+<ul>
+<li><a href="#org4efbed1">2.3.1. 底层实现</a></li>
+<li><a href="#org6a584ae">2.3.2. 创建和初始化</a></li>
+<li><a href="#orgdda71eb">2.3.3. 操作map</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org684078d">3. Go's type system</a>
+<ul>
+<li><a href="#org8d51acf">3.1. user defined type</a></li>
+<li><a href="#orgc4eb5a3">3.2. Methods</a></li>
+<li><a href="#org34d2431">3.3. The nature of types</a></li>
+<li><a href="#org68d40a1">3.4. Interfaces</a></li>
+<li><a href="#org1925c62">3.5. Type embedding</a></li>
+<li><a href="#org2af10c2">3.6. Exporting and unexporting identifiers</a></li>
+</ul>
+</li>
+<li><a href="#org71d37d5">4. Concurrency</a>
+<ul>
+<li><a href="#org6bd1831">4.1. Race conditions</a></li>
+<li><a href="#org73a43c7">4.2. Locking shared resources</a>
+<ul>
+<li><a href="#org4c69ea2">4.2.1. Atomic functions</a></li>
+<li><a href="#orgc517270">4.2.2. Mutexes</a></li>
+<li><a href="#org756f58e">4.2.3. Channels</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org69a0915">5. <span class="todo TODO">TODO</span> Concurrency patterns</a>
+<ul>
+<li><a href="#org3a2764e">5.1. Runner</a></li>
+<li><a href="#org70eafcd">5.2. Polling</a></li>
+<li><a href="#orgfd44cc3">5.3. Work</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org543be7e" class="outline-2">
+<h2 id="org543be7e"><span class="section-number-2">1</span> packaging and tooling</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>文件头的"package main" 告诉编译器这是一个command(可执行文件), 如果是"package othername"之类的，告诉编译器这是一个package</li>
+
+<li>go compilers寻找import的package的优先顺序是先找go安装的路径，然后再找GOPATH</li>
+</ol>
+</div>
+<div id="outline-container-orgdd8b88e" class="outline-3">
+<h3 id="orgdd8b88e"><span class="section-number-3">1.1</span> package</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+import 可以从remote import, 比如:
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #718c00;">import</span> <span style="color: #3e999f;">"github.com/spf13/viper"</span>
+</pre>
+</div>
+
+<p>
+import时取别名:
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+   <span style="color: #3e999f;">"fmt"</span>
+    myfmt <span style="color: #3e999f;">"mylib/fmt"</span>
+ <span style="color: #4d4d4c;">)</span>
+</pre>
+</div>
+
+<p>
+当导入的包不用时，编译器会停止编译且报错，这是开发团队故意的一个特性；当有需要导入而不使用的情况下使用"_"操作符
+</p>
+
+<p>
+包的"init"方法可以用来定义在main方法之前执行的方法
+</p>
+</div>
+</div>
+
+<div id="outline-container-org22ae8f2" class="outline-3">
+<h3 id="org22ae8f2"><span class="section-number-3">1.2</span> tool</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+go build
+go get
+go clean
+go run  (both builds and run)
+go vet (简单语法检查)
+go format (格式化代码)
+go doc {package-name}  (terminal中查看本地文档)
+godoc -http=:6060 (本地搭建一个web服务器，可以在浏览器中查看文档，包括标准库和GOPATH中的)
+</p>
+
+<p>
+依赖管理工具:
+</p>
+<ul class="org-ul">
+<li>gedep</li>
+<li>gb</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2dcd911" class="outline-2">
+<h2 id="org2dcd911"><span class="section-number-2">2</span> Arrays,slices, and maps</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgbddbe34" class="outline-3">
+<h3 id="orgbddbe34"><span class="section-number-3">2.1</span> Array</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org5674f31" class="outline-4">
+<h4 id="org5674f31"><span class="section-number-4">2.1.1</span> 声明和初始化数组</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+创建数组时要确定类型和长度，一旦创建好不能再改，如果需要变动长度，就得新建一个的数组，把需要的元素复制过去
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">declare an integer array of five elements</span>
+<span style="color: #718c00;">var</span> array <span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span>
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#37319;&#29992;&#23383;&#38754;&#37327;&#21019;&#24314;&#25968;&#32452;</span>
+array :=<span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40, 50<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20351;&#29992;...&#26102;&#20250;&#26681;&#25454;&#21021;&#22987;&#21270;&#30340;&#20803;&#32032;&#25968;&#37327;&#35273;&#24471;&#25968;&#32452;&#38271;&#24230;</span>
+array := <span style="color: #4d4d4c;">[</span>...<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40, 50<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#25351;&#23450;&#31532;&#19968;&#20010;&#21644;&#31532;&#20108;&#20010;&#20803;&#32032;&#65292; &#20854;&#23427;&#20803;&#32032;&#29992;0&#22635;&#20805;</span>
+array := <span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>1: 10, 2: 20<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#23450;&#20041;&#19968;&#20010;&#25968;&#32452;&#65292;&#20803;&#32032;&#26159;&#25351;&#21521;&#25972;&#24418;&#30340;&#25351;&#38024;&#65292;&#21021;&#22987;&#21270;&#21069;&#20004;&#20010;&#25351;&#38024;&#65288;&#21518;&#38754;&#30340;&#20026;nil&#25351;&#38024;&#65289;</span>
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">Declare an integer pointer array of five elements.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Initialize index 0 and 1 of the array with integer pointers.</span>
+array := <span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span>*<span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>0: <span style="color: #8959a8;">new</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">int</span><span style="color: #3e999f;">)</span>, 1: <span style="color: #8959a8;">new</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">int</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Assign values to index 0 and 1.</span>
+*array<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> = 10
+*array<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span> = 20
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#30456;&#21516;&#31867;&#22411;&#30340;&#25968;&#32452;&#30452;&#25509;&#36171;&#20540;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a string array of five elements.</span>
+<span style="color: #718c00;">var</span> array1 <span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">string</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a second string array of five elements.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Initialize the array with colors.</span>
+array2 := <span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">"Red"</span>, <span style="color: #3e999f;">"Blue"</span>, <span style="color: #3e999f;">"Green"</span>, <span style="color: #3e999f;">"Yellow"</span>, <span style="color: #3e999f;">"Pink"</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Copy the values from array2 into array1.</span>
+array1 = array2
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#24403;&#36171;&#20540;&#30340;&#25968;&#32452;&#26102;&#25351;&#38024;&#25968;&#32452;&#26102;&#65292;&#22797;&#21046;&#30340;&#26159;&#25351;&#38024;&#30340;&#20540;&#65292;&#19981;&#26159;&#25351;&#21521;&#30340;&#20803;&#32032;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a string pointer array of three elements.</span>
+<span style="color: #718c00;">var</span> array1 <span style="color: #4d4d4c;">[</span>3<span style="color: #4d4d4c;">]</span>*<span style="color: #4271ae;">string</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a second string pointer array of three elements.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Initialize the array with string pointers.</span>
+array2 := <span style="color: #4d4d4c;">[</span>3<span style="color: #4d4d4c;">]</span>*<span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span><span style="color: #8959a8;">new</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">string</span><span style="color: #3e999f;">)</span>, <span style="color: #8959a8;">new</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">string</span><span style="color: #3e999f;">)</span>, <span style="color: #8959a8;">new</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">string</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add colors to each element</span>
+*array2<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> = <span style="color: #3e999f;">"Red"</span>
+*array2<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span> = <span style="color: #3e999f;">"Blue"</span>
+*array2<span style="color: #4d4d4c;">[</span>2<span style="color: #4d4d4c;">]</span> = <span style="color: #3e999f;">"Green"</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Copy the values from array2 into array1.</span>
+array1 = array2
+
+<span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#21442;&#35265;&#19979;&#38754;&#22270;&#29255;:</span>
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[</span>file:static/images/<span style="color: #718c00;">go</span>-goinaction-ch3.png<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">]</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#22768;&#26126;&#21644;&#21021;&#22987;&#21270;&#22810;&#32500;&#25968;&#32452;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a two dimensional integer array of four elements</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">by two elements.</span>
+<span style="color: #718c00;">var</span> array <span style="color: #4d4d4c;">[</span>4<span style="color: #4d4d4c;">][</span>2<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Use an array literal to declare and initialize a two</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">dimensional integer array.</span>
+array := <span style="color: #4d4d4c;">[</span>4<span style="color: #4d4d4c;">][</span>2<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">{</span>10, 11<span style="color: #3e999f;">}</span>, <span style="color: #3e999f;">{</span>20, 21<span style="color: #3e999f;">}</span>, <span style="color: #3e999f;">{</span>30, 31<span style="color: #3e999f;">}</span>, <span style="color: #3e999f;">{</span>40, 41<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare and initialize index 1 and 3 of the outer array.</span>
+array := <span style="color: #4d4d4c;">[</span>4<span style="color: #4d4d4c;">][</span>2<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>1: <span style="color: #3e999f;">{</span>20, 21<span style="color: #3e999f;">}</span>, 3: <span style="color: #3e999f;">{</span>40, 41<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare and initialize individual elements of the outer</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">and inner array.</span>
+array := <span style="color: #4d4d4c;">[</span>4<span style="color: #4d4d4c;">][</span>2<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>1: <span style="color: #3e999f;">{</span>0: 20<span style="color: #3e999f;">}</span>, 3: <span style="color: #3e999f;">{</span>1: 41<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#22810;&#32500;&#25968;&#32452;&#38388;&#20063;&#21487;&#20197;&#36171;&#20540;&#65292;&#21482;&#35201;&#20182;&#20204;&#38271;&#24230;&#21644;&#31867;&#22411;&#30456;&#21516;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org6b7573d" class="outline-4">
+<h4 id="org6b7573d"><span class="section-number-4">2.1.2</span> 做参数传递时考虑传递数组的地址</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Allocate an array of 8 megabytes.</span>
+<span style="color: #718c00;">var</span> array <span style="color: #4d4d4c;">[</span>1e6<span style="color: #4d4d4c;">]</span>int
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Pass the address of the array to the function foo.</span>
+<span style="color: #f5871f;">foo</span><span style="color: #4d4d4c;">(</span>&amp;array<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Function foo accepts a pointer to an array of one million integers.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">foo</span><span style="color: #4d4d4c;">(</span>array *<span style="color: #3e999f;">[</span>1e6<span style="color: #3e999f;">]</span>int<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+...
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4507bc0" class="outline-3">
+<h3 id="org4507bc0"><span class="section-number-3">2.2</span> Slice</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Slice类似python里的列表，是可变的数组。Slice的底层是用array实现的。包含3部分信息,参见下图:
+<img src="static/images/go-goinaction-ch4-01.png" alt="go-goinaction-ch4-01.png" />
+包括指向底层数组的指针、slice可使用的长度、底层数组的总长度
+</p>
+</div>
+<div id="outline-container-orgd60f8b8" class="outline-4">
+<h4 id="orgd60f8b8"><span class="section-number-4">2.2.1</span> 创建slice</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">1. &#20351;&#29992;make */</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of strings.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 5 elements.</span>
+slice := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[]</span><span style="color: #4271ae;">string</span>, 5<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length of 3 and has a capacity of 5 elements.</span>
+slice := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[]</span><span style="color: #4271ae;">int</span>, 3, 5<span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">2. &#20351;&#29992;&#23383;&#38754;&#37327;  */</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of strings.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 5 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">"Red"</span>, <span style="color: #3e999f;">"Blue"</span>, <span style="color: #3e999f;">"Green"</span>, <span style="color: #3e999f;">"Yellow"</span>, <span style="color: #3e999f;">"Pink"</span><span style="color: #4d4d4c;">}</span>
+
+/ Create a slice of integers.
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 3 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of strings.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Initialize the 100th element with an empty string.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span>99: <span style="color: #3e999f;">""</span><span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">3. WTF  &#20351;&#29992;&#23383;&#38754;&#37327;&#26102;&#25351;&#23450;&#38271;&#24230;&#23601;&#26159;&#21019;&#24314;&#25968;&#32452;&#65292;&#19981;&#25351;&#23450;&#23601;&#26159;&#21019;&#24314;slice*/</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create an array of three integers.</span>
+array := <span style="color: #4d4d4c;">[</span>3<span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers with a length and capacity of three.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">4 nil and empty  slice */</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a nil slice of integers.</span>
+<span style="color: #718c00;">var</span> slice <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Use make to create an empty slice of integers.</span>
+slice := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[]</span><span style="color: #4271ae;">int</span>, 0<span style="color: #4d4d4c;">)</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Use a slice literal to create an empty slice of integers.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{}</span>
+
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org094b4a8" class="outline-4">
+<h4 id="org094b4a8"><span class="section-number-4">2.2.2</span> 操作slice的方法</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">1. slice&#20999;&#29255; */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 5 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40, 50<span style="color: #4d4d4c;">}</span>
+
+/ Create a new slice.
+newSlice := slice<span style="color: #4d4d4c;">[</span>1:3<span style="color: #4d4d4c;">]</span>
+
+<span style="color: #4271ae;">&#32467;&#26524;&#21442;&#35265;&#22270;&#29255;</span>:
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[</span>file:static/images/<span style="color: #718c00;">go</span>-goincation-ch4-02.png<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">]</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">2 */</span>
+slice&#30340;length&#20197;&#20869;&#26159;&#21487;&#34987;&#35775;&#38382;&#30340;&#65292;capacity&#38271;&#24230;&#26159;&#29992;&#26469;&#22686;&#38271;&#30340;
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">3 &#20351;&#29992;append&#32473;slice&#28155;&#21152;&#20803;&#32032;*/</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 5 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40, 50<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a new slice.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length of 2 and capacity of 4 elements.</span>
+newSlice := slice<span style="color: #4d4d4c;">[</span>1:3<span style="color: #4d4d4c;">]</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Allocate a new element from capacity.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Assign the value of 60 to the new element.</span>
+newSlice = <span style="color: #8959a8;">append</span><span style="color: #4d4d4c;">(</span>newSlice, 60<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4271ae;">&#27169;&#22411;&#22270;&#22914;&#19979;</span>:
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[</span>file:static/images/<span style="color: #718c00;">go</span>-goinaction-ch4-04.png<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">]</span>
+
+&#24403;&#24213;&#23618;&#25968;&#32452;&#38271;&#24230;&#19981;&#22815;&#26102;&#65292;&#20250;&#26032;&#24314;&#19968;&#20010;&#26356;&#22823;&#30340;&#25968;&#32452;&#26367;&#25442;&#23427;&#65292;&#25226;&#21407;&#26469;&#30340;&#20803;&#32032;&#22797;&#21046;&#36807;&#26469;
+&#22686;&#21152;&#30340;&#31639;&#27861;<span style="color: #4d4d4c;">&#65288;</span>&#21487;&#33021;&#20250;&#25913;&#21464;<span style="color: #4d4d4c;">&#65289;</span>&#26159;&#65306;&#24403;&#38271;&#24230;1000&#20197;&#20869;&#26102;&#27599;&#27425;&#22686;&#38271;1&#20493;&#65292;&#36229;&#36807;1000&#21518;&#65292;&#27599;&#27425;&#22686;&#38271;25%
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">4. &#24403;&#32473;&#19968;&#20010;&#20999;&#29255;&#28155;&#21152;&#20803;&#32032;&#26102;&#65292;&#20250;&#25913;&#21464;&#24213;&#23618;&#25968;&#32452;&#65292;&#22914;&#26524;&#24403;&#20004;&#20010;&#20999;&#29255;&#20849;&#20139;&#21516;&#19968;&#24213;&#23618;&#25968;&#32452;&#26102;&#65292;&#21183;&#24517;&#20250;&#30456;&#20114;&#24433;&#21709;</span>
+<span style="color: #8e908c; font-style: italic;">   &#21487;&#20197;&#37319;&#29992;&#19968;&#31181;&#27169;&#24335;&#26469;&#36991;&#20813;&#36825;&#31181;&#20114;&#30456;&#24433;&#21709;</span>
+<span style="color: #8e908c; font-style: italic;">*/</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of strings.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 5 elements.</span>
+source := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">"Apple"</span>, <span style="color: #3e999f;">"Orange"</span>, <span style="color: #3e999f;">"Plum"</span>, <span style="color: #3e999f;">"Banana"</span>, <span style="color: #3e999f;">"Grape"</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Slice the third element and restrict the capacity.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 1 element.</span>
+slice := source<span style="color: #4d4d4c;">[</span>2:3:3<span style="color: #4d4d4c;">]</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Append a new string to the slice.</span>
+slice = <span style="color: #8959a8;">append</span><span style="color: #4d4d4c;">(</span>slice, <span style="color: #3e999f;">"Kiwi"</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4271ae;">&#22914;&#22270;</span>:
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[</span>file:static/images/<span style="color: #718c00;">go</span>-goinaction-ch4-05.png<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">]</span>
+&#20999;&#29255;&#30340;&#26102;&#20505;&#65292;&#25351;&#23450;&#20302;3&#20010;&#20803;&#32032;&#21644;&#31532;&#20108;&#20010;&#19968;&#26679;&#65292;&#36825;&#26679;&#24471;&#21040;&#30340;&#20999;&#29255;&#26159;&#23481;&#37327;&#21644;&#38271;&#24230;&#19968;&#26679;&#30340;&#65292;&#36825;&#31181;&#24773;&#20917;&#19979;&#26032;&#20999;&#29255;&#19978;append&#26032;&#20803;&#32032;&#30340;&#35805;
+&#22240;&#20026;&#24213;&#23618;&#23481;&#37327;&#19981;&#22815;&#65292;&#20250;&#26032;&#21019;&#24314;&#19968;&#20010;&#24213;&#23618;&#25968;&#32452;&#65292;&#25226;&#20803;&#32032;&#22797;&#21046;&#36807;&#21435;&#65292;&#21644;&#20043;&#21069;&#30340;&#20999;&#29255;&#24213;&#23618;&#25968;&#32452;&#23601;&#21487;&#20197;&#38548;&#31163;&#24320;&#20102;&#12290;
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">5. appendke&#25509;&#21463;&#22810;&#20010;&#20803;&#32032;&#65292; &#20351;&#29992;...&#34920;&#31034;&#25152;&#26377;&#20803;&#32032; */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create two slices each initialized with two integers.</span>
+s1 := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>1, 2<span style="color: #4d4d4c;">}</span>
+s2 := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>3, 4<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Append the two slices together and display the results.</span>
+fmt.<span style="color: #f5871f;">Printf</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"%v</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, <span style="color: #8959a8;">append</span><span style="color: #3e999f;">(</span>s1, s2...<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #4271ae;">Output</span>:
+<span style="color: #4d4d4c;">[</span>1 2 3 4<span style="color: #4d4d4c;">]</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">6. &#36941;&#21382;slice */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21487;&#29992;range&#37197;&#21512;for</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 4 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Iterate over each element and display each value.</span>
+<span style="color: #718c00;">for</span> index, value := <span style="color: #718c00;">range</span> slice <span style="color: #4d4d4c;">{</span>
+  fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Index: %d  Value: %d</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, index, value<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #4271ae;">Output</span>:
+<span style="color: #4271ae;">Index</span>: 0  Value: 10
+<span style="color: #4271ae;">Index</span>: 1  Value: 20
+<span style="color: #4271ae;">Index</span>: 2  Value: 30
+<span style="color: #4271ae;">Index</span>: 3  Value: 40
+
+&#35201;&#27880;&#24847;&#30340;&#26159;&#65292;&#24490;&#29615;&#37324;&#30340;index &#26159;&#32034;&#24341;&#20301;&#32622;&#65292;value&#26159;slice&#20803;&#32032;&#20540;&#30340;copy.&#32780;&#19981;&#26159;&#25351;&#21521;&#20803;&#32032;&#30340;&#22320;&#22336;&#65292; &#30475;&#19979;&#38754;&#30340;&#20363;&#23376;
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 4 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Iterate over each element and display the value and addresses.</span>
+<span style="color: #718c00;">for</span> index, value := <span style="color: #718c00;">range</span> slice <span style="color: #4d4d4c;">{</span>
+   fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Value: %d  Value-Addr: %X  ElemAddr: %X</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>,
+       value, &amp;value, &amp;slice<span style="color: #eab700;">[</span>index<span style="color: #eab700;">]</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">Output</span>:
+<span style="color: #4271ae;">Value</span>: 10  Value-Addr: 10500168  ElemAddr: 1052E100
+<span style="color: #4271ae;">Value</span>: 20  Value-Addr: 10500168  ElemAddr: 1052E104
+<span style="color: #4271ae;">Value</span>: 30  Value-Addr: 10500168  ElemAddr: 1052E108
+<span style="color: #4271ae;">Value</span>: 40  Value-Addr: 10500168  ElemAddr: 1052E10C
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#36890;&#24120;&#30340;for&#24490;&#29615;&#36941; &#36941;&#21382;&#20999;&#29255;&#65292;&#21487;&#20197;&#25511;&#21046;&#36215;&#22987;&#20301;&#32622;&#31561;</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of integers.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Contains a length and capacity of 4 elements.</span>
+slice := <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span>10, 20, 30, 40<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Iterate over each element starting at element 3.</span>
+<span style="color: #718c00;">for</span> index := 2; index &lt; <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>slice<span style="color: #4d4d4c;">)</span>; index++ <span style="color: #4d4d4c;">{</span>
+    fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Index: %d  Value: %d</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, index, slice<span style="color: #eab700;">[</span>index<span style="color: #eab700;">]</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">Output</span>:
+<span style="color: #4271ae;">Index</span>: 2  Value: 30
+<span style="color: #4271ae;">Index</span>: 3  Value: 40
+
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">7. &#22810;&#32500;&#20999;&#29255; */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of a slice of integers.</span>
+slice := <span style="color: #4d4d4c;">[][]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">{</span>10<span style="color: #3e999f;">}</span>, <span style="color: #3e999f;">{</span>100, 200<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">}</span>
+
+<span style="color: #4271ae;">&#24213;&#23618;&#26500;&#36896;</span>:
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[</span>file:static/images/<span style="color: #718c00;">go</span>-goinaction-ch4-07.png<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">]</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21516;&#26679;&#20351;&#29992;append&#30340;&#32467;&#26524;</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a slice of a slice of integers.</span>
+slice := <span style="color: #4d4d4c;">[][]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">{</span>10<span style="color: #3e999f;">}</span>, <span style="color: #3e999f;">{</span>100, 200<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Append the value of 20 to the first slice of integers.</span>
+slice<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> = <span style="color: #8959a8;">append</span><span style="color: #4d4d4c;">(</span>slice<span style="color: #3e999f;">[</span>0<span style="color: #3e999f;">]</span>, 20<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4271ae;">&#24213;&#23618;&#26500;&#36896;</span>:
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[</span>file:static/images/<span style="color: #718c00;">go</span>-goinaction-ch4-08.png<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">]</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">8. &#20999;&#29255;&#20316;&#20026;&#20989;&#25968;&#21442;&#25968;&#20540;&#65292;&#30452;&#25509;&#20256;&#36882;&#23601;&#22909;</span>
+<span style="color: #8e908c; font-style: italic;">   &#22240;&#20026;&#20999;&#29255;&#26412;&#36523;&#26159;&#30001;3&#37096;&#20998;&#32452;&#25104;: &#19968;&#20010;addr, &#19968;&#20010;length, &#19968;&#20010; Capacity&#65292;</span>
+<span style="color: #8e908c; font-style: italic;">   &#22312;64-bit&#26550;&#26500;&#19978;&#65292;&#27599;&#20010;&#37096;&#20998;&#21508;&#38656;8bytes&#65292;&#24635;&#20849;24bytes, &#20256;&#36882;&#32473;&#20989;&#25968;&#26159;&#27809;&#38382;&#39064;&#30340;</span>
+<span style="color: #8e908c; font-style: italic;">*/</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org80579d5" class="outline-3">
+<h3 id="org80579d5"><span class="section-number-3">2.3</span> Map</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-org4efbed1" class="outline-4">
+<h4 id="org4efbed1"><span class="section-number-4">2.3.1</span> 底层实现</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+没看太懂:(, 需要了解下一般哈希表怎么实现的
+</p>
+</div>
+</div>
+<div id="outline-container-org6a584ae" class="outline-4">
+<h4 id="org6a584ae"><span class="section-number-4">2.3.2</span> 创建和初始化</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#20351;&#29992;make &#25110;&#32773; &#23383;&#38754;&#37327;&#21019;&#24314; */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a map with a key of type string and a value of type int.</span>
+dict := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">map</span><span style="color: #3e999f;">[</span><span style="color: #4271ae;">string</span><span style="color: #3e999f;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a map with a key and value of type string.</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Initialize the map with 2 key/value pairs.</span>
+dict := <span style="color: #718c00;">map</span><span style="color: #4d4d4c;">[</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">"Red"</span>: <span style="color: #3e999f;">"#da1337"</span>, <span style="color: #3e999f;">"Orange"</span>: <span style="color: #3e999f;">"#e95a22"</span><span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">map&#30340;key&#21482;&#29992;&#33021;&#29992; == &#25805;&#20316;&#31526;&#27604;&#36739;&#21363;&#21487;&#12290;</span>
+<span style="color: #8e908c; font-style: italic;">&#20999;&#29255;&#65292;&#20989;&#25968;&#65292;struct type that contains slice &#19981;&#33021;&#29992;&#20316;map keys, &#20316;value&#27809;&#38382;&#39064;</span>
+<span style="color: #8e908c; font-style: italic;">*/</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a map using a slice of strings as the key.</span>
+dict := <span style="color: #718c00;">map</span><span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">[]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">{}</span>
+Compiler Exception:
+invalid <span style="color: #718c00;">map</span> key <span style="color: #718c00;">type</span> <span style="color: #4d4d4c;">[]</span><span style="color: #4271ae;">string</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a map using a slice of strings as the value.</span>
+dict := <span style="color: #718c00;">map</span><span style="color: #4d4d4c;">[</span><span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">][]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{}</span>
+
+
+
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdda71eb" class="outline-4">
+<h4 id="orgdda71eb"><span class="section-number-4">2.3.3</span> 操作map</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">1. &#36171;&#20540;&#26041;&#27861;&#21644;python&#31867;&#20284; */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create an empty map to store colors and their color codes.</span>
+colors := <span style="color: #718c00;">map</span><span style="color: #4d4d4c;">[</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add the Red color code to the map.</span>
+colors<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">"Red"</span><span style="color: #4d4d4c;">]</span> = <span style="color: #3e999f;">"#da1337"</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">2. nil map &#36171;&#20540;&#30340;&#26102;&#20505;&#20250;&#25253;&#36816;&#34892;&#26102;&#38169;&#35823; */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a nil map by just declaring the map.</span>
+<span style="color: #718c00;">var</span> colors <span style="color: #718c00;">map</span><span style="color: #4d4d4c;">[</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">string</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add the Red color code to the map.</span>
+colors<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">"Red"</span><span style="color: #4d4d4c;">]</span> = <span style="color: #3e999f;">"#da1337"</span>
+Runtime Error:
+<span style="color: #4271ae;">panic</span>: runtime error: assignment to entry in <span style="color: #4271ae;">nil</span> <span style="color: #718c00;">map</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">3. &#20174;map &#21462;&#20540;&#26102;&#65292; &#20250;&#36820;&#22238;&#20004;&#20010;&#20540;&#65292;&#31532;&#19968;&#20010;&#26159;&#20540;&#65292;&#31532;&#20108;&#20010;&#26159;&#34920;&#31034;&#23384;&#19981;&#23384;&#22312;*/</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Retrieve the value for the key "Blue".</span>
+value, exists := colors<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">"Blue"</span><span style="color: #4d4d4c;">]</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Did this key exist?</span>
+<span style="color: #718c00;">if</span> exists <span style="color: #4d4d4c;">{</span>
+    fmt.<span style="color: #f5871f;">Println</span><span style="color: #3e999f;">(</span>value<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">4. &#24403;&#28982;&#20063;&#21487;&#20197;&#30452;&#25509;&#26681;&#25454;&#20294;&#22238;&#21040;&#20540;&#26159;&#19981;&#26159;&#38646;&#20540;&#26469;&#21028;&#26029;key&#26159;&#21542;&#23384;&#22312;&#65292;</span>
+<span style="color: #8e908c; font-style: italic;">&#24403;&#28982;&#36825;&#23616;&#38480;&#20110;&#38646;&#20540;&#19981;&#26159;map&#37324;&#30340;&#26377;&#25928;&#20540;</span>
+<span style="color: #8e908c; font-style: italic;">&#38646;&#20540;&#30340;&#24847;&#24605;&#26159;&#65292;&#27604;&#22914;&#25972;&#24418;&#26159;0&#65292;&#23383;&#31526;&#20018;&#26159;""&#31561;</span>
+<span style="color: #8e908c; font-style: italic;">*/</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Retrieve the value for the key "Blue".</span>
+value := colors<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">"Blue"</span><span style="color: #4d4d4c;">]</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Did this key exist?</span>
+<span style="color: #718c00;">if</span> value != <span style="color: #3e999f;">""</span> <span style="color: #4d4d4c;">{</span>
+    fmt.<span style="color: #f5871f;">Println</span><span style="color: #3e999f;">(</span>value<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">5 &#36941;&#21382;map &#29992;for range */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a map of colors and color hex codes.</span>
+colors := <span style="color: #718c00;">map</span><span style="color: #4d4d4c;">[</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">]</span><span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">{</span>
+    <span style="color: #3e999f;">"AliceBlue"</span>:   <span style="color: #3e999f;">"#f0f8ff"</span>,
+    <span style="color: #3e999f;">"Coral"</span>:       <span style="color: #3e999f;">"#ff7F50"</span>,
+    <span style="color: #3e999f;">"DarkGray"</span>:    <span style="color: #3e999f;">"#a9a9a9"</span>,
+    <span style="color: #3e999f;">"ForestGreen"</span>: <span style="color: #3e999f;">"#228b22"</span>,
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Display all the colors in the map.</span>
+<span style="color: #718c00;">for</span> key, value := <span style="color: #718c00;">range</span> colors <span style="color: #4d4d4c;">{</span>
+    fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Key: %s  Value: %s</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, key, value<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">6. &#21024;&#38500;key/value pair &#29992; delete */</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Remove the key/value pair for the key "Coral".</span>
+<span style="color: #8959a8;">delete</span><span style="color: #4d4d4c;">(</span>colors, <span style="color: #3e999f;">"Coral"</span><span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">7. &#20989;&#25968;&#38388;&#20256;&#36882;map &#20063;&#21482;&#26159;&#20256;&#36882;&#30340;&#23427;&#30340;&#24341;&#29992; */</span>
+
+
+
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org684078d" class="outline-2">
+<h2 id="org684078d"><span class="section-number-2">3</span> Go's type system</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org8d51acf" class="outline-3">
+<h3 id="org8d51acf"><span class="section-number-3">3.1</span> user defined type</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+User-defined types can be declared using the keyword struct or by specifying an existing type.
+其实就是c语言里的struct
+</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">1 &#20351;&#29992;struct&#23450;&#20041; user defined type */</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">user defines a user in the program.</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">user</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+  name string
+  email string
+  ext  int
+  privileged bool
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a variable of type user.</span>
+<span style="color: #718c00;">var</span> bill user
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare a variable of type user and initialize all the fields.</span>
+lisa := <span style="color: #4271ae;">user</span><span style="color: #4d4d4c;">{</span>
+   <span style="color: #4271ae;">name</span>: <span style="color: #3e999f;">"Lisa"</span>,
+   <span style="color: #4271ae;">email</span>: <span style="color: #3e999f;">"lisa@email.com"</span>,
+   <span style="color: #4271ae;">ext</span>: 123,
+   <span style="color: #4271ae;">privileged</span>: <span style="color: #4271ae;">true</span>,
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20063;&#21487;&#20197;&#36825;&#26679;&#21021;&#22987;&#21270;</span>
+lisa := <span style="color: #4271ae;">user</span><span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">"Lisa"</span>, <span style="color: #3e999f;">"lisa@email.com"</span>, 123, <span style="color: #4271ae;">true</span><span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">2. struct &#30340;field&#20063;&#21487;&#20197;&#26159;struct */</span>
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">3. &#21478;&#19968;&#31181;&#23450;&#20041;type &#30340;&#26041;&#27861; */</span>
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">Duration</span> <span style="color: #4271ae;">int64</span>
+&#20854;&#20013;&#65292; int64&#31216;&#20026;Duration&#30340;base <span style="color: #718c00;">type</span>, &#20294;&#36825;&#20004;&#31181;type&#22312;&#32534;&#35793;&#22120;&#30475;&#26469;&#24182;&#19981;&#26159;&#30456;&#21516;&#30340;
+
+01 <span style="color: #718c00;">package</span> main
+02
+03 <span style="color: #718c00;">type</span> <span style="color: #4271ae;">Duration</span> <span style="color: #4271ae;">int64</span>
+04
+05 <span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+06     <span style="color: #718c00;">var</span> dur Duration
+07     dur = <span style="color: #f5871f;">int64</span><span style="color: #3e999f;">(</span>1000<span style="color: #3e999f;">)</span>
+08 <span style="color: #4d4d4c;">}</span>
+
+&#19978;&#36848;&#20195;&#30721;&#32534;&#35793;&#26102;&#20250;&#25253;&#38169;
+prog.<span style="color: #718c00;">go</span>:7: cannot use <span style="color: #f5871f;">int64</span><span style="color: #4d4d4c;">(</span>1000<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">type</span> <span style="color: #4271ae;">int64</span><span style="color: #4d4d4c;">)</span> as <span style="color: #718c00;">type</span> <span style="color: #4271ae;">Duration</span>
+           in assignment
+&#34429;&#28982;&#20004;&#32773;&#31867;&#22411;&#20860;&#23481;&#65292;&#20294;&#32534;&#35793;&#22120;&#19981;&#20250;&#38544;&#24335;&#36716;&#21270;
+
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc4eb5a3" class="outline-3">
+<h3 id="orgc4eb5a3"><span class="section-number-3">3.2</span> Methods</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Methods provide a way to add behavior to user-defined types.
+methods是一个拥有调用者类型的函数（类似面向对象中的方法），它提供了一种方法来向自定义的type上添加行为
+</p>
+<div class="org-src-container">
+<pre class="src src-go">01 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Sample program to show how to declare methods and how the Go</span>
+02 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">compiler supports them.</span>
+03 <span style="color: #718c00;">package</span> main
+04
+05 <span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+06     <span style="color: #3e999f;">"fmt"</span>
+07 <span style="color: #4d4d4c;">)</span>
+08
+09 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">user defines a user in the program.</span>
+10 <span style="color: #718c00;">type</span> <span style="color: #4271ae;">user</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+11     name  string
+12     email string
+13 <span style="color: #4d4d4c;">}</span>
+14
+15 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">notify implements a method with a value receiver.</span>
+16 <span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>u <span style="color: #4271ae;">user</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">notify</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+17    fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Sending User Email To %s&lt;%s&gt;</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>,
+18                u.name,
+19                u.email<span style="color: #3e999f;">)</span>
+20 <span style="color: #4d4d4c;">}</span>
+21
+22 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">changeEmail implements a method with a pointer receiver.</span>
+23 <span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>u *<span style="color: #4271ae;">user</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">changeEmail</span><span style="color: #4d4d4c;">(</span>email <span style="color: #4271ae;">string</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+24     u.email = email
+25 <span style="color: #4d4d4c;">}</span>
+26
+27 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">main is the entry point for the application.</span>
+28 <span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+29     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Values of type user can be used to call methods</span>
+30     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">declared with a value receiver.</span>
+31     bill := <span style="color: #4271ae;">user</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">"Bill"</span>, <span style="color: #3e999f;">"bill@email.com"</span><span style="color: #3e999f;">}</span>
+32     bill.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>
+33
+34     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Pointers of type user can also be used to call methods</span>
+35     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">declared with a value receiver.</span>
+36     lisa := &amp;<span style="color: #4271ae;">user</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">"Lisa"</span>, <span style="color: #3e999f;">"lisa@email.com"</span><span style="color: #3e999f;">}</span>
+37     lisa.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>     <span style="color: #8e908c; font-style: italic;">//  </span><span style="color: #8e908c; font-style: italic;">&#36825;&#37324;&#30456;&#24403;&#20110;(*lisa).notify()</span>
+38
+39     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Values of type user can be used to call methods</span>
+40     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">declared with a pointer receiver.</span>
+41     bill.<span style="color: #f5871f;">changeEmail</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"bill@newdomain.com"</span><span style="color: #3e999f;">)</span>
+42     bill.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>    <span style="color: #8e908c; font-style: italic;">//  </span><span style="color: #8e908c; font-style: italic;">&#36825;&#37324;&#30456;&#24403;&#20110;(&amp;bill).notify()</span>
+43
+44 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Pointers of type user can be used to call methods</span>
+45     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">declared with a pointer receiver.</span>
+46     lisa.<span style="color: #f5871f;">changeEmail</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"lisa@comcast.com"</span><span style="color: #3e999f;">)</span>
+47     lisa.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>
+48 <span style="color: #4d4d4c;">}</span>
+
+&#20540;&#24471;&#27880;&#24847;&#30340;&#26159;&#65292;&#24403;method&#23450;&#20041;&#25509;&#21463;&#30340;&#21442;&#25968;&#21644;&#23454;&#38469;&#35843;&#29992;&#30340;type&#19981;&#31526;&#21512;&#26102;&#65292;&#23427;&#21487;&#33021;&#20250;&#38544;&#24335;&#36716;&#21270;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org34d2431" class="outline-3">
+<h3 id="org34d2431"><span class="section-number-3">3.3</span> The nature of types</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Think of types as having one of two natures, primitive or non-primitive.
+包括
+</p>
+<ul class="org-ul">
+<li>Built-in types: numeric, string, boolean</li>
+<li>Reference types: slice, map, channel, interface, function type</li>
+</ul>
+<p>
+当声明一个reference type时，实际上创建的叫header value, header value里包含一个指针，指向底层的数据结构，
+header value 里还包含了操作底层数据结构的方法。
+</p>
+<ul class="org-ul">
+<li>Struct types</li>
+</ul>
+<p>
+struct type类型使用的时候要考虑是按值传递还是按引用传递。
+下面是摘抄自原文page122的话:
+The decision to use a value or pointer receiver should not be based on whether the method is mutating the receiving value. The decision should be based on the nature of the type. One exception to this guideline is when you need the flexibility that value type receivers provide when working with interface values.
+</p>
+</div>
+</div>
+<div id="outline-container-org68d40a1" class="outline-3">
+<h3 id="org68d40a1"><span class="section-number-3">3.4</span> Interfaces</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+Interfaces are types that declare behavior and provide polymorphism.
+类似java里的接口，利用接口实现多态
+涉及到一个method set rules的问题，看得我半知半解。
+大致是说method定义的时候如果是接受的指针参数，那么调用的时候只能用地址，如果接受的不是指针，那么可以用值或者指针来调用
+附上一张图：
+<img src="static/images/go-goinaction-cha5-01.png" alt="go-goinaction-cha5-01.png" />
+</p>
+
+<p>
+@page130
+</p>
+</div>
+</div>
+<div id="outline-container-org1925c62" class="outline-3">
+<h3 id="org1925c62"><span class="section-number-3">3.5</span> Type embedding</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+Type embedding provides the ability to extend types without the need for
+inheritance.
+类似于类的继承或组合，将一个type嵌在另一个type里面。外面的type拥有里面type的属性。
+看一个type embedding和 interface 一起的例子
+</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #718c00;">package</span> main
+
+<span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+        <span style="color: #3e999f;">"fmt"</span>
+<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">notifier</span> <span style="color: #718c00;">interface</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">user</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        name  string
+        email string
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>u *<span style="color: #4271ae;">user</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">notify</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Sending user email to %s&lt;%s&gt;</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>,
+                u.name,
+                u.email<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">type</span> <span style="color: #4271ae;">admin</span> <span style="color: #718c00;">struct</span> <span style="color: #4d4d4c;">{</span>
+        user   <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">user &#23884;&#22871;&#22312; admin&#37324;</span>
+        level string
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#22806;&#37096;type&#20063;&#23450;&#20041;&#20102;&#25509;&#21475;&#65292;&#35206;&#30422;&#20869;&#37096;&#30340;&#25509;&#21475;</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>a *<span style="color: #4271ae;">admin</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">notify</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Sending admin email to %s&lt;%s&gt;</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>,
+                a.name,
+                a.email<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        ad := <span style="color: #4271ae;">admin</span><span style="color: #3e999f;">{</span>
+                <span style="color: #4271ae;">user</span>: <span style="color: #4271ae;">user</span><span style="color: #eab700;">{</span>
+                        <span style="color: #4271ae;">name</span>:  <span style="color: #3e999f;">"john smith"</span>,
+                        <span style="color: #4271ae;">email</span>: <span style="color: #3e999f;">"john@yahoo.com"</span>,
+                <span style="color: #eab700;">}</span>,
+                <span style="color: #4271ae;">level</span>: <span style="color: #3e999f;">"super"</span>,
+        <span style="color: #3e999f;">}</span>
+
+
+        <span style="color: #f5871f;">sendNotification</span><span style="color: #3e999f;">(</span>&amp;ad<span style="color: #3e999f;">)</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26041;&#27861;&#22806;&#37096;&#25509;&#21475;</span>
+
+        ad.user.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span> <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#30452;&#25509;&#35775;&#38382;&#20869;&#37096;type&#30340;&#26041;&#27861;</span>
+
+        ad.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>
+
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">sendNotification</span><span style="color: #4d4d4c;">(</span>n <span style="color: #4271ae;">notifier</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        n.<span style="color: #f5871f;">notify</span><span style="color: #3e999f;">()</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #4271ae;">output</span>:
+Sending admin email to john smith<a href="mailto:john%40yahoo.com">&lt;john@yahoo.com&gt;</a>
+Sending user email to john smith<a href="mailto:john%40yahoo.com">&lt;john@yahoo.com&gt;</a>
+Sending admin email to john smith<a href="mailto:john%40yahoo.com">&lt;john@yahoo.com&gt;</a>
+
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2af10c2" class="outline-3">
+<h3 id="org2af10c2"><span class="section-number-3">3.6</span> Exporting and unexporting identifiers</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+package里的首字母小写字母的identifiers是unexported，大写字母的是exported
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org71d37d5" class="outline-2">
+<h2 id="org71d37d5"><span class="section-number-2">4</span> Concurrency</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+具体执行原理参见原书page150查看
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/go-goinaction-ch06-01.png" alt="go-goinaction-ch06-01.png" />
+</p>
+</div>
+
+
+<div class="figure">
+<p><img src="static/images/go-goinaction-ch06-02.png" alt="go-goinaction-ch06-02.png" />
+</p>
+</div>
+
+
+<div class="figure">
+<p><img src="static/images/go-goinaction-ch06-03.png" alt="go-goinaction-ch06-03.png" />
+</p>
+</div>
+
+<p>
+一个示例的goroutine
+</p>
+<div class="org-src-container">
+<pre class="src src-go">01 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This sample program demonstrates how to create goroutines and</span>
+02 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">how the scheduler behaves.</span>
+03 <span style="color: #718c00;">package</span> main
+04
+05 <span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+06 <span style="color: #3e999f;">"fmt"</span>
+07 <span style="color: #3e999f;">"runtime"</span>
+08 <span style="color: #3e999f;">"sync"</span>
+09 <span style="color: #4d4d4c;">)</span>
+10
+11 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">main is the entry point for all Go programs.</span>
+12 <span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+13     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Allocate 1 logical processor for the scheduler to use.</span>
+14     runtime.<span style="color: #f5871f;">GOMAXPROCS</span><span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span>
+15
+16     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">wg is used to wait for the program to finish.</span>
+17     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add a count of two, one for each goroutine.</span>
+18     <span style="color: #718c00;">var</span> wg sync.WaitGroup
+19     wg.<span style="color: #f5871f;">Add</span><span style="color: #3e999f;">(</span>2<span style="color: #3e999f;">)</span>
+20
+21     fmt.<span style="color: #f5871f;">Println</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Start Goroutines"</span><span style="color: #3e999f;">)</span>
+22
+23     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare an anonymous function and create a goroutine.</span>
+24     <span style="color: #718c00;">go</span> <span style="color: #718c00;">func</span><span style="color: #3e999f;">()</span> <span style="color: #3e999f;">{</span>
+25         <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Schedule the call to Done to tell main we are done.</span>
+26         <span style="color: #718c00;">defer</span> wg.<span style="color: #f5871f;">Done</span><span style="color: #eab700;">()</span>
+27
+28         <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Display the alphabet three times</span>
+29         <span style="color: #718c00;">for</span> count := 0; count &lt; 3; count++ <span style="color: #eab700;">{</span>
+30             <span style="color: #718c00;">for</span> char := <span style="color: #3e999f;">'a'</span>; char &lt; <span style="color: #3e999f;">'a'</span>+26; char++ <span style="color: #718c00;">{</span>
+31
+32             <span style="color: #718c00;">}</span>
+33         <span style="color: #eab700;">}</span>
+34     <span style="color: #3e999f;">}()</span>
+35
+36     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Declare an anonymous function and create a goroutine.</span>
+37     <span style="color: #718c00;">go</span> <span style="color: #718c00;">func</span><span style="color: #3e999f;">()</span> <span style="color: #3e999f;">{</span>
+38         <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Schedule the call to Done to tell main we are done.</span>
+39         <span style="color: #718c00;">defer</span> wg.<span style="color: #f5871f;">Done</span><span style="color: #eab700;">()</span>
+40
+41         <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Display the alphabet three times</span>
+42         <span style="color: #718c00;">for</span> count := 0; count &lt; 3; count++ <span style="color: #eab700;">{</span>
+43             <span style="color: #718c00;">for</span> char := <span style="color: #3e999f;">'A'</span>; char &lt; <span style="color: #3e999f;">'A'</span>+26; char++ <span style="color: #718c00;">{</span>
+44                   fmt.<span style="color: #f5871f;">Printf</span><span style="color: #4271ae;">(</span><span style="color: #3e999f;">"%c "</span>, char<span style="color: #4271ae;">)</span>
+45             <span style="color: #718c00;">}</span>
+46         <span style="color: #eab700;">}</span>
+47     <span style="color: #3e999f;">}()</span>
+48
+49     <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait for the goroutines to finish.</span>
+50     fmt.<span style="color: #f5871f;">Println</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Waiting To Finish"</span><span style="color: #3e999f;">)</span>
+51     wg.<span style="color: #f5871f;">Wait</span><span style="color: #3e999f;">()</span>
+52
+53     fmt.<span style="color: #f5871f;">Println</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">Terminating Program"</span><span style="color: #3e999f;">)</span>
+54 <span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+<p>
+修改logical processors来达到并行（不是并发），例如:
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #718c00;">import</span> <span style="color: #3e999f;">"runtime"</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Allocate a logical processor for every available core.</span>
+runtime.<span style="color: #f5871f;">GOMAXPROCS</span><span style="color: #4d4d4c;">(</span>runtime.<span style="color: #f5871f;">NumCPU</span><span style="color: #3e999f;">()</span><span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+
+<p>
+It’s important to note that using more than one logical processor doesn’t necessarily mean better performance. Benchmarking is required to understand how your program performs when changing any runtime configuration parameters.
+</p>
+
+<p>
+Remember that goroutines can only run in parallel if there’s more than one logical processor and there’s a physical processor available to run each goroutine simultaneously.
+</p>
+
+
+<p>
+Goroutines are executed within the scope of a logical processor that owns a single operating system thread and run queue.
+</p>
+</div>
+
+<div id="outline-container-org6bd1831" class="outline-3">
+<h3 id="org6bd1831"><span class="section-number-3">4.1</span> Race conditions</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+A race condition is when two or more goroutines attempt to access the same resource.
+示例参见原书page160
+go 有工具检测race conditions
+</p>
+
+<p>
+go build -race  <i>/ Build the code using the race detector flag
+./example       /</i> Run the code
+</p>
+
+<p>
+如果有race conditions,运行的时候会有警告
+</p>
+</div>
+</div>
+<div id="outline-container-org73a43c7" class="outline-3">
+<h3 id="org73a43c7"><span class="section-number-3">4.2</span> Locking shared resources</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Atomic functions and mutexes provide a way to protect against race conditions.
+</p>
+
+<p>
+Channels provide an intrinsic way to safely share data between two goroutines.
+</p>
+
+<p>
+Unbuffered channels provide a guarantee between an exchange of data. Buff-
+ered channels do not.
+</p>
+</div>
+<div id="outline-container-org4c69ea2" class="outline-4">
+<h4 id="org4c69ea2"><span class="section-number-4">4.2.1</span> Atomic functions</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+例如: atomic.AddInt64(&amp;counter, 1), LoadInt64 and StoreInt64
+</p>
+</div>
+</div>
+<div id="outline-container-orgc517270" class="outline-4">
+<h4 id="orgc517270"><span class="section-number-4">4.2.2</span> Mutexes</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<p>
+mutex.Lock(), mutex.Unlock()
+</p>
+</div>
+</div>
+<div id="outline-container-org756f58e" class="outline-4">
+<h4 id="org756f58e"><span class="section-number-4">4.2.3</span> Channels</h4>
+<div class="outline-text-4" id="text-4-2-3">
+<p>
+use make to create channel
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Unbuffered channel of integers.</span>
+unbuffered := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">chan</span> <span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Buffered channel of strings.</span>
+buffered := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">chan</span> <span style="color: #4271ae;">string</span>, 10<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+
+<p>
+向channel传递值
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Buffered channel of strings.</span>
+buffered := <span style="color: #8959a8;">make</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">chan</span> <span style="color: #4271ae;">string</span>, 10<span style="color: #4d4d4c;">)</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Send a string through the channel.</span>
+buffered &lt;- <span style="color: #3e999f;">"Gopher"</span>
+
+</pre>
+</div>
+
+<p>
+从channel取值
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Receive a string from the channel.</span>
+value := &lt;-buffered
+
+</pre>
+</div>
+</div>
+
+<ol class="org-ol">
+<li><a id="org200f72c"></a>Unbuffered channels<br />
+<div class="outline-text-5" id="text-4-2-3-1">
+<p>
+unbuffered channels中 当传输数据时，一方ready后，会block等待另一方
+一个打网球的例子参见page170，代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This sample program demonstrates how to use an unbuffered</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">channel to simulate a game of tennis between two goroutines.</span>
+<span style="color: #718c00;">package</span> main
+
+<span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+        <span style="color: #3e999f;">"fmt"</span>
+        <span style="color: #3e999f;">"math/rand"</span>
+        <span style="color: #3e999f;">"sync"</span>
+        <span style="color: #3e999f;">"time"</span>
+<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">wg is used to wait for the program to finish.</span>
+<span style="color: #718c00;">var</span> wg sync.WaitGroup
+
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">init</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        rand.<span style="color: #f5871f;">Seed</span><span style="color: #3e999f;">(</span>time.<span style="color: #f5871f;">Now</span><span style="color: #eab700;">()</span>.<span style="color: #f5871f;">UnixNano</span><span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">main is the entry point for all Go programs.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create an unbuffered channel.</span>
+        court := <span style="color: #8959a8;">make</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">chan</span> <span style="color: #4271ae;">int</span><span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add a count of two, one for each goroutine.</span>
+        wg.<span style="color: #f5871f;">Add</span><span style="color: #3e999f;">(</span>2<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Launch two players.</span>
+        <span style="color: #718c00;">go</span> <span style="color: #f5871f;">player</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Nadal"</span>, court<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">go</span> <span style="color: #f5871f;">player</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Djokovic"</span>, court<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Start the set.</span>
+        court &lt;- 1
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait for the game to finish.</span>
+        wg.<span style="color: #f5871f;">Wait</span><span style="color: #3e999f;">()</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">player simulates a person playing the game of tennis.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">player</span><span style="color: #4d4d4c;">(</span>name <span style="color: #4271ae;">string</span>, court <span style="color: #718c00;">chan</span> <span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Schedule the call to Done to tell main we are done.</span>
+        <span style="color: #718c00;">defer</span> wg.<span style="color: #f5871f;">Done</span><span style="color: #3e999f;">()</span>
+
+        <span style="color: #718c00;">for</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait for the ball to be hit back to us.</span>
+                ball, ok := &lt;-court
+                <span style="color: #718c00;">if</span> !ok <span style="color: #eab700;">{</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If the channel was closed we won.</span>
+                        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"Player %s Won</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, name<span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">return</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Pick a random number and see if we miss the ball.</span>
+                n := rand.<span style="color: #f5871f;">Intn</span><span style="color: #eab700;">(</span>100<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> n%13 == 0 <span style="color: #eab700;">{</span>
+                        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"Player %s Missed</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, name<span style="color: #718c00;">)</span>
+
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Close the channel to signal we lost.</span>
+                        <span style="color: #8959a8;">close</span><span style="color: #718c00;">(</span>court<span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">return</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Display and then increment the hit count by one.</span>
+                fmt.<span style="color: #f5871f;">Printf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Player %s Hit %d</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, name, ball<span style="color: #eab700;">)</span>
+                ball++
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Hit the ball back to the opposing player.</span>
+                court &lt;- ball
+        <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+
+<p>
+output:
+Player Nadal Hit 1
+Player Djokovic Hit 2
+Player Nadal Hit 3
+Player Djokovic Missed
+Player Nadal Won
+</p>
+
+
+<p>
+接力赛的例子
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This sample program demonstrates how to use an unbuffered</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">channel to simulate a relay race between four goroutines.</span>
+<span style="color: #718c00;">package</span> main
+
+<span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+        <span style="color: #3e999f;">"fmt"</span>
+        <span style="color: #3e999f;">"sync"</span>
+        <span style="color: #3e999f;">"time"</span>
+<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">wg is used to wait for the program to finish.</span>
+<span style="color: #718c00;">var</span> wg sync.WaitGroup
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">main is the entry point for all Go programs.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create an unbuffered channel.</span>
+        baton := <span style="color: #8959a8;">make</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">chan</span> <span style="color: #4271ae;">int</span><span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add a count of one for the last runner.</span>
+        wg.<span style="color: #f5871f;">Add</span><span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">First runner to his mark.</span>
+        <span style="color: #718c00;">go</span> <span style="color: #f5871f;">Runner</span><span style="color: #3e999f;">(</span>baton<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Start the race.</span>
+        baton &lt;- 1
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait for the race to finish.</span>
+        wg.<span style="color: #f5871f;">Wait</span><span style="color: #3e999f;">()</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Runner simulates a person running in the relay race.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">Runner</span><span style="color: #4d4d4c;">(</span>baton <span style="color: #718c00;">chan</span> <span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">var</span> newRunner int
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait to receive the baton.</span>
+        runner := &lt;-baton
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Start running around the track.</span>
+        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Runner %d Running With Baton</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, runner<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">New runner to the line.</span>
+        <span style="color: #718c00;">if</span> runner != 4 <span style="color: #3e999f;">{</span>
+                newRunner = runner + 1
+                fmt.<span style="color: #f5871f;">Printf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Runner %d To The Line</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, newRunner<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">go</span> <span style="color: #f5871f;">Runner</span><span style="color: #eab700;">(</span>baton<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Running around the track.</span>
+        time.<span style="color: #f5871f;">Sleep</span><span style="color: #3e999f;">(</span>100 * time.Millisecond<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Is the race over.</span>
+        <span style="color: #718c00;">if</span> runner == 4 <span style="color: #3e999f;">{</span>
+                fmt.<span style="color: #f5871f;">Printf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Runner %d Finished, Race Over</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, runner<span style="color: #eab700;">)</span>
+                wg.<span style="color: #f5871f;">Done</span><span style="color: #eab700;">()</span>
+                <span style="color: #718c00;">return</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Exchange the baton for the next runner.</span>
+        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Runner %d Exchange With Runner %d</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>,
+                runner,
+                newRunner<span style="color: #3e999f;">)</span>
+
+        baton &lt;- newRunner
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+
+<p>
+output:
+Runner 1 Running With Baton
+Runner 1 Exchange With Runner 2
+Runner 2 Running With Baton
+Runner 2 Exchange With Runner 3
+Runner 3 Running With Baton
+Runner 3 Exchange With Runner 4
+Runner 4 Running With Baton
+Runner 4 Finished, Race Over
+</p>
+</div>
+</li>
+<li><a id="orgea320f5"></a>Buffered channels<br />
+<div class="outline-text-5" id="text-4-2-3-2">
+<p>
+摘抄自原文: 6.5.2
+A buffered channel is a channel with capacity to hold one or more values before they’re received. These types of channels don’t force goroutines to be ready at the same instant to perform sends and receives. There are also different conditions for when a send or receive does block. A receive will block only if there’s no value in the channel to receive. A send will block only if there’s no available buffer to place the value being sent. This leads to the one big difference between unbuffered and buffered channels: An unbuffered channel provides a guarantee that an exchange between two goroutines is performed at the instant the send and receive take place. A buffered channel has no such guarantee.
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This sample program demonstrates how to use a buffered</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">channel to work on multiple tasks with a predefined number</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">of goroutines.</span>
+<span style="color: #718c00;">package</span> main
+
+<span style="color: #718c00;">import</span> <span style="color: #4d4d4c;">(</span>
+        <span style="color: #3e999f;">"fmt"</span>
+        <span style="color: #3e999f;">"math/rand"</span>
+        <span style="color: #3e999f;">"sync"</span>
+        <span style="color: #3e999f;">"time"</span>
+<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #718c00;">const</span> <span style="color: #4d4d4c;">(</span>
+        numberGoroutines = 4  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Number of goroutines to use.</span>
+        taskLoad         = 10 <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Amount of work to process.</span>
+<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">wg is used to wait for the program to finish.</span>
+<span style="color: #718c00;">var</span> wg sync.WaitGroup
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">init is called to initialize the package by the</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Go runtime prior to any other code being executed.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">init</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Seed the random number generator.</span>
+        rand.<span style="color: #f5871f;">Seed</span><span style="color: #3e999f;">(</span>time.<span style="color: #f5871f;">Now</span><span style="color: #eab700;">()</span>.<span style="color: #f5871f;">Unix</span><span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">main is the entry point for all Go programs.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Create a buffered channel to manage the task load.</span>
+        tasks := <span style="color: #8959a8;">make</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">chan</span> <span style="color: #4271ae;">string</span>, taskLoad<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Launch goroutines to handle the work.</span>
+        wg.<span style="color: #f5871f;">Add</span><span style="color: #3e999f;">(</span>numberGoroutines<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">for</span> gr := 1; gr &lt;= numberGoroutines; gr++ <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">go</span> <span style="color: #f5871f;">worker</span><span style="color: #eab700;">(</span>tasks, gr<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Add a bunch of work to get done.</span>
+        <span style="color: #718c00;">for</span> post := 1; post &lt;= taskLoad; post++ <span style="color: #3e999f;">{</span>
+                tasks &lt;- fmt.<span style="color: #f5871f;">Sprintf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Task : %d"</span>, post<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Close the channel so the goroutines will quit</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">when all the work is done.</span>
+        <span style="color: #8959a8;">close</span><span style="color: #3e999f;">(</span>tasks<span style="color: #3e999f;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait for all the work to get done.</span>
+        wg.<span style="color: #f5871f;">Wait</span><span style="color: #3e999f;">()</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">worker is launched as a goroutine to process work from</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the buffered channel.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">worker</span><span style="color: #4d4d4c;">(</span>tasks <span style="color: #718c00;">chan</span> <span style="color: #4271ae;">string</span>, worker <span style="color: #4271ae;">int</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Report that we just returned.</span>
+        <span style="color: #718c00;">defer</span> wg.<span style="color: #f5871f;">Done</span><span style="color: #3e999f;">()</span>
+
+        <span style="color: #718c00;">for</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Wait for work to be assigned.</span>
+                task, ok := &lt;-tasks
+                <span style="color: #718c00;">if</span> !ok <span style="color: #eab700;">{</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This means the channel is empty and closed.</span>
+                        fmt.<span style="color: #f5871f;">Printf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"Worker: %d : Shutting Down</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, worker<span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">return</span>
+                <span style="color: #eab700;">}</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Display we are starting the work.</span>
+                fmt.<span style="color: #f5871f;">Printf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Worker: %d : Started %s</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, worker, task<span style="color: #eab700;">)</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Randomly wait to simulate work time.</span>
+                sleep := rand.<span style="color: #f5871f;">Int63n</span><span style="color: #eab700;">(</span>100<span style="color: #eab700;">)</span>
+                time.<span style="color: #f5871f;">Sleep</span><span style="color: #eab700;">(</span>time.<span style="color: #f5871f;">Duration</span><span style="color: #718c00;">(</span>sleep<span style="color: #718c00;">)</span> * time.Millisecond<span style="color: #eab700;">)</span>
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Display we finished the work.</span>
+                fmt.<span style="color: #f5871f;">Printf</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Worker: %d : Completed %s</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, worker, task<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-example">
+
+output:
+Worker: 1 : Started Task : 1
+Worker: 2 : Started Task : 2
+Worker: 3 : Started Task : 3
+Worker: 4 : Started Task : 4
+Worker: 1 : Completed Task : 1
+Worker: 1 : Started Task : 5
+Worker: 4 : Completed Task : 4
+Worker: 4 : Started Task : 6
+Worker: 1 : Completed Task : 5
+Worker: 1 : Started Task : 7
+Worker: 2 : Completed Task : 2
+Worker: 2 : Started Task : 8
+Worker: 3 : Completed Task : 3
+Worker: 3 : Started Task : 9
+Worker: 1 : Completed Task : 7
+Worker: 1 : Started Task : 10
+Worker: 4 : Completed Task : 6
+Worker: 4 : Shutting Down
+Worker: 3 : Completed Task : 9
+Worker: 3 : Shutting Down
+Worker: 2 : Completed Task : 8
+Worker: 2 : Shutting Down
+Worker: 1 : Completed Task : 10
+Worker: 1 : Shutting Down
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69a0915" class="outline-2">
+<h2 id="org69a0915"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> Concurrency patterns</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org3a2764e" class="outline-3">
+<h3 id="org3a2764e"><span class="section-number-3">5.1</span> Runner</h3>
+</div>
+<div id="outline-container-org70eafcd" class="outline-3">
+<h3 id="org70eafcd"><span class="section-number-3">5.2</span> Polling</h3>
+</div>
+<div id="outline-container-orgfd44cc3" class="outline-3">
+<h3 id="orgfd44cc3"><span class="section-number-3">5.3</span> Work</h3>
+<div class="outline-text-3" id="text-5-3">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

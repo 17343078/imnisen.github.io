@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Odoo Tips or Tricks</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-07-05</p>
+</div>
+<div id="content">
+<h1 class="title">Odoo Tips or Tricks</h1>
+<div class="abstract">
+<p>
+记录一些odoo相关的知识或技巧，供查阅借鉴。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9797694">1. Form 表单里的 Button显示与否</a></li>
+<li><a href="#orgd798288">2. 在列表视图的“动作按钮”添加动作, 可以单个或者批量操作</a></li>
+<li><a href="#orgb287e39">3. 上传图片时遇到报错 IOError: decoder jpeg not available</a></li>
+<li><a href="#org9c1f243">4. 在Form表单上弹出向导</a></li>
+<li><a href="#orge0d1621">5. New API 根据一个（或者一些）字段值的改变，改变另外一些值</a></li>
+<li><a href="#orga057b20">6. New API 根据一个（或者一些）字段值的改变，筛选另外一些值（给另外一些值加上domain）</a></li>
+<li><a href="#org4d3dbfa">7. 字段fields.Date和fields.Datetime的读取和存储</a></li>
+<li><a href="#orgf46ac79">8. Form表单里的提示性文字，在xml上的写法</a></li>
+<li><a href="#org4328586">9. XML 设置字段的一些属性, 以及一些常用视图的写法</a></li>
+<li><a href="#org7e1c29b">10. XML one2many many2many类型字段widget格式</a></li>
+<li><a href="#org6055fe7">11. Form视图的Group属性</a></li>
+<li><a href="#org3113d31">12. Form表单上的不同按钮触发同一个向导，但向导但视图需要根据不同按钮做些调整</a></li>
+<li><a href="#org9d4a300">13. 一个Bug,fields.Selection</a></li>
+<li><a href="#org0baff45">14. 列表视图(Tree View)根据字段显示不同颜色</a></li>
+<li><a href="#orgfc0f363">15. 复杂domain解析求值顺序</a></li>
+<li><a href="#org005e672">16. Field 设置domain</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9797694" class="outline-2">
+<h2 id="org9797694"><span class="section-number-2">1</span> Form 表单里的 Button显示与否</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+可以通过 <code>attrs</code> 属性来设置，如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"delete_message_button"</span>
+    <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21024;&#38500;&#32676;&#21457;"</span>
+    <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span>
+    <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span>
+    <span style="color: #eab700;">icon</span>=<span style="color: #3e999f;">"fa-refresh"</span>
+    <span style="color: #eab700;">attrs</span>=<span style="color: #3e999f;">"{'invisible':['|',('state','not in',('send','finished')),('msgtype','not in',('mpnews', 'mpvideo'))]}"</span>/&gt;
+
+</pre>
+</div>
+
+<p>
+但会跟 根据 <code>state</code> 来显示与否冲突
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"delete_message_button"</span>
+    <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21024;&#38500;&#32676;&#21457;"</span>
+    <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span>
+    <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span>
+    <span style="color: #eab700;">states</span>='draft'       &lt;-- &#24046;&#24322;
+    icon=<span style="color: #3e999f;">"fa-refresh"</span>
+    attrs=<span style="color: #3e999f;">"{'invisible':['|',('state','not in',('send','finished')),('msgtype','not in',('mpnews', 'mpvideo'))]}"</span>/&gt;
+
+</pre>
+</div>
+<p>
+上面例子里的 <code>state</code> 为表中的一个字段， 通常的模式是放到顶补做状态栏，然后按钮可以根据状态来是否显示。
+当我需要同时根据状态和表中其它一个字段来控制是否显示时，就不能用 <code>states='draft,send'</code> 这种模式，会冲突导致 <code>attrs</code> 设置的属性无效。
+Fuck so much patterns！
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd798288" class="outline-2">
+<h2 id="orgd798288"><span class="section-number-2">2</span> 在列表视图的“动作按钮”添加动作, 可以单个或者批量操作</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+模式如下, 参考res.users 修改密码的模式
+通常动作是弹出一个向导，所以需要先建立一个向导model
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">class</span> <span style="color: #4271ae;">change_password_wizard</span><span style="color: #4d4d4c;">(</span>osv.TransientModel<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">"""</span>
+<span style="color: #8959a8;">        A wizard to manage the change of users' passwords</span>
+<span style="color: #8959a8;">    """</span>
+
+    <span style="color: #eab700;">_name</span> = <span style="color: #3e999f;">"change.password.wizard"</span>
+    <span style="color: #eab700;">_description</span> = <span style="color: #3e999f;">"Change Password Wizard"</span>
+    <span style="color: #eab700;">_columns</span> = <span style="color: #4d4d4c;">{</span>
+        <span style="color: #3e999f;">'user_ids'</span>: fields.one2many<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'change.password.user'</span>, <span style="color: #3e999f;">'wizard_id'</span>, string=<span style="color: #3e999f;">'Users'</span><span style="color: #3e999f;">)</span>,
+    <span style="color: #4d4d4c;">}</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">_default_user_ids</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, cr, uid, context=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">if</span> context <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>:
+            <span style="color: #eab700;">context</span> = <span style="color: #4d4d4c;">{}</span>
+        <span style="color: #eab700;">user_model</span> = <span style="color: #718c00;">self</span>.pool<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'res.users'</span><span style="color: #4d4d4c;">]</span>
+        <span style="color: #eab700;">user_ids</span> = context.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'active_model'</span><span style="color: #4d4d4c;">)</span> == <span style="color: #3e999f;">'res.users'</span> <span style="color: #718c00;">and</span> context.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'active_ids'</span><span style="color: #4d4d4c;">)</span> <span style="color: #718c00;">or</span> <span style="color: #4d4d4c;">[]</span>
+        <span style="color: #718c00;">return</span> <span style="color: #4d4d4c;">[</span>
+            <span style="color: #3e999f;">(</span>0, 0, <span style="color: #eab700;">{</span><span style="color: #3e999f;">'user_id'</span>: user.<span style="color: #8959a8;">id</span>, <span style="color: #3e999f;">'user_login'</span>: user.login<span style="color: #eab700;">}</span><span style="color: #3e999f;">)</span>
+            <span style="color: #718c00;">for</span> user <span style="color: #718c00;">in</span> user_model.browse<span style="color: #3e999f;">(</span>cr, uid, user_ids, context=context<span style="color: #3e999f;">)</span>
+        <span style="color: #4d4d4c;">]</span>
+
+    <span style="color: #eab700;">_defaults</span> = <span style="color: #4d4d4c;">{</span>
+        <span style="color: #3e999f;">'user_ids'</span>: _default_user_ids,
+    <span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+<p>
+根据实际需要建立几个模型（源代码处建立了两个，而我自己用的地方一个就够了）。
+上述代码 <code>_default_user_ids</code> 方法得到选择的那些记录
+</p>
+
+<p>
+XML 视图如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">change password wizard </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+        &lt;<span style="color: #f5871f;">record</span> <span style="color: #eab700;">id</span>=<span style="color: #3e999f;">"change_password_wizard_view"</span> <span style="color: #eab700;">model</span>=<span style="color: #3e999f;">"ir.ui.view"</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"name"</span>&gt;Change Password&lt;/<span style="color: #f5871f;">field</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"model"</span>&gt;change.password.wizard&lt;/<span style="color: #f5871f;">field</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"arch"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"xml"</span>&gt;
+                &lt;<span style="color: #f5871f;">form</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"Change Password"</span>&gt;
+                    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"user_ids"</span>/&gt;
+                    &lt;<span style="color: #f5871f;">footer</span>&gt;
+                        &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"Change Password"</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"change_password_button"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"btn-primary"</span>/&gt;
+                        &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"Cancel"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"btn-default"</span> <span style="color: #eab700;">special</span>=<span style="color: #3e999f;">"cancel"</span> /&gt;
+                    &lt;/<span style="color: #f5871f;">footer</span>&gt;
+                &lt;/<span style="color: #f5871f;">form</span>&gt;
+            &lt;/<span style="color: #f5871f;">field</span>&gt;
+        &lt;/<span style="color: #f5871f;">record</span>&gt;
+        &lt;<span style="color: #f5871f;">record</span> <span style="color: #eab700;">id</span>=<span style="color: #3e999f;">"change_password_wizard_user_tree_view"</span> <span style="color: #eab700;">model</span>=<span style="color: #3e999f;">"ir.ui.view"</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"name"</span>&gt;Change Password Users&lt;/<span style="color: #f5871f;">field</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"model"</span>&gt;change.password.user&lt;/<span style="color: #f5871f;">field</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"arch"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"xml"</span>&gt;
+                <span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">the user list is editable, but one cannot add or delete rows </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+                &lt;<span style="color: #f5871f;">tree</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"Users"</span> <span style="color: #eab700;">editable</span>=<span style="color: #3e999f;">"bottom"</span> <span style="color: #eab700;">create</span>=<span style="color: #3e999f;">"false"</span> <span style="color: #eab700;">delete</span>=<span style="color: #3e999f;">"false"</span>&gt;
+                    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"user_login"</span>/&gt;
+                    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"new_passwd"</span> <span style="color: #eab700;">required</span>=<span style="color: #3e999f;">"True"</span> <span style="color: #eab700;">password</span>=<span style="color: #3e999f;">"True"</span>/&gt;
+                &lt;/<span style="color: #f5871f;">tree</span>&gt;
+            &lt;/<span style="color: #f5871f;">field</span>&gt;
+        &lt;/<span style="color: #f5871f;">record</span>&gt;
+        &lt;<span style="color: #f5871f;">act_window</span> <span style="color: #eab700;">id</span>=<span style="color: #3e999f;">"change_password_wizard_action"</span>
+            <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"Change Password"</span>
+            <span style="color: #eab700;">src_model</span>=<span style="color: #3e999f;">"res.users"</span>
+            <span style="color: #eab700;">res_model</span>=<span style="color: #3e999f;">"change.password.wizard"</span>
+            <span style="color: #eab700;">view_type</span>=<span style="color: #3e999f;">"form"</span> <span style="color: #eab700;">view_mode</span>=<span style="color: #3e999f;">"form"</span>
+            <span style="color: #eab700;">key2</span>=<span style="color: #3e999f;">"client_action_multi"</span> <span style="color: #eab700;">target</span>=<span style="color: #3e999f;">"new"</span>
+            <span style="color: #eab700;">groups</span>=<span style="color: #3e999f;">"base.group_erp_manager"</span>/&gt;
+
+</pre>
+</div>
+<p>
+前两个record根据自己需要创建，主要是第三个， <code>src_mode</code> 指定在哪个mode上见示出来， <code>res_model</code> 指定弹出的wizard是哪个model的
+</p>
+
+<p>
+<a id="orgf9a6037"></a>
+在列表视图上需要钩选某些记录才能显示更多操作的按钮， 这时候往往需要将钩选记录的一些信息传入到弹出到Form中，需么从context中获得，模式如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">model file</span>
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#31227;&#21160;&#36873;&#23450;&#21040;&#29992;&#25143;&#21040;&#20854;&#23427;&#32452;</span>
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">change_users_groups_wizard</span><span style="color: #4d4d4c;">(</span>osv.TransientModel<span style="color: #4d4d4c;">)</span>:
+
+    <span style="color: #eab700;">_name</span> = <span style="color: #3e999f;">"change.users.groups.wizard"</span>
+    <span style="color: #eab700;">_description</span> = u<span style="color: #3e999f;">"&#26356;&#25913;&#29992;&#25143;&#32452;&#30340;&#21521;&#23548;"</span>
+
+    <span style="color: #4271ae;">@api.multi</span>
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">_get_default_user_ids</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#26032;api&#33719;&#24471;context&#30340;&#20889;&#27861;</span>
+        <span style="color: #eab700;">context</span> = <span style="color: #8959a8;">dict</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>._context <span style="color: #718c00;">or</span> <span style="color: #3e999f;">{}</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20174;&#29615;&#22659;&#20013;&#21435;&#38500;&#24403;&#21069;model&#21644;&#24403;&#21069;&#38057;&#36873;&#30340;ids</span>
+        <span style="color: #eab700;">user_ids</span> = context.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'active_model'</span><span style="color: #4d4d4c;">)</span> == <span style="color: #3e999f;">'my.users'</span> <span style="color: #718c00;">and</span> context.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'active_ids'</span><span style="color: #4d4d4c;">)</span> <span style="color: #718c00;">or</span> <span style="color: #4d4d4c;">[]</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#22240;&#20026;user_ids&#26159;many2many&#26684;&#24335;&#65292;&#25152;&#20197;&#36825;&#26679;&#36820;&#22238;&#65292; &#22914;&#26524;&#26159;many2one &#36820;&#22238;id</span>
+        <span style="color: #718c00;">return</span> <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">(</span>6, 0, user_ids<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">]</span>
+
+    <span style="color: #eab700;">user_ids</span> = fields.Many2many<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'my.users'</span>,
+                                string=u<span style="color: #3e999f;">'&#35201;&#31227;&#21160;&#30340;&#29992;&#25143;'</span>,default= _get_default_user_ids<span style="color: #4d4d4c;">)</span>
+    <span style="color: #eab700;">groups_id</span> = fields.Many2one<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'my.users.groups'</span>, string=u<span style="color: #3e999f;">'&#31227;&#21160;&#21040;&#32452;'</span>, <span style="color: #8959a8;">help</span>=u<span style="color: #3e999f;">'&#23558;&#29992;&#25143;&#31227;&#21160;&#21040;&#21738;&#20010;&#32452;'</span><span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb287e39" class="outline-2">
+<h2 id="orgb287e39"><span class="section-number-2">3</span> 上传图片时遇到报错 IOError: decoder jpeg not available</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+参照如下解决方案： <a href="http://ju.outofmemory.cn/entry/86143">http://ju.outofmemory.cn/entry/86143</a>
+</p>
+
+<p>
+并没有解决;(
+</p>
+
+<p>
+参照这个： <a href="http://stackoverflow.com/questions/8915296/python-image-library-fails-with-message-decoder-jpeg-not-available-pil">http://stackoverflow.com/questions/8915296/python-image-library-fails-with-message-decoder-jpeg-not-available-pil</a>
+</p>
+
+<p>
+解决了;)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9c1f243" class="outline-2">
+<h2 id="org9c1f243"><span class="section-number-2">4</span> 在Form表单上弹出向导</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+首先表单视图上添加动作按钮
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"get_user_data"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#33719;&#21462;&#29992;&#25143;&#25968;&#25454;"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span>
+                                    <span style="color: #eab700;">icon</span>=<span style="color: #3e999f;">"fa-strikethrough"</span>/&gt;
+</pre>
+</div>
+
+<p>
+然后对应的model 下写这个按钮触发的方法
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #4271ae;">@api.multi</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_user_data</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+
+    <span style="color: #718c00;">return</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #3e999f;">'name'</span>: _<span style="color: #3e999f;">(</span>u<span style="color: #3e999f;">'&#33719;&#21462;&#29992;&#25143;&#25968;&#25454;'</span><span style="color: #3e999f;">)</span>,
+        <span style="color: #3e999f;">'view_type'</span>: <span style="color: #3e999f;">'form'</span>,
+        <span style="color: #3e999f;">'view_mode'</span>: <span style="color: #3e999f;">'form'</span>,
+        <span style="color: #3e999f;">'res_model'</span>: <span style="color: #3e999f;">'get.user.data.wizard'</span>,
+        <span style="color: #3e999f;">'view_id'</span>: <span style="color: #4271ae;">False</span>,
+        <span style="color: #3e999f;">'type'</span>: <span style="color: #3e999f;">'ir.actions.act_window'</span>,
+        <span style="color: #3e999f;">'target'</span>: <span style="color: #3e999f;">'new'</span>
+    <span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+<p>
+这样会弹出定义的向导（此处是"get.user.data.wizard"）定义好的form视图。
+</p>
+
+<p>
+向导xml可以这样写
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">record</span> <span style="color: #eab700;">id</span>=<span style="color: #3e999f;">"view_get_user_data_wizard_form"</span> <span style="color: #eab700;">model</span>=<span style="color: #3e999f;">"ir.ui.view"</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"name"</span>&gt;&#33719;&#21462;&#29992;&#25143;&#25968;&#25454;&#21521;&#23548;&lt;/<span style="color: #f5871f;">field</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"model"</span>&gt;get.user.data.wizard&lt;/<span style="color: #f5871f;">field</span>&gt;
+            &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"arch"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"xml"</span>&gt;
+                &lt;<span style="color: #f5871f;">form</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#33258;&#23450;&#20041;&#33756;&#21333;"</span>&gt;
+                    &lt;<span style="color: #f5871f;">sheet</span>&gt;
+                        &lt;<span style="color: #f5871f;">div</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_button_box"</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"button_box"</span>&gt;
+                        &lt;/<span style="color: #f5871f;">div</span>&gt;
+                        &lt;<span style="color: #f5871f;">div</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_title"</span>&gt;
+                            &lt;<span style="color: #f5871f;">label</span> <span style="color: #eab700;">for</span>=<span style="color: #3e999f;">"app_id"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_edit_only"</span>/&gt;
+                            &lt;<span style="color: #f5871f;">h1</span>&gt;
+                                &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"app_id"</span> <span style="color: #eab700;">options</span>=<span style="color: #3e999f;">"{'no_create': True,'no_open': True}"</span>/&gt;
+                            &lt;/<span style="color: #f5871f;">h1</span>&gt;
+                        &lt;/<span style="color: #f5871f;">div</span>&gt;
+                        &lt;<span style="color: #f5871f;">group</span>&gt;
+                            &lt;<span style="color: #f5871f;">group</span>&gt;
+                                &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"company_id"</span> <span style="color: #eab700;">groups</span>=<span style="color: #3e999f;">"base.group_multi_company"</span>/&gt;
+                                &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"begin_date"</span> /&gt;
+                                &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"end_date"</span> /&gt;
+                            &lt;/<span style="color: #f5871f;">group</span>&gt;
+                            &lt;<span style="color: #f5871f;">group</span>&gt;
+                            &lt;/<span style="color: #f5871f;">group</span>&gt;
+                        &lt;/<span style="color: #f5871f;">group</span>&gt;
+                        &lt;<span style="color: #f5871f;">footer</span>&gt;
+                            &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#30830;&#35748;"</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"get_userdata"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"btn-primary"</span>/&gt;
+                            &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21462;&#28040;"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"btn-default"</span> <span style="color: #eab700;">special</span>=<span style="color: #3e999f;">"cancel"</span> /&gt;
+                        &lt;/<span style="color: #f5871f;">footer</span>&gt;
+                    &lt;/<span style="color: #f5871f;">sheet</span>&gt;
+                &lt;/<span style="color: #f5871f;">form</span>&gt;
+            &lt;/<span style="color: #f5871f;">field</span>&gt;
+        &lt;/<span style="color: #f5871f;">record</span>&gt;
+
+</pre>
+</div>
+
+<p>
+然后在该向导model中定义按钮方法写对应的逻辑就可以了
+</p>
+
+<p>
+PS: 如果要在向导上获得点击向导前form的model或者id ,可以参照<a href="#orgf9a6037">2</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge0d1621" class="outline-2">
+<h2 id="orge0d1621"><span class="section-number-2">5</span> New API 根据一个（或者一些）字段值的改变，改变另外一些值</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+很简单，用~@api.onchange~
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#36873;&#25321;&#30340;type&#20026;url, &#33258;&#21160;&#32473;content&#23646;&#24615;&#21152;&#19978;url&#21069;&#32512;</span>
+<span style="color: #4271ae;">@api.onchange</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'type'</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">_onchange_app_id</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">if</span> <span style="color: #718c00;">self</span>.<span style="color: #8959a8;">type</span> == <span style="color: #3e999f;">'url'</span>:
+        <span style="color: #718c00;">self</span>.content = <span style="color: #3e999f;">'http://'</span>
+    <span style="color: #718c00;">return</span>
+
+</pre>
+</div>
+
+<p>
+有些时候，会发现这样自动生成的内容在完成表单后没有保存上， 可以在字段上加上~compute=<sub>onchange</sub><sub>app</sub><sub>id</sub>~来告诉model保存这个值
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga057b20" class="outline-2">
+<h2 id="orga057b20"><span class="section-number-2">6</span> New API 根据一个（或者一些）字段值的改变，筛选另外一些值（给另外一些值加上domain）</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36873;&#25321;app_id&#31579;&#36873;user_id</span>
+<span style="color: #4271ae;">@api.onchange</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'app_id'</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">_onchange_app_id</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">if</span> <span style="color: #718c00;">self</span>.app_id:
+
+        <span style="color: #eab700;">users</span> = <span style="color: #718c00;">self</span>.env<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'my.users'</span><span style="color: #4d4d4c;">]</span>.search<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">'app_id'</span>, <span style="color: #3e999f;">'='</span>, <span style="color: #718c00;">self</span>.app_id.<span style="color: #8959a8;">id</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #eab700;">user_ids</span> = <span style="color: #4d4d4c;">[</span>user.<span style="color: #8959a8;">id</span> <span style="color: #718c00;">for</span> user <span style="color: #718c00;">in</span> users<span style="color: #4d4d4c;">]</span>
+
+        <span style="color: #718c00;">return</span> <span style="color: #4d4d4c;">{</span><span style="color: #3e999f;">'domain'</span>:<span style="color: #3e999f;">{</span><span style="color: #3e999f;">'user_id'</span>:<span style="color: #eab700;">[</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">'id'</span>,<span style="color: #3e999f;">'in'</span>,user_ids<span style="color: #718c00;">)</span><span style="color: #eab700;">]</span><span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">}</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#26159;&#31579;&#36873;&#22810;&#20010;&#23383;&#27573;&#65292;&#37027;&#20040;domain&#21518;&#22810;&#21152;&#23383;&#27573;&#31579;&#36873;</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4d3dbfa" class="outline-2">
+<h2 id="org4d3dbfa"><span class="section-number-2">7</span> 字段fields.Date和fields.Datetime的读取和存储</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>用ORM直接读取出来的格式为字符串格式，fields.Date 默认格式为"%Y-%m-%d",fields.datetime默认格式为"%Y-%m-%d %H:%M:%S"(具体参数表示见<a href="https://docs.python.org/2/library/time.html?highlight=time#module-time">https://docs.python.org/2/library/time.html?highlight=time#module-time</a>)</li>
+<li>使用ORM存的时候可以用datetime.datetime类型存储</li>
+<li>时间格式间的转换</li>
+</ul>
+<p>
+可以参考这篇文章，讲述的很全: <a href="http://blog.sina.com.cn/s/blog_b09d460201018o0v.html">http://blog.sina.com.cn/s/blog_b09d460201018o0v.html</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;">### </span><span style="color: #8e908c; font-style: italic;">&#20551;&#35774;self.begin_date_time&#21462;&#20986;&#30340;&#26159;&#40664;&#35748;&#30340;&#23383;&#31526;&#20018;&#26684;&#24335;&#65292;DEFAULT_DATETIME_FORMAT&#26159;"Y-%m-%d %H:%M:%S"</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#23383;&#31526;&#20018;&#36716;&#21270;&#20026;time.struct_time</span>
+time.strptime<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>.begin_date_time, DEFAULT_DATETIME_FORMAT<span style="color: #4d4d4c;">)</span>
+struct_time&#31867;&#22411;&#21487;&#20197;&#29992;<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>,<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span>&#36825;&#26679;&#30340;index&#21462;&#20986;&#23545;&#24212;&#30340;year, month&#31561;&#31561;
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">time.struct_time&#36716;&#21270;&#20026;&#28014;&#28857;&#22411;&#30340;&#26102;&#38388;&#25139;</span>
+time.mktime<span style="color: #4d4d4c;">(</span>time.struct_time<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#26102;&#38388;&#25139;&#36716;&#21270;&#25104;dateime.datetime&#31867;&#22411;</span>
+datetime.fromtimestamp<span style="color: #4d4d4c;">(</span>timestamp<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">struct_time &#21040;&#23383;&#31526;&#20018;&#26102;&#38388;</span>
+time.strftime<span style="color: #4d4d4c;">(</span>DEFAULT_DATETIME_FORMAT, strcut_time<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf46ac79" class="outline-2">
+<h2 id="orgf46ac79"><span class="section-number-2">8</span> Form表单里的提示性文字，在xml上的写法</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+可以用seperator
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">separator</span> <span style="color: #eab700;">style</span>=<span style="color: #3e999f;">"font-size:13px;"</span> <span style="color: #eab700;">colspan</span>=<span style="color: #3e999f;">"4"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#27880;&#24847;: &#22914;&#26524;&#19981;&#36873;&#25321;'&#21457;&#36865;&#30340;&#29992;&#25143;'&#23558;&#20250;&#40664;&#35748;&#21457;&#36865;&#32473;&#25152;&#26377;&#29992;&#25143;"</span>/&gt;
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4328586" class="outline-2">
+<h2 id="org4328586"><span class="section-number-2">9</span> XML 设置字段的一些属性, 以及一些常用视图的写法</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-xml"><span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#35774;&#32622;&#23545;&#35937;&#19981;&#33021;&#21019;&#24314;&#65292;&#19981;&#33021;&#25171;&#24320;&#65292;&#19968;&#33324;&#29992;&#22312;many2one&#23383;&#27573;&#19978; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"company_id"</span> <span style="color: #eab700;">options</span>=<span style="color: #3e999f;">"{'no_create': True,'no_open': True}"</span>/&gt;
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#35774;&#32622;&#22312;&#19968;&#23450;&#24773;&#20917;&#19979;&#38544;&#34255;&#25110;&#26174;&#31034; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"state"</span> /&gt;
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"result_ids"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21457;&#36865;&#30340;&#28040;&#24687;&#36820;&#22238;&#30340;&#32467;&#26524;"</span>
+                                 <span style="color: #eab700;">attrs</span>=<span style="color: #3e999f;">"{'invisible':[('state','=','draft')]}"</span> /&gt;
+
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#22312;&#19968;&#23450;&#24773;&#20917;&#19979;&#24517;&#22635; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"send_type"</span> /&gt;
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"group_id"</span>  <span style="color: #eab700;">attrs</span>=<span style="color: #3e999f;">"{'required':[('send_type','=','group')]}"</span> /&gt;
+
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#24403;&#29992;&#25143;&#23646;&#20110;&#26576;&#20010;&#32452;&#24403;&#26102;&#20505;&#25165;&#21487;&#35265; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"company_id"</span> <span style="color: #eab700;">groups</span>=<span style="color: #3e999f;">"base.group_multi_company"</span>/&gt;
+
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#26032;&#24314;&#35760;&#24405;&#21069;&#65292; &#39029;&#38754;&#24403;&#25552;&#31034;&#20449;&#24687;&#65292; &#27604;&#22914;&#26032;&#24314;&#35201;&#27880;&#24847;&#24403;&#22320;&#26041; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#20889;&#22312;action&#35270;&#22270;&#24403;&#26368;&#21518;&#19968;&#20010;&#23383;&#27573; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"help"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"html"</span>&gt;
+   &lt;<span style="color: #f5871f;">p</span>&gt;&#22312;&#20844;&#20247;&#24179;&#21488;&#32593;&#31449;&#19978;&#65292;&#20026;&#35746;&#38405;&#21495;&#25552;&#20379;&#20102;&#27599;&#22825;&#19968;&#26465;&#30340;&#32676;&#21457;&#26435;&#38480;&#65292;&#20026;&#26381;&#21153;&#21495;&#25552;&#20379;&#27599;&#26376;&#65288;&#33258;&#28982;&#26376;&#65289;4&#26465;&#30340;&#32676;&#21457;&#26435;&#38480;&#12290;&lt;/<span style="color: #f5871f;">p</span>&gt;
+   &lt;<span style="color: #f5871f;">p</span>&gt;&#35831;&#27880;&#24847;&lt;/<span style="color: #f5871f;">p</span>&gt;
+&lt;/<span style="color: #f5871f;">field</span>&gt;
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#23494;&#30721;&#26143;&#21495;&#34920;&#31034; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"ldap_password"</span> <span style="color: #eab700;">password</span>=<span style="color: #3e999f;">"True"</span>/&gt;
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">default_focus &#26032;&#24320;&#31383;&#21475;&#20809;&#26631;&#20301;&#32622; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"name"</span> <span style="color: #eab700;">default_focus</span>=<span style="color: #3e999f;">"1"</span>/&gt;
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">digits &#30452;&#25509;&#26684;&#24335;&#21270;&#28014;&#28857;&#23383;&#27573; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">digits</span>=<span style="color: #3e999f;">"(14, 3)"</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"volume"</span> /&gt;
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#26032;&#24314;&#19968;&#20010;&#31354;&#34892; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">newline</span>/&gt;
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#24120;&#29992;&#30340;&#30340;Form&#26684;&#24335; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">sheet</span>&gt;
+
+  <span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#39029;&#38754;&#19978;&#37096;&#20998;&#21491;&#36793;&#26377;&#20123;&#21160;&#20316;&#25353;&#38062;&#65292;&#21017;&#21521;&#19979;&#38754;&#36825;&#26679;&#20889; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+  &lt;<span style="color: #f5871f;">div</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_button_box"</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"button_box"</span>&gt;
+    &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"test_button"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#27979;&#35797;"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span>
+                                  <span style="color: #eab700;">icon</span>=<span style="color: #3e999f;">"fa-refresh"</span>/&gt;
+    &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"sync_button"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21516;&#27493;"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span>
+                                  <span style="color: #eab700;">icon</span>=<span style="color: #3e999f;">"fa-strikethrough"</span>/&gt;
+  &lt;/<span style="color: #f5871f;">div</span>&gt;
+
+  <span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#26377;&#22270;&#29255; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+  &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"image"</span> <span style="color: #eab700;">widget</span>='image' <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_avatar"</span>/&gt;
+
+  <span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#20026;&#20102;&#32654;&#35266;Form&#35270;&#22270;&#26631;&#39064;&#26639;&#65292;&#21487;&#20197;&#23558;&#26631;&#39064;&#25918;&#22823;&#65292;&#21487;&#20197;&#21442;&#32771;&#19979;&#38754;&#26684;&#24335; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+  &lt;<span style="color: #f5871f;">div</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_title"</span>&gt;
+    &lt;<span style="color: #f5871f;">label</span> <span style="color: #eab700;">for</span>=<span style="color: #3e999f;">"app_id"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_edit_only"</span>/&gt;
+       &lt;<span style="color: #f5871f;">h1</span>&gt;
+         &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"app_id"</span> <span style="color: #eab700;">options</span>=<span style="color: #3e999f;">"{'no_create': True,'no_open': True}"</span>/&gt;
+       &lt;/<span style="color: #f5871f;">h1</span>&gt;
+  &lt;/<span style="color: #f5871f;">div</span>&gt;
+  <span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">other parts below</span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;/<span style="color: #f5871f;">sheet</span>&gt;
+
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">&#19968;&#20010;&#24120;&#29992;&#30340;&#34920;&#21333;&#39030;&#37096;&#26377;&#29366;&#24577;&#26639;&#65292;&#21644;&#25353;&#38062;&#25913;&#21160;&#29366;&#24577;&#30340;&#20889;&#27861; </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">form</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21457;&#36865;&#28040;&#24687;&#34920;&#21333;"</span>&gt;
+  &lt;<span style="color: #f5871f;">header</span>&gt;
+    &lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"send_message_button"</span> <span style="color: #eab700;">style</span>=<span style="color: #3e999f;">"float:left;"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21457;&#36865;&#20449;&#24687;"</span>
+      <span style="color: #eab700;">states</span>=<span style="color: #3e999f;">"draft,failed"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span> <span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_highlight"</span> /&gt;
+    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"state"</span> <span style="color: #eab700;">widget</span>=<span style="color: #3e999f;">"statusbar"</span> <span style="color: #eab700;">statusbar_visible</span>=<span style="color: #3e999f;">"draft,send,failed,cancel"</span> /&gt;
+  &lt;/<span style="color: #f5871f;">header</span>&gt;
+
+   &lt;<span style="color: #f5871f;">sheet</span>&gt;
+   <span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">other part </span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+   &lt;/<span style="color: #f5871f;">sheet</span>&gt;
+&lt;/<span style="color: #f5871f;">form</span>&gt;
+
+<span style="color: #8e908c; font-style: italic;">&lt;!-- </span><span style="color: #8e908c; font-style: italic;">One2Many &#22312;one&#30340;&#19968;&#31471;&#26174;&#31034;many&#30340;&#35760;&#24405;</span><span style="color: #8e908c; font-style: italic;">--&gt;</span>
+&lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"result_ids"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#21457;&#36865;&#30340;&#28040;&#24687;&#36820;&#22238;&#30340;&#32467;&#26524;"</span> <span style="color: #eab700;">attrs</span>=<span style="color: #3e999f;">"{'invisible':[('state','=','draft')]}"</span>&gt;
+  &lt;<span style="color: #f5871f;">form</span>&gt;
+     &lt;<span style="color: #f5871f;">group</span>&gt;
+       &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"user_id"</span>/&gt;
+       &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"msgid"</span>/&gt;
+       &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"errmsg"</span>/&gt;
+       &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"errcode"</span>/&gt;
+     &lt;/<span style="color: #f5871f;">group</span>&gt;
+  &lt;/<span style="color: #f5871f;">form</span>&gt;
+  &lt;<span style="color: #f5871f;">tree</span>&gt;
+    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"user_id"</span>/&gt;
+    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"msgid"</span>/&gt;
+    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"errmsg"</span>/&gt;
+    &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"errcode"</span>/&gt;
+  &lt;/<span style="color: #f5871f;">tree</span>&gt;
+&lt;/<span style="color: #f5871f;">field</span>&gt;
+
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7e1c29b" class="outline-2">
+<h2 id="org7e1c29b"><span class="section-number-2">10</span> XML one2many many2many类型字段widget格式</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+可以选用下面这些：
+one2one<sub>list,one2many</sub><sub>list,many2one</sub><sub>list,many2many,url,email,image,float</sub><sub>time,reference,many2many</sub><sub>tags</sub>, selection,handle
+</p>
+</div>
+</div>
+<div id="outline-container-org6055fe7" class="outline-2">
+<h2 id="org6055fe7"><span class="section-number-2">11</span> Form视图的Group属性</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li>colspan
+说明该控件占用父容器多少列 openerp form 为顶级容器,约定为 4 列</li>
+<li>rowspan
+行数</li>
+<li>col
+用于容器控件,如 group,它表示这个容器内部分几列</li>
+<li>string
+组的名称</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3113d31" class="outline-2">
+<h2 id="org3113d31"><span class="section-number-2">12</span> Form表单上的不同按钮触发同一个向导，但向导但视图需要根据不同按钮做些调整</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+在触发向导的按钮上传入环境变量用来区分是哪个按钮。
+Button 按钮视图
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"get_data1"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#33719;&#21462;&#25968;&#25454;1"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span>
+<span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span>  <span style="color: #eab700;">icon</span>=<span style="color: #3e999f;">"fa-strikethrough"</span>/&gt;
+
+&lt;<span style="color: #f5871f;">button</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"get_data2"</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"&#33719;&#21462;&#25968;&#25454;2"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"object"</span>
+<span style="color: #eab700;">class</span>=<span style="color: #3e999f;">"oe_inline oe_stat_button"</span> <span style="color: #eab700;">icon</span>=<span style="color: #3e999f;">"fa-strikethrough"</span>/&gt;
+
+</pre>
+</div>
+
+<p>
+对应model里的按钮方法
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #4271ae;">@api.multi</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_data1</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+
+    <span style="color: #718c00;">return</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #3e999f;">'name'</span>: _<span style="color: #3e999f;">(</span>u<span style="color: #3e999f;">'&#33719;&#21462;&#25968;&#25454;1'</span><span style="color: #3e999f;">)</span>,
+        <span style="color: #3e999f;">'view_type'</span>: <span style="color: #3e999f;">'form'</span>,
+        <span style="color: #3e999f;">'view_mode'</span>: <span style="color: #3e999f;">'form'</span>,
+        <span style="color: #3e999f;">'res_model'</span>: <span style="color: #3e999f;">'my.data.wizard'</span>, <span style="color: #8e908c; font-style: italic;">#</span><span style="color: #8e908c; font-style: italic;">&#21521;&#23548;&#30340;model</span>
+        <span style="color: #3e999f;">'view_id'</span>: <span style="color: #3e999f;">''</span>,
+        <span style="color: #3e999f;">'type'</span>: <span style="color: #3e999f;">'ir.actions.act_window'</span>,
+        <span style="color: #3e999f;">'target'</span>: <span style="color: #3e999f;">'new'</span>,
+        <span style="color: #3e999f;">'context'</span>: <span style="color: #3e999f;">{</span><span style="color: #3e999f;">'wizard_code'</span>: <span style="color: #3e999f;">'1'</span><span style="color: #3e999f;">}</span>
+    <span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#33719;&#21462;&#22270;&#25991;&#32676;&#21457;&#27599;&#26085;&#25968;&#25454;</span>
+<span style="color: #4271ae;">@api.multi</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_data2</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+
+    <span style="color: #718c00;">return</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #3e999f;">'name'</span>: _<span style="color: #3e999f;">(</span>u<span style="color: #3e999f;">'&#33719;&#21462;&#25968;&#25454;2'</span><span style="color: #3e999f;">)</span>,
+        <span style="color: #3e999f;">'view_type'</span>: <span style="color: #3e999f;">'form'</span>,
+        <span style="color: #3e999f;">'view_mode'</span>: <span style="color: #3e999f;">'form'</span>,
+        <span style="color: #3e999f;">'res_model'</span>: <span style="color: #3e999f;">'my.data.wizard'</span>,
+        <span style="color: #3e999f;">'view_id'</span>: <span style="color: #3e999f;">''</span>,
+        <span style="color: #3e999f;">'type'</span>: <span style="color: #3e999f;">'ir.actions.act_window'</span>,
+        <span style="color: #3e999f;">'target'</span>: <span style="color: #3e999f;">'new'</span>,
+        <span style="color: #3e999f;">'context'</span>: <span style="color: #3e999f;">{</span><span style="color: #3e999f;">'wizard_code'</span>: <span style="color: #3e999f;">'2'</span><span style="color: #3e999f;">}</span>
+    <span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+<p>
+向导的model用一个额外的字段(比如叫'wizard<sub>code</sub>')保存从环境变量获得的wizard<sub>code</sub>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #4271ae;">@api.model</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">default_get</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, fields_list<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #eab700;">res</span> = <span style="color: #8959a8;">super</span><span style="color: #4d4d4c;">(</span>my_data_wizard, <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>.default_get<span style="color: #4d4d4c;">(</span>fields_list<span style="color: #4d4d4c;">)</span>
+    <span style="color: #eab700;">context</span> = <span style="color: #718c00;">self</span>._context <span style="color: #718c00;">or</span> <span style="color: #4d4d4c;">{}</span>
+    <span style="color: #718c00;">if</span> context.get<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'wizard_code'</span>, <span style="color: #4271ae;">False</span><span style="color: #4d4d4c;">)</span>:
+        res.update<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">"wizard_code"</span>: context.get<span style="color: #eab700;">(</span><span style="color: #3e999f;">'wizard_code'</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">return</span> res
+
+</pre>
+</div>
+
+<p>
+然后在视图将字段"wizard<sub>code</sub>"隐藏，其它部分根据这个字段作相应变化
+</p>
+
+<p>
+Done!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9d4a300" class="outline-2">
+<h2 id="org9d4a300"><span class="section-number-2">13</span> 一个Bug,fields.Selection</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+ODOO的ORM模型有个转换bug,当用fields.Seletion字段是时，要避免元组的第一个不为0.
+具体来说, 比如有两个字段
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #eab700;">user_source</span> = fields.Selection<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">'0'</span>, u<span style="color: #3e999f;">'&#20250;&#35805;'</span><span style="color: #eab700;">)</span>, <span style="color: #eab700;">(</span><span style="color: #3e999f;">'1'</span>, u<span style="color: #3e999f;">'&#22909;&#21451;'</span><span style="color: #eab700;">)</span>, <span style="color: #eab700;">(</span><span style="color: #3e999f;">'2'</span>, u<span style="color: #3e999f;">'&#26379;&#21451;&#22280;'</span><span style="color: #eab700;">)</span>,<span style="color: #eab700;">(</span><span style="color: #3e999f;">'3'</span>, u<span style="color: #3e999f;">'&#33150;&#35759;&#24494;&#21338;'</span><span style="color: #eab700;">)</span>,<span style="color: #eab700;">(</span><span style="color: #3e999f;">'4'</span>, u<span style="color: #3e999f;">'&#21382;&#21490;&#28040;&#24687;'</span><span style="color: #eab700;">)</span>, <span style="color: #eab700;">(</span><span style="color: #3e999f;">'5'</span>, u<span style="color: #3e999f;">'&#20854;&#23427;'</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">]</span>,
+                                   string=u<span style="color: #3e999f;">'&#29992;&#25143;&#30340;&#28192;&#36947;'</span>,<span style="color: #8959a8;">help</span>=u<span style="color: #3e999f;">'&#20195;&#34920;&#29992;&#25143;&#20174;&#21738;&#37324;&#36827;&#20837;&#26469;&#38405;&#35835;&#35813;&#22270;&#25991;'</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #eab700;">user_source1</span> = fields.Selection<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[</span><span style="color: #eab700;">(</span>0, u<span style="color: #3e999f;">'&#20250;&#35805;'</span><span style="color: #eab700;">)</span>, <span style="color: #eab700;">(</span>1, u<span style="color: #3e999f;">'&#22909;&#21451;'</span><span style="color: #eab700;">)</span>, <span style="color: #eab700;">(</span>2, u<span style="color: #3e999f;">'&#26379;&#21451;&#22280;'</span><span style="color: #eab700;">)</span>,<span style="color: #eab700;">(</span>3, u<span style="color: #3e999f;">'&#33150;&#35759;&#24494;&#21338;'</span><span style="color: #eab700;">)</span>,<span style="color: #eab700;">(</span>4, u<span style="color: #3e999f;">'&#21382;&#21490;&#28040;&#24687;'</span><span style="color: #eab700;">)</span>, <span style="color: #eab700;">(</span>5, u<span style="color: #3e999f;">'&#20854;&#23427;'</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">]</span>,
+                                   string=u<span style="color: #3e999f;">'&#29992;&#25143;&#30340;&#28192;&#36947;'</span>,<span style="color: #8959a8;">help</span>=u<span style="color: #3e999f;">'&#20195;&#34920;&#29992;&#25143;&#20174;&#21738;&#37324;&#36827;&#20837;&#26469;&#38405;&#35835;&#35813;&#22270;&#25991;'</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+当我将某条记录的user<sub>source1</sub> 设为数字0时， 是无法存上“会话”这个选项的。
+当我查看具体执行的sql语句时，发现insert对应的项是"NULL", ORM模型将我给它的值数字0转化成了NULL存储(我在one2many用(0,0,vals)插入时发现的)。
+相反的，当我在数据库里，手动将这个记录这个值设为数字0时，在后台界面上也显示不出具体的值。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0baff45" class="outline-2">
+<h2 id="org0baff45"><span class="section-number-2">14</span> 列表视图(Tree View)根据字段显示不同颜色</h2>
+<div class="outline-text-2" id="text-14">
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #f5871f;">record</span> <span style="color: #eab700;">id</span>=<span style="color: #3e999f;">"acade_activity_tree"</span> <span style="color: #eab700;">model</span>=<span style="color: #3e999f;">"ir.ui.view"</span>&gt;
+     &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"name"</span>&gt;acade_activity_tree&lt;/<span style="color: #f5871f;">field</span>&gt;
+     &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"model"</span>&gt;acade.activity&lt;/<span style="color: #f5871f;">field</span>&gt;
+     &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"type"</span>&gt;tree&lt;/<span style="color: #f5871f;">field</span>&gt;
+     &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"arch"</span> <span style="color: #eab700;">type</span>=<span style="color: #3e999f;">"xml"</span>&gt;
+         &lt;<span style="color: #f5871f;">tree</span> <span style="color: #eab700;">string</span>=<span style="color: #3e999f;">"acade.activity.tree"</span> <span style="color: #eab700;">colors</span>=<span style="color: #3e999f;">"green:is_over==False;red:is_over==True;"</span>&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"title"</span>/&gt;
+                 &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"start_time"</span>/&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"end_time"</span>/&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"address"</span>/&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"view_times"</span>/&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"apply_doctors"</span>/&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"chat_created"</span>/&gt;
+             &lt;<span style="color: #f5871f;">field</span> <span style="color: #eab700;">name</span>=<span style="color: #3e999f;">"is_over"</span>/&gt;
+         &lt;/<span style="color: #f5871f;">tree</span>&gt;
+     &lt;/<span style="color: #f5871f;">field</span>&gt;
+ &lt;/<span style="color: #f5871f;">record</span>&gt;
+
+</pre>
+</div>
+<p>
+重点在"colors"这个属性
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfc0f363" class="outline-2">
+<h2 id="orgfc0f363"><span class="section-number-2">15</span> 复杂domain解析求值顺序</h2>
+<div class="outline-text-2" id="text-15">
+<p>
+从右往左读取，读取到一个三元结构求值，再向左读取
+</p>
+</div>
+</div>
+
+<div id="outline-container-org005e672" class="outline-2">
+<h2 id="org005e672"><span class="section-number-2">16</span> Field 设置domain</h2>
+<div class="outline-text-2" id="text-16">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #eab700;">is_permanent</span> = fields.Boolean<span style="color: #4d4d4c;">(</span>u<span style="color: #3e999f;">'&#26159;&#21542;&#26159;&#27704;&#20037;&#32032;&#26448;'</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">domain &#37324;&#36319;&#24120;&#37327;&#27604;&#36739;&#30340;&#20889;&#27861;</span>
+<span style="color: #eab700;">field_b</span> = fields.Many2one<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'a.model'</span>, domain=<span style="color: #3e999f;">[</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">'is_permanent'</span>, <span style="color: #3e999f;">'='</span>, <span style="color: #4271ae;">True</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">domain &#37324;&#36319;&#26412;model&#30340;&#23383;&#27573;&#27604;&#36739;</span>
+<span style="color: #eab700;">field_c</span> = fields.Many2one<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'a.model'</span>, domain=<span style="color: #3e999f;">"[('is_permanent', '=', is_permanent)]"</span><span style="color: #4d4d4c;">)</span>
+</pre>
+</div>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

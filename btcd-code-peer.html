@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BTCD源码阅读笔记-peer</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-08-19</p>
+</div>
+<div id="content">
+<h1 class="title">BTCD源码阅读笔记-peer</h1>
+<div class="abstract">
+<p>
+<a href="https://github.com/btcsuite/btcd">btcd</a> 是一个golang实现的比特币全节点。
+</p>
+
+<p>
+本文是阅读其peer包代码的笔记（有些潦草），分析其主要结构。
+</p>
+
+<p>
+基于git代码版本: 16327141da8ce4b46b5bac57ba01352943465d9e
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5fdc13a">1. peer模块</a>
+<ul>
+<li><a href="#org3774826">1.1. 结构/文件</a></li>
+<li><a href="#org568b19d">1.2. 方法</a>
+<ul>
+<li><a href="#org893429d">1.2.1. start方法</a></li>
+<li><a href="#org5acfbd6">1.2.2. readRemoteVersionMsg</a></li>
+<li><a href="#orgaff9520">1.2.3. writeLocalVersionMsg</a></li>
+<li><a href="#org0b83a5c">1.2.4. stallHandler</a></li>
+<li><a href="#orge8e98e0">1.2.5. inHandler</a></li>
+<li><a href="#org298b0b8">1.2.6. queueHandler</a></li>
+<li><a href="#org09ff2d1">1.2.7. outHandler</a></li>
+<li><a href="#org791441b">1.2.8. pingHandler</a></li>
+<li><a href="#org37dc75a">1.2.9. 消息传递简图</a></li>
+<li><a href="#orge0a4bab">1.2.10. 其它一些方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org93cf1b2">2. End</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5fdc13a" class="outline-2">
+<h2 id="org5fdc13a"><span class="section-number-2">1</span> peer模块</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+下面介绍摘选自包的doc文件
+</p>
+<blockquote>
+<p>
+Package peer provides a common base for creating and managing Bitcoin network
+peers.
+</p>
+
+<p>
+This package builds upon the wire package, which provides the fundamental
+primitives necessary to speak the bitcoin wire protocol, in order to simplify
+the process of creating fully functional peers.  In essence, it provides a
+common base for creating concurrent safe fully validating nodes, Simplified
+Payment Verification (SPV) nodes, proxies, etc.
+</p>
+</blockquote>
+
+
+<pre class="example">
+
+peer模块主要逻辑在peer.go里。
+通过阅读example_test.go可以看到peer.go的大致用法。
+</pre>
+</div>
+
+
+<div id="outline-container-org3774826" class="outline-3">
+<h3 id="org3774826"><span class="section-number-3">1.1</span> 结构/文件</h3>
+<div class="outline-text-3" id="text-1-1">
+<pre class="example">
+
+主要结构是peer.go里定义的Peer结构.
+
+其它的struct Config, 其定义Peer的配置
+
+config 有一个field: MessageListeners, 定义Peer不同的handler
+
+另外在mruinvmap.go里：
+定义了一个有最大数量限制的map,当达到限制时，移除最旧的entry
+
+同样的，在mrunoncemap.go里
+逻辑上与上面类似，只不过封装的类型不同
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org568b19d" class="outline-3">
+<h3 id="org568b19d"><span class="section-number-3">1.2</span> 方法</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+核心方法在peer.start()里，定义了一个peer启动时应当做哪些事情，
+</p>
+</div>
+
+<div id="outline-container-org893429d" class="outline-4">
+<h4 id="org893429d"><span class="section-number-4">1.2.1</span> start方法</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<pre class="example">
+1. 先沟通版本[negotiateInboundProtocol/negotiateOutboundProtocol]
+2. 然后以goroutine启动多个handler[stallHandler, inHandler, queueHandler, outHandler, pingHandler]
+
+主要handle逻辑就在这些handler里面
+
+</pre>
+
+<p>
+沟通版本的核心方法是readRemoteVersionMsg/writeLocalVersionMsg
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5acfbd6" class="outline-4">
+<h4 id="org5acfbd6"><span class="section-number-4">1.2.2</span> readRemoteVersionMsg</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<pre class="example">
+
+readRemoteVersionMsg方法读取连接中的MsgVersion信息，
+
+将版本设置为remote提议的版本和自身设置的版本中小的那一个。
+
+之后更具msg的信息更新本身peer的一些信息，比如lastBlock, startingHeight等
+
+然后判断remote支不支持witness，如果支持，设置本身的wireEncoding
+
+之后如果本身有设置了OnVersion Handler，那么调用它
+
+最好检查协商下来的版本是不是高于预设的一个最小可接受版本（MultipleAddressVersion uint32 = 209）
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orgaff9520" class="outline-4">
+<h4 id="orgaff9520"><span class="section-number-4">1.2.3</span> writeLocalVersionMsg</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<pre class="example">
+
+writeLocalVersionMsg先调用localVersionMsg生成一个本地version msg
+然后立即发送出去
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org0b83a5c" class="outline-4">
+<h4 id="org0b83a5c"><span class="section-number-4">1.2.4</span> stallHandler</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<pre class="example">
+
+该handler处理请求(延时)情况.
+
+定义了一个15s的stallTicker
+
+通过for/select来处理以下情况:
+1. 有stall相关动作发送时(msg&lt;-p.stallControl)
+   根据msg的种类分别处理:
+   1.表示有消息刚发送
+     处理方式: 添加等待response的超时计数
+   2.表示有消息刚接收
+     处理方式: 删去相应的等待response的超时计数
+   3.表示一个callback handler刚准备处理
+     处理方式: 添加一个开始计时器
+   4.表示一个callback handler处理完成
+     处理方式：更新下整个handler运行的时间，作为offset
+
+2. 15s时间到时(&lt;-stallTicker.C)
+   检查等待返回的response，算上上面offset, 如果现在的时间超过了预设的等待response的时间+offset
+   那么认定连接超时关闭连接
+
+3. inbound停止发生时(&lt;-inQuit)
+   将一个ioStopped标签设为false
+4. outbound停止发生时(&lt;-outQuit)
+   将一个ioStopped标签设为false
+
+
+最后做一些清理工作。
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge8e98e0" class="outline-4">
+<h4 id="orge8e98e0"><span class="section-number-4">1.2.5</span> inHandler</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<pre class="example">
+
+该handler处理所有incoming messages.
+
+设置一个5min的idleTimer，如果到时间则断开相应连接.
+
+在连接断开前重复执行:
+    先读取msg
+    发送“有消息刚接收”的事件(由stallHandler处理)
+    发送“handler刚准备处理”的事件(由stallHandler处理)
+    根据消息msg的类型，调用相应的handler处理，如果配置里还配有一些Onxxx的处理函数，继续调用处理
+    处理完，发送"handler处理完成"的事件(由stallHandler处理)
+
+如果连接断开(根据标识判断)，那么关闭timer,确保连接断开，关闭inQuit.
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org298b0b8" class="outline-4">
+<h4 id="org298b0b8"><span class="section-number-4">1.2.6</span> queueHandler</h4>
+<div class="outline-text-4" id="text-1-2-6">
+<pre class="example">
+
+该handler处理所有实际上是和outhandler协同工作，将要发送的消息放到queue里，由outHandler来作发送处理。
+
+根据配置定义一个trickleTicker,用来控制多久发送一次inventory给其他peer
+
+通过for/select来处理以下情况:
+1. 当有要发送的消息是(msg&lt;-p.outputQueue)
+   根据是否等待，选择将msg发送给sendQueue（供outHandler真实发送）还是放到一个list（pendingMsgs）里
+2. 当outhandler发完一个消息时(&lt;-p.sendDoneQueue)
+   从list（pendingMsgs）里去一个消息，发送到sendQueue（供outHandler真实发送）
+3. 当有Inventory的输出请求时（&lt;-p.outputInvChan）
+   如果是一个输出block的请求, 立即发送。
+   其他情况放到一个list里(invSendQueue)
+4. 当trickleTicker发生时
+   将存在list(invSendQueue)里的Inventory拿出来，统一包装成一个msg发送。
+5. 当有p.quit退出请求时
+   break
+
+做一些清理工作:
+1.检查临时消息暂存list(pendingMsg)是否还有为处理完的消息。
+2.检查发送消息的队列(outputQueue)是否还有未处理完的消息
+3.检查是否还有inventory的输出请求（&lt;-p.outputInvChan）
+4.关闭queueQuit
+
+</pre>
+</div>
+</div>
+
+
+
+<div id="outline-container-org09ff2d1" class="outline-4">
+<h4 id="org09ff2d1"><span class="section-number-4">1.2.7</span> outHandler</h4>
+<div class="outline-text-4" id="text-1-2-7">
+<pre class="example">
+
+该handler处理所有outgoing messages.
+
+采用for/select来处理以下情况:
+    1. sendQueue有消息
+       发送“有消息刚发送”的事件(由stallHandler处理)
+       向连接写入消息内容
+       更新一些统计信息(lastSend)
+       发送“本消息发送完成”的事件(由queueHandler处理)
+
+    2. peer退出
+       break
+
+等待queueQuit关闭
+
+最后做一些清理工作（取完sendQueue,关闭outQuit等）
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org791441b" class="outline-4">
+<h4 id="org791441b"><span class="section-number-4">1.2.8</span> pingHandler</h4>
+<div class="outline-text-4" id="text-1-2-8">
+<pre class="example">
+
+该handler每个2min发送一个ping请求直到quit，以此来更新peer活跃信息
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org37dc75a" class="outline-4">
+<h4 id="org37dc75a"><span class="section-number-4">1.2.9</span> 消息传递简图</h4>
+<div class="outline-text-4" id="text-1-2-9">
+
+<div class="figure">
+<p><img src="static/images/read-btcd-note-peer-handlers.png" alt="read-btcd-note-peer-handlers.png" />
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge0a4bab" class="outline-4">
+<h4 id="orge0a4bab"><span class="section-number-4">1.2.10</span> 其它一些方法</h4>
+<div class="outline-text-4" id="text-1-2-10">
+<ul class="org-ul">
+<li>PushAddrMsg, 向peer发送addr消息来告知自己连接的节点地址</li>
+<li>PushGetBlocksMsg, 向peer发送getblocks消息，来获取区块消息</li>
+<li>PushGetHeadersMsg, 向peer发送getheaders消息，来获取区块头部消息</li>
+<li>PushRejectMsg, 向peer发送reject消息，来reject收到的消息</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org93cf1b2" class="outline-2">
+<h2 id="org93cf1b2"><span class="section-number-2">2</span> End</h2>
+<div class="outline-text-2" id="text-2">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

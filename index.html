@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keeping Looking, Don't Settle</title>
+<meta name="generator" content="Org mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./static/css/orgcss-customize.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div style="float:right;"><span style="margin-right:10px"><a href="category-index.html" style="color: #333;font-size: .8em;">分类</a></span><span><a href="about-me.html" style="color: #333;font-size: .8em;">关于</a></span></div>
+</div>
+<div id="content">
+<h1 class="title">Keeping Looking, Don't Settle</h1>
+
+<div id="outline-container-orgfeeeb14" class="outline-2">
+<h2 id="orgfeeeb14"><span class="timestamp-wrapper"><span class="timestamp">&lt;2020-08-25 Tue&gt; </span></span> <a href="golang-programing-traps.html">Go语言编程踩坑</a></h2>
+</div>
+<div id="outline-container-org21ae532" class="outline-2">
+<h2 id="org21ae532"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-08-26 Mon&gt; </span></span> <a href="read-go-ethereum.html">go-ethereum源码阅读笔记</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="2020_07_23_update">2020_07_23_update</span></span></h2>
+</div>
+<div id="outline-container-org66386b4" class="outline-2">
+<h2 id="org66386b4"><span class="timestamp-wrapper"><span class="timestamp">&lt;2020-07-04 Sat&gt; </span></span> <a href="common-lisp-tips.html">Common Lisp Tips</a></h2>
+</div>
+<div id="outline-container-org7d903a4" class="outline-2">
+<h2 id="org7d903a4"><span class="timestamp-wrapper"><span class="timestamp">&lt;2020-06-06 Sat&gt; </span></span> <a href="read-gfs-paper.html">GFS论文阅读笔记</a></h2>
+</div>
+<div id="outline-container-orgfe6b0ed" class="outline-2">
+<h2 id="orgfe6b0ed"><span class="timestamp-wrapper"><span class="timestamp">&lt;2020-05-28 Thu&gt; </span></span> <a href="borromean-ring-signature.html">Borromean环形签名探究</a></h2>
+</div>
+<div id="outline-container-orgc9541ac" class="outline-2">
+<h2 id="orgc9541ac"><span class="timestamp-wrapper"><span class="timestamp">&lt;2020-01-14 Tue&gt; </span></span> <a href="near-contract-to-chain.html">NEAR应用与区块链交互解析</a></h2>
+</div>
+<div id="outline-container-org3d104c5" class="outline-2">
+<h2 id="org3d104c5"><span class="timestamp-wrapper"><span class="timestamp">&lt;2020-01-14 Tue&gt; </span></span> <a href="near-contract-develop.html">浅尝NEAR智能合约开发</a></h2>
+</div>
+<div id="outline-container-org0caf537" class="outline-2">
+<h2 id="org0caf537"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-12-14 Sat&gt; </span></span> <a href="understanding-cryptography.html">读《深入浅出密码学》</a></h2>
+</div>
+<div id="outline-container-org549482d" class="outline-2">
+<h2 id="org549482d"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-10-10 Thu&gt; </span></span> <a href="decred-pos-ticket.html">Decred买票、中票、退票的设计</a></h2>
+</div>
+<div id="outline-container-org78c108d" class="outline-2">
+<h2 id="org78c108d"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-08-26 Mon&gt; </span></span> <a href="btcd-code-connmgr.html">BTCD源码阅读笔记-connmgr</a></h2>
+</div>
+<div id="outline-container-orgc766a75" class="outline-2">
+<h2 id="orgc766a75"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-01-13 Sat&gt; </span></span> <a href="learn-onlisp.html">阅读 OnLisp</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="2019_08_25_update">2019_08_25_update</span></span></h2>
+</div>
+<div id="outline-container-org566ccc6" class="outline-2">
+<h2 id="org566ccc6"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-08-22 Thu&gt; </span></span> <a href="btcd-code-netsync.html">BTCD源码阅读笔记-netsync</a></h2>
+</div>
+<div id="outline-container-org7f068c9" class="outline-2">
+<h2 id="org7f068c9"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-08-19 Mon&gt; </span></span> <a href="btcd-code-peer.html">BTCD源码阅读笔记-peer</a></h2>
+</div>
+<div id="outline-container-org31ed970" class="outline-2">
+<h2 id="org31ed970"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-01-29 Tue&gt; </span></span> <a href="btcd-code-database.html">BTCD源码分析之database存储</a></h2>
+</div>
+<div id="outline-container-orgff3f8a2" class="outline-2">
+<h2 id="orgff3f8a2"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-01-27 Sun&gt; </span></span> <a href="udp-usocket.html">CommonLisp UDP库usocket使用心得</a></h2>
+</div>
+<div id="outline-container-org8ef7573" class="outline-2">
+<h2 id="org8ef7573"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-01-17 Thu&gt; </span></span> <a href="lightning-network-htlcs.html">理解闪电网络2——引入HTLCs</a></h2>
+</div>
+<div id="outline-container-org14868c6" class="outline-2">
+<h2 id="org14868c6"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-01-16 Wed&gt; </span></span> <a href="lightning-network-payment-channel.html">理解闪电网络1——支付通道(payment channel)</a></h2>
+</div>
+<div id="outline-container-org4e2a2a3" class="outline-2">
+<h2 id="org4e2a2a3"><span class="timestamp-wrapper"><span class="timestamp">&lt;2019-01-09 Wed&gt; </span></span> <a href="lock-semphore-condition-variable-monitor.html">Lock,Semphore,Condition Variable和Monitor</a></h2>
+</div>
+<div id="outline-container-orgf34350e" class="outline-2">
+<h2 id="orgf34350e"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-18 Tue&gt; </span></span> <a href="bip0112.html">BIP112(CHECKSEQUENCEVERIFY)</a></h2>
+</div>
+<div id="outline-container-orgb150a1c" class="outline-2">
+<h2 id="orgb150a1c"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-17 Mon&gt; </span></span> <a href="bip0068.html">BIP68(nSequence)</a></h2>
+</div>
+<div id="outline-container-org6080934" class="outline-2">
+<h2 id="org6080934"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-16 Sun&gt; </span></span> <a href="bip0065.html">BIP65(CHECKLOCKTIMEVERIFY)</a></h2>
+</div>
+<div id="outline-container-org32f611e" class="outline-2">
+<h2 id="org32f611e"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-15 Sat&gt; </span></span> <a href="bip0113.html">BIP113(Median Time Past)</a></h2>
+</div>
+<div id="outline-container-orgf620444" class="outline-2">
+<h2 id="orgf620444"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-11 Tue&gt; </span></span> <a href="bip0034.html">BIP34(Block v2, Height in Coinbase)</a></h2>
+</div>
+<div id="outline-container-orgd1f5a6b" class="outline-2">
+<h2 id="orgd1f5a6b"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-10 Mon&gt; </span></span> <a href="bip0030.html">BIP30(duplicate transactions)</a></h2>
+</div>
+<div id="outline-container-org851a95f" class="outline-2">
+<h2 id="org851a95f"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-09 Sun&gt; </span></span> <a href="bip0009.html">BIP9(Version Bits)</a></h2>
+</div>
+<div id="outline-container-org4802562" class="outline-2">
+<h2 id="org4802562"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-12-01 Sat&gt; </span></span> <a href="bip0016.html">BIP16(P2SH)</a></h2>
+</div>
+<div id="outline-container-org28ad659" class="outline-2">
+<h2 id="org28ad659"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-10-01 Mon&gt; </span></span> <a href="bitcoin-malleability.html">比特币交易的延展性问题(Transaction Malleability)</a></h2>
+</div>
+<div id="outline-container-orgee8e16e" class="outline-2">
+<h2 id="orgee8e16e"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-09-09 Sun&gt; </span></span> <a href="bytes-string-convert.html">Python3和golang中bytes与string的转换</a></h2>
+</div>
+<div id="outline-container-org8328fa9" class="outline-2">
+<h2 id="org8328fa9"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-09-04 Tue&gt; </span></span> <a href="gcd.html">最大公约数算法</a></h2>
+</div>
+<div id="outline-container-org15ba146" class="outline-2">
+<h2 id="org15ba146"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-07-10 Tue&gt; </span></span> <a href="kademlia.html">Kademlia协议简述</a></h2>
+</div>
+<div id="outline-container-org6d5cae5" class="outline-2">
+<h2 id="org6d5cae5"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-06-25 Mon&gt; </span></span> <a href="fabric-build-test-network.html">搭建一个Fabric网络</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-org416c7bb" class="outline-2">
+<h2 id="org416c7bb"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-06-20 Wed&gt; </span></span> <a href="fabric-configtxgen.html">Fabric configtxgen的配置文件简介</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-org706bdc9" class="outline-2">
+<h2 id="org706bdc9"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-06-19 Tue&gt; </span></span> <a href="fabric-cryptogen.html">Fabric账号、cryptogen和fabirc-ca</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-org4a32288" class="outline-2">
+<h2 id="org4a32288"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-06-01 Fri&gt; </span></span> <a href="python-profile-thoughts.html">Python性能分析思路</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-org8d4b57a" class="outline-2">
+<h2 id="org8d4b57a"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-05-08 Tue&gt; </span></span> <a href="ethereum-q-and-a.html">以太坊(ethereum) Q&amp;A</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="updated">updated</span></span></h2>
+</div>
+<div id="outline-container-org81986fe" class="outline-2">
+<h2 id="org81986fe"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-05-08 Tue&gt; </span></span> <a href="hunchentoot-main-architecture.html">Hunchentoot源码分析之架构流程</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">源码阅读</span></span></h2>
+</div>
+<div id="outline-container-org615f6a3" class="outline-2">
+<h2 id="org615f6a3"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-04-28 Sat&gt; </span></span> <a href="slime-multi-lisp.html">Slime多lisp启动</a></h2>
+</div>
+<div id="outline-container-orgef1e813" class="outline-2">
+<h2 id="orgef1e813"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-04-27 Fri&gt; </span></span> <a href="sqlalchemy-alembic.html">Python数据模型构建和迁移方案：SQLAlchemy&amp;Alembic</a></h2>
+</div>
+<div id="outline-container-org6b2beab" class="outline-2">
+<h2 id="org6b2beab"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-04-13 Fri&gt; </span></span> <a href="funny-regex.html">正则趣谈</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">杂谈</span></span></h2>
+</div>
+<div id="outline-container-org8c699c7" class="outline-2">
+<h2 id="org8c699c7"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-02-15 Thu&gt; </span></span> <a href="deploy-elk-stack.html">搭建ELK技术栈</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-orgeeb36f0" class="outline-2">
+<h2 id="orgeeb36f0"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-02-11 Sun&gt; </span></span> <a href="table-join.html">数据库表join查询的几种方式</a></h2>
+</div>
+<div id="outline-container-org2acf8a8" class="outline-2">
+<h2 id="org2acf8a8"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-02-10 Sat&gt; </span></span> <a href="deploy-docker-registry.html">搭建Docker私有仓库</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-org7023118" class="outline-2">
+<h2 id="org7023118"><span class="timestamp-wrapper"><span class="timestamp">&lt;2018-01-01 Mon&gt; </span></span> <a href="create-tcp-server-in-asyncio-cl-async.html">Asyncio与cl-async创建TCPServer对比</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">源码阅读</span></span></h2>
+</div>
+<div id="outline-container-org28ab4d9" class="outline-2">
+<h2 id="org28ab4d9"><span class="timestamp-wrapper"><span class="timestamp">&lt;2017-09-10 Sun&gt; </span></span> <a href="deploy-swagger-mock-server.html">Swagger-mock-server的一个尝试</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-orge275839" class="outline-2">
+<h2 id="orge275839"><span class="timestamp-wrapper"><span class="timestamp">&lt;2017-06-27 Tue&gt; </span></span> <a href="some-confusion.html">编程语言几点迷思</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">杂谈</span></span></h2>
+</div>
+<div id="outline-container-org37dadc6" class="outline-2">
+<h2 id="org37dadc6"><span class="timestamp-wrapper"><span class="timestamp">&lt;2017-02-08 Wed&gt; </span></span> <a href="read-go-in-action.html">Go in Action 不完全阅读笔记</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-org133abb0" class="outline-2">
+<h2 id="org133abb0"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-12-17 Sat&gt; </span></span> <a href="decorator_order-20161217.html">Python装饰器顺序探究</a></h2>
+</div>
+<div id="outline-container-org93fbc69" class="outline-2">
+<h2 id="org93fbc69"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-12-17 Sat&gt; </span></span> <a href="decorator_parameters-20161217.html">Python装饰器参数探究</a></h2>
+</div>
+<div id="outline-container-org7c53fe3" class="outline-2">
+<h2 id="org7c53fe3"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-11-28 Mon&gt; </span></span> <a href="python_call_c-20161128.html">Python外部函数调用库ctypes</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-org2426f72" class="outline-2">
+<h2 id="org2426f72"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-11-24 Thu&gt; </span></span> <a href="locale_problem-20161124.html">locale多语言模块和我遇到的坑</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-org80f3d0e" class="outline-2">
+<h2 id="org80f3d0e"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-11-23 Wed&gt; </span></span> <a href="image_type-20161123.html">Python探测图片文件类型</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-orgc048c09" class="outline-2">
+<h2 id="orgc048c09"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-11-18 Fri&gt; </span></span> <a href="optimise_tips-20161118.html">Python代码优化技巧</a></h2>
+</div>
+<div id="outline-container-org9ac8591" class="outline-2">
+<h2 id="org9ac8591"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-11-17 Thu&gt; </span></span> <a href="profiling-20161117.html">Python性能分析工具简介</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="____">学习笔记</span></span></h2>
+</div>
+<div id="outline-container-orgc7dfe87" class="outline-2">
+<h2 id="orgc7dfe87"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-11-10 Thu&gt; </span></span> <a href="slots-20161106.html">Python类的 <code>__slots__</code> 属性</a></h2>
+</div>
+<div id="outline-container-org43c189e" class="outline-2">
+<h2 id="org43c189e"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-08-05 Fri&gt; </span></span> <a href="odoo-new-api.html">Odoo新式api心得</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-org50ada9f" class="outline-2">
+<h2 id="org50ada9f"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-07-05 Tue&gt; </span></span> <a href="odoo-notes.html">Odoo Tips or Tricks</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="__">实践</span></span></h2>
+</div>
+<div id="outline-container-orgb9dbfbe" class="outline-2">
+<h2 id="orgb9dbfbe"><span class="timestamp-wrapper"><span class="timestamp">&lt;2016-01-04 Mon&gt; </span></span> <a href="read-eopl3-chapter2.html">读EOPL3第二章(Data Abstraction)</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-orgc76534a" class="outline-2">
+<h2 id="orgc76534a"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-12-19 Sat&gt; </span></span> <a href="read-eopl3-chapter1.html">读EOPL3第一章(可归纳的数据集)</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-org86270c1" class="outline-2">
+<h2 id="org86270c1"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-10-23 Fri&gt; </span></span> <a href="hello-lisp-again.html">Hello Lisp Again</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-org5d2a46d" class="outline-2">
+<h2 id="org5d2a46d"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-10-18 Sun&gt; </span></span> <a href="recognize-device-in-android-studio.html">Recognize Device Error In Android Studio</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-orgd3a3148" class="outline-2">
+<h2 id="orgd3a3148"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-10-13 Tue&gt; </span></span> <a href="generate-static-files-with-pelican.html">Pelican使用经验总结</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-org09b25fd" class="outline-2">
+<h2 id="org09b25fd"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-10-12 Mon&gt; </span></span> <a href="collapsible-panel-in-angular.html">Collapsible Panel In Angular</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-org42dfca9" class="outline-2">
+<h2 id="org42dfca9"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-10-09 Fri&gt; </span></span> <a href="odoo-model.html">Using Odoo(about Model)</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-orgd9e28f2" class="outline-2">
+<h2 id="orgd9e28f2"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-09-27 Sun&gt; </span></span> <a href="develop-blog-with-flask.html">Develop Blog With Flask</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-org0a42c69" class="outline-2">
+<h2 id="org0a42c69"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-09-27 Sun&gt; </span></span> <a href="dropdown-select-in-angular.html">DropDown Select In Angular</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+</div>
+<div id="outline-container-org3c5463e" class="outline-2">
+<h2 id="org3c5463e"><span class="timestamp-wrapper"><span class="timestamp">&lt;2015-09-01 Tue&gt; </span></span> <a href="nodejs-explore.html">Nodejs初探</a>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="Old">Old</span></span></h2>
+<div class="outline-text-2" id="text-org3c5463e">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="validation"></p>
+</div>
+</body>
+</html>

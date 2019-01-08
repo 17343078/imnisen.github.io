@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>搭建Docker私有仓库</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-02-10</p>
+</div>
+<div id="content">
+<h1 class="title">搭建Docker私有仓库</h1>
+<div class="abstract">
+<p>
+这篇文章内容包括搭建docker私有仓库的一些配置项和遇到的问题及解决方案。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org785f3d1">1. 配置项</a>
+<ul>
+<li><a href="#org0dfb580">1.1. 数据持久化</a></li>
+<li><a href="#orgf2a92e1">1.2. TLS 支持</a></li>
+<li><a href="#org7be0995">1.3. 登录授权验证</a></li>
+<li><a href="#org03ab590">1.4. docker compose</a></li>
+</ul>
+</li>
+<li><a href="#org16ad194">2. 测试</a></li>
+<li><a href="#org1a30406">3. Nginx做代理</a>
+<ul>
+<li><a href="#orgbf0928f">3.1. 我的方式和遇到的问题</a></li>
+<li><a href="#org078f070">3.2. Nginx 作为一个容器</a></li>
+</ul>
+</li>
+<li><a href="#orgb25d2cd">4. 其它方案</a></li>
+<li><a href="#orgbf1411d">5. 相关链接</a></li>
+</ul>
+</div>
+</div>
+
+<p>
+Docker官方提供了 <a href="https://hub.docker.com/_/registry/">registry镜像</a>， 可以方便的搭建私有仓库，详细文档参考<a href="https://docs.docker.com/registry/deploying/#load-balancing-considerations">这里</a>。
+</p>
+
+<div id="outline-container-org785f3d1" class="outline-2">
+<h2 id="org785f3d1"><span class="section-number-2">1</span> 配置项</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org0dfb580" class="outline-3">
+<h3 id="org0dfb580"><span class="section-number-3">1.1</span> 数据持久化</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+可以通过采用数据卷挂载或者直接挂载宿主机目录的方式来进行。挂载到容器内默认位置: <code>/var/lib/registry</code> 。
+比如可以像如下方式启动, 这里将容器数据存储在了 <code>/mnt/registry</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">$ docker run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v /mnt/registry:/var/lib/registry \
+  registry:2
+
+</pre>
+</div>
+
+<p>
+当然，镜像还提供了其它支持的存储方式，比如OSS等。
+</p>
+
+<p>
+官方文档参见<a href="https://docs.docker.com/registry/deploying/#storage-customization">这里</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf2a92e1" class="outline-3">
+<h3 id="orgf2a92e1"><span class="section-number-3">1.2</span> TLS 支持</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+为了使得私有仓库安全地对外开放，需要配置 TLS 支持。
+</p>
+
+<p>
+测试的时候，如果不配置的话TLS，可以在docker客户端中的 "insecure registry" 里添加私有仓库地址，不然默认的都以安全的tsl方式来访问私有仓库，具体更改方式可以参考<a href="https://docs.docker.com/registry/insecure/#deploy-a-plain-http-registry">这里</a>。
+</p>
+
+<p>
+我的CA证书是从阿里云获取的（因为域名是在上面注册的，可以提供免费的证书，虽然如果做得很隐蔽）。
+</p>
+
+<p>
+registry镜像可以通过 <code>REGISTRY_HTTP_TLS_CERTIFICATE</code> 和 <code>REGISTRY_HTTP_TLS_KEY</code> 环境参数配置TLS支持。
+例如下面这样， <code>domain.crt</code> 和 <code>domain.key</code> 是获得的证书，另外配置容器监听ssl默认的 <code>443</code> 端口。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">$ docker run -d \
+  --restart=always \
+  --name registry \
+  -v `pwd`/certs:/certs \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  -p 443:443 \
+  registry:2
+
+</pre>
+</div>
+
+<p>
+官方文档参见<a href="https://docs.docker.com/registry/deploying/#run-an-externally-accessible-registry">这里</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7be0995" class="outline-3">
+<h3 id="org7be0995"><span class="section-number-3">1.3</span> 登录授权验证</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+可以通过 <code>htpasswd</code> 来配置简单的authentication （注意：验证需要 TLS 支持）。
+</p>
+
+<p>
+首先在 <code>auth</code> 目录下通过reistry里的 <code>htpasswd</code> 工具创建 验证文件 <code>auth/htpasswd</code> 。
+</p>
+<div class="org-src-container">
+<pre class="src src-example">$ mkdir auth
+$ docker run \
+  --entrypoint htpasswd \
+  registry:2 -Bbn testuser testpassword &gt; auth/htpasswd
+
+
+</pre>
+</div>
+
+<p>
+启动的时候通过 <code>REGISTRY_AUTH</code>, <code>REGISTRY_AUTH_HTPASSWD_REALM</code>, <code>REGISTRY_AUTH_HTPASSWD_PATH</code> 来配置：
+</p>
+<div class="org-src-container">
+<pre class="src src-example">$ docker run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v `pwd`/auth:/auth \
+  -e "REGISTRY_AUTH=htpasswd" \
+  -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+  -v `pwd`/certs:/certs \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  registry:2
+
+</pre>
+</div>
+<p>
+这样就启动了一个监听5000端口的、支持TLS和简单登录验证的docker 私有仓库。
+</p>
+
+
+<p>
+官方文档参见<a href="https://docs.docker.com/registry/deploying/#restricting-access">这里</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org03ab590" class="outline-3">
+<h3 id="org03ab590"><span class="section-number-3">1.4</span> docker compose</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+"docker compose" 是一个方便定义和运行多个容器的工具， 安装参见<a href="https://docs.docker.com/compose/install/">这里</a>， 或者通过pip安装： <code>pip install docker-compose</code>
+</p>
+
+<p>
+以上配置项通过 <code>docker compose</code> 的方式组织起来如下:
+</p>
+
+<p>
+文件命名成 docker-compose.yaml
+</p>
+<div class="org-src-container">
+<pre class="src src-example">registry:
+  restart: always
+  image: registry:2
+  ports:
+    - 5000:5000
+  environment:
+    REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+    REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+    REGISTRY_AUTH: htpasswd
+    REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+  volumes:
+    - /path/data:/var/lib/registry
+    - /path/certs:/certs
+    - /path/auth:/auth
+
+</pre>
+</div>
+
+<p>
+在 <code>docker-compose.yaml</code> 所在目录运行：
+</p>
+<div class="org-src-container">
+<pre class="src src-example">docker-compose up
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org16ad194" class="outline-2">
+<h2 id="org16ad194"><span class="section-number-2">2</span> 测试</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+私有仓库搭建好了如何测试？
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example"># 先拉取官方镜像
+$ docker pull ubuntu:16.04
+
+# 打上标签
+$ docker tag ubuntu:16.04 myregistrydomain.com/my-ubuntu
+
+# 推到私有仓库
+$ docker push myregistrydomain.com/my-ubuntu
+
+# 从私有仓库获取
+$ docker pull myregistrydomain.com/my-ubuntu
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a30406" class="outline-2">
+<h2 id="org1a30406"><span class="section-number-2">3</span> Nginx做代理</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgbf0928f" class="outline-3">
+<h3 id="orgbf0928f"><span class="section-number-3">3.1</span> 我的方式和遇到的问题</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+实际配置中，我采用了 <code>nginx</code> 作为代理，来访问 registry服务。我将TLS支持和登录验证都加到了nginx一层。
+</p>
+
+
+<p>
+nginx 配置文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">upstream docker-registry {
+  server localhost:5000;                          # ！转发到registry 监听的5000 端口！
+}
+
+## Set a variable to help us decide if we need to add the
+## 'Docker-Distribution-Api-Version' header.
+## The registry always sets this header.
+## In the case of nginx performing auth, the header is unset
+## since nginx is auth-ing before proxying.
+map $upstream_http_docker_distribution_api_version $docker_distribution_api_version {
+  '' 'registry/2.0';
+}
+
+server {
+  listen 443 ssl;
+  server_name domain.com;  # ！这里配置域名！
+
+  # SSL
+  ssl_certificate /path/to/domain.pem;               # ！这里配置CA 证书信息！
+  ssl_certificate_key /path/to/domain.key;           # ！这里配置CA 证书信息！
+
+  # Recommendations from https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+  ssl_protocols TLSv1.1 TLSv1.2;
+  ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache shared:SSL:10m;
+
+  # disable any limits to avoid HTTP 413 for large image uploads
+  client_max_body_size 0;
+
+  # required to avoid HTTP 411: see Issue #1486 (https://github.com/moby/moby/issues/1486)
+  chunked_transfer_encoding on;
+
+  location /v2/ {
+    # Do not allow connections from docker 1.5 and earlier
+    # docker pre-1.6.0 did not properly set the user agent on ping, catch "Go *" user agents
+    if ($http_user_agent ~ "^(docker\/1\.(3|4|5(?!\.[0-9]-dev))|Go ).*$" ) {
+      return 404;
+    }
+
+    # To add basic authentication to v2 use auth_basic setting.
+    auth_basic "Registry realm";
+    auth_basic_user_file /path/to/auth/htpasswd;          # ！这里配置auth文件位置！
+
+    ## If $docker_distribution_api_version is empty, the header is not added.
+    ## See the map directive above where this variable is defined.
+    add_header 'Docker-Distribution-Api-Version' $docker_distribution_api_version always;
+
+    proxy_pass                          http://docker-registry;
+    proxy_set_header  Host              $http_host;   # required for docker client's sake
+    proxy_set_header  X-Real-IP         $remote_addr; # pass on real client's IP
+    proxy_set_header  X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header  X-Forwarded-Proto $scheme;
+    proxy_read_timeout                  900;
+  }
+}
+
+</pre>
+</div>
+
+
+<p>
+其中 <code>/path/to/auth/htpasswd</code> 文件是通过 registry 中的或者本地的 <code>htpasswd</code> 工具生成的
+</p>
+<div class="org-src-container">
+<pre class="src src-example">$ docker run \
+  --entrypoint htpasswd \
+  registry:2 -Bbn testuser testpassword &gt; auth/htpasswd
+
+</pre>
+</div>
+
+
+<p>
+registry的 <code>docker-compose</code> 文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">version: '2'
+services:
+  my_registry:
+    restart: always
+    image: registry:2
+    ports:
+      - 127.0.0.1:5000:5000
+    volumes:
+      - ./data:/var/lib/registry
+
+</pre>
+</div>
+
+<p>
+启动后，当我从本地视图login到私有仓库时，发生错误：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">➜  ~ docker login domain.com
+Username: testuser
+Password:
+Error response from daemon: login attempt to https://hub.docker.equiz.cn/v2/ failed with status: 500 Internal Server Error
+
+</pre>
+</div>
+
+<p>
+查看日志发现nginx 错误日志里有个编码相关的错误：
+</p>
+<div class="org-src-container">
+<pre class="src src-example"># nginx error log
+
+*4 crypt_r() failed (22: Invalid argument)
+</pre>
+</div>
+
+<p>
+经过一番研究，发现之前加密时，是采用 <code>Bcrypt</code> 加密方式，看下 <code>htpasswd</code> 的使用说明：
+</p>
+<div class="org-src-container">
+<pre class="src src-example">root@data1:~# htpasswd
+Usage:
+        htpasswd [-cimBdpsDv] [-C cost] passwordfile username
+        htpasswd -b[cmBdpsDv] [-C cost] passwordfile username password
+
+        htpasswd -n[imBdps] [-C cost] username
+        htpasswd -nb[mBdps] [-C cost] username password
+ -c  Create a new file.
+ -n  Don't update file; display results on stdout.
+ -b  Use the password from the command line rather than prompting for it.
+ -i  Read password from stdin without verification (for script usage).
+ -m  Force MD5 encryption of the password (default).
+ -B  Force bcrypt encryption of the password (very secure).
+ -C  Set the computing time used for the bcrypt algorithm
+     (higher is more secure but slower, default: 5, valid: 4 to 31).
+ -d  Force CRYPT encryption of the password (8 chars max, insecure).
+ -s  Force SHA encryption of the password (insecure).
+ -p  Do not encrypt the password (plaintext, insecure).
+ -D  Delete the specified user.
+ -v  Verify password for the specified user.
+On other systems than Windows and NetWare the '-p' flag will probably not work.
+The SHA algorithm does not use a salt and is less secure than the MD5 algorithm.
+
+</pre>
+</div>
+
+<p>
+可以看到 <code>-B</code> 会使用 <code>bcrypt</code> 的方式来加密，nginx默认不支持。至于如何让nginx支持bcrypt我暂时还未找到方案，留待以后研究了(TODO)
+</p>
+
+<p>
+简单的解决方式是换成默认的MD5加密（因为安全等级问题又不推荐不用bcrypt方式的），
+</p>
+<div class="org-src-container">
+<pre class="src src-example">
+docker run --rm --entrypoint htpasswd registry:2 -bn testuser testpassword &gt; auth/htpasswd   # 这里少了 -B 选项
+
+</pre>
+</div>
+
+
+<p>
+关于 <code>bcrypt</code> 加密方式，<a href="https://www.endpoint.com/blog/2016/02/09/bonked-by-basicauth-because-bcrypt">这里</a> 有一篇不错的文章介绍。不过好像对于这个加密方式，网上有一些争论，我就不详究了。
+</p>
+
+<p>
+不依赖 "apche tools" 的 nginx 加密方式参考 <a href="https://www.nginx.com/resources/wiki/community/faq/#how-do-i-generate-an-htpasswd-file-without-having-apache-tools-installed">这里</a>, 比如MD5加密:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">printf "testuser:$(openssl passwd -1 testpassword)\n" &gt;&gt; .htpasswd # this example uses MD5 encryption
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org078f070" class="outline-3">
+<h3 id="org078f070"><span class="section-number-3">3.2</span> Nginx 作为一个容器</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+docker 文档也有如何采用nginx容器和registry配合使用的说明，参考<a href="https://docs.docker.com/registry/recipes/nginx/">这里</a>。
+</p>
+
+<p>
+"docker-compose.yaml" 如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-example">nginx:
+  # Note : Only nginx:alpine supports bcrypt.
+  # If you don't need to use bcrypt, you can use a different tag.
+  # Ref. https://github.com/nginxinc/docker-nginx/issues/29
+  image: "nginx:alpine"     # ！这里一定要采用alpine镜像，因为它里的nginx支持 bcrypt 加密！
+  ports:
+    - 5043:443
+  links:
+    - registry:registry
+  volumes:
+    - ./auth:/etc/nginx/conf.d
+    - ./auth/nginx.conf:/etc/nginx/nginx.conf:ro
+
+registry:
+  image: registry:2
+  ports:
+    - 127.0.0.1:5000:5000
+  volumes:
+    - ./data:/var/lib/registry
+
+</pre>
+</div>
+
+<p>
+这里nginx容器监听的是5043, 所以使用的私有仓库的地址变成了 <code>registrydomain.com:5043</code>,
+我不喜欢后面加端口，但本机又存在其他需要nginx监听的443端口的服务(不同doamin下)，所以不能让nginx容器直接监听443端口，故没有采用这种方式。
+</p>
+
+
+<p>
+另外在寻找解决方案的时候发现一个镜像 <code>nginx-proxy</code>, 可以方便地监听新添加的容器，留待以后探索。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb25d2cd" class="outline-2">
+<h2 id="orgb25d2cd"><span class="section-number-2">4</span> 其它方案</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+或许你想用letsencrypts免费证书，不妨看看这个工具:<a href="https://github.com/Neilpang/acme.sh">acme.sh</a>
+</p>
+
+<p>
+或许你不满足的简易方案，你可能还需要web界面来方便查看和管理你的镜像仓库，那么你可以查看下企业级的容器仓库方案: <a href="https://github.com/vmware/harbor">vmware/harbor</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbf1411d" class="outline-2">
+<h2 id="orgbf1411d"><span class="section-number-2">5</span> 相关链接</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>docker ce ubuntu 安装 文档: <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a></li>
+<li>docker compose 安装文档: <a href="https://docs.docker.com/compose/install/">https://docs.docker.com/compose/install/</a></li>
+<li>docker registr 镜像: <a href="https://hub.docker.com/_/registry/">https://hub.docker.com/_/registry/</a></li>
+<li>deploy 部署步骤文档: <a href="https://docs.docker.com/registry/deploying/">https://docs.docker.com/registry/deploying/</a></li>
+<li>详细的registry的可配置项参见: <a href="https://docs.docker.com/registry/configuration/">https://docs.docker.com/registry/configuration/</a></li>
+<li>nginx容器bcrypt问题: <a href="https://github.com/docker/distribution/issues/655">https://github.com/docker/distribution/issues/655</a></li>
+<li>nginx容器bcrypt问题2: <a href="https://github.com/nginxinc/docker-nginx/issues/29">https://github.com/nginxinc/docker-nginx/issues/29</a></li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

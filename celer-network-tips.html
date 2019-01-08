@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Celer network 学习笔记</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-09-20</p>
+</div>
+<div id="content">
+<h1 class="title">Celer network 学习笔记</h1>
+<div class="abstract">
+<p>
+本文是近期参与的一个区块链课程笔记整理，可能对你没有作用。之后会逐渐针对知识点整理，目前仅供自己参考。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7c57990">1. constant</a></li>
+<li><a href="#org820f3de">2. <span class="todo TODO">TODO</span> address几种调用比较</a></li>
+<li><a href="#orge4f7507">3. 一些用作单位的全局变量</a></li>
+<li><a href="#org218838f">4. 合约内部函数调用tip</a></li>
+<li><a href="#orgcc62dcf">5. <span class="todo TODO">TODO</span> 错误检测</a></li>
+<li><a href="#orgbaa971c">6. 数据存储</a></li>
+<li><a href="#org7650933">7. 可视度和继承</a>
+<ul>
+<li><a href="#orgc233ac5">7.1. 可视度种类</a></li>
+<li><a href="#orge199dfe">7.2. 修饰成员变量和函数</a></li>
+<li><a href="#org56eac82">7.3. 继承时构造函数</a></li>
+<li><a href="#orgc8ea8a1">7.4. 多继承MRO</a></li>
+</ul>
+</li>
+<li><a href="#org4110aaf">8. 抽象合约和接口</a></li>
+<li><a href="#org325fc1b">9. 数据类型</a>
+<ul>
+<li><a href="#org2f80b71">9.1. 不支持浮点数</a></li>
+<li><a href="#org82acf6c">9.2. mapping</a></li>
+</ul>
+</li>
+<li><a href="#org30006a6">10. 函数参数返回</a></li>
+<li><a href="#org1e09118">11. truffle相关tip</a>
+<ul>
+<li><a href="#orge366da0">11.1. import lib 在compiled的bytecode里怎么显示， link怎么处理？</a></li>
+<li><a href="#org623835d">11.2. migrate后的合约的instance地址记录在compiled的文件中</a></li>
+<li><a href="#org8ec9e04">11.3. web3.js 调用合约方法</a></li>
+<li><a href="#org0b410b4">11.4. Truffle 测试</a></li>
+</ul>
+</li>
+<li><a href="#org16ea8db">12. END</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7c57990" class="outline-2">
+<h2 id="org7c57990"><span class="section-number-2">1</span> constant</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>constant</code> 修饰函数，编译器不做限制。~constant~ 修饰合约变量，编译器会限制更改
+</p>
+
+<p>
+solc 0.4.17之后， constant 不再建议使用，采用 <code>view</code> 和 <code>pure</code> 代替。
+</p>
+
+<p>
+<code>view</code> 是 <code>constant</code> 的替代，表明该函数不修改合约状态。
+</p>
+
+<p>
+<code>pure</code> 比 <code>view</code> 限制更加严格，它修饰的函数的返回结果只依赖输入。
+</p>
+
+<p>
+参考这个 <a href="https://ethereum.stackexchange.com/questions/25200/solidity-what-is-the-difference-between-view-and-constant">stackoverflow</a> 回答。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org820f3de" class="outline-2">
+<h2 id="org820f3de"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> address几种调用比较</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+address.transfer
+address.send
+address.call
+address.callcode
+address.delegatecall
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge4f7507" class="outline-2">
+<h2 id="orge4f7507"><span class="section-number-2">3</span> 一些用作单位的全局变量</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-example">
+Banlance单位
+wei
+szabo = 10^12wei
+szabo = 10^15wei
+ether = 10^18wei
+
+时间单位
+seconds
+minutes
+hours
+days
+weeks
+years
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org218838f" class="outline-2">
+<h2 id="org218838f"><span class="section-number-2">4</span> 合约内部函数调用tip</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+this.function()调用要比直接function()调用消耗更多gas
+</p>
+
+<p>
+但可以用来调用一些external函数
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcc62dcf" class="outline-2">
+<h2 id="orgcc62dcf"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> 错误检测</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+threw
+</p>
+
+<p>
+revert 停止执行，交还未消耗完的gas
+</p>
+
+<p>
+assert
+</p>
+
+<p>
+require
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgbaa971c" class="outline-2">
+<h2 id="orgbaa971c"><span class="section-number-2">6</span> 数据存储</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+3种存储类型
+storage 存储区块链上
+</p>
+
+<p>
+memory   临时
+</p>
+
+<p>
+calldata 临时
+</p>
+
+<p>
+使用的要求:
+</p>
+
+<p>
+强制:
+状态变量:storage
+function输入参数: calldata
+</p>
+
+<p>
+默认:
+function返回参数:memory
+本地变量:storage
+</p>
+
+<p>
+相同存储空间变量赋值
+传递reference(evm 上的内存地址)
+</p>
+
+<p>
+不同存储空间变量赋值
+拷贝
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7650933" class="outline-2">
+<h2 id="org7650933"><span class="section-number-2">7</span> 可视度和继承</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgc233ac5" class="outline-3">
+<h3 id="orgc233ac5"><span class="section-number-3">7.1</span> 可视度种类</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+public  谁都可见
+</p>
+
+<p>
+external 只有“外部调用”可见
+</p>
+
+<p>
+internal 外部调用不可见，内部和子类可见
+</p>
+
+<p>
+private  只有当前合约可见
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge199dfe" class="outline-3">
+<h3 id="orge199dfe"><span class="section-number-3">7.2</span> 修饰成员变量和函数</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+成员/状态变量： public internal, private，
+默认为internal
+如果使用public修饰，那么会默认为此状态变量创建取值函数
+private: 不代表别的人无法看到（所有数据都是公开的,肉眼都可见），只代表区块链智能合约无法看到。
+</p>
+
+
+<p>
+函数：  public external internal, private
+默认 public
+this.func1()  this 会将函数调用改成外部调用
+</p>
+</div>
+</div>
+
+<div id="outline-container-org56eac82" class="outline-3">
+<h3 id="org56eac82"><span class="section-number-3">7.3</span> 继承时构造函数</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+继承的时候， 父类的无参数的构造函数会在子类构造函数被调用前默认调用
+而当父类也是构造函数也是有参时，子类可以：
+1、 子类声明时构造静态父类
+2、 子类构造函数时构造父类
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgc8ea8a1" class="outline-3">
+<h3 id="orgc8ea8a1"><span class="section-number-3">7.4</span> 多继承MRO</h3>
+<div class="outline-text-3" id="text-7-4">
+<p>
+多继承的重名函数 MRO 采用 C3 linearization，和Python类似
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org4110aaf" class="outline-2">
+<h2 id="org4110aaf"><span class="section-number-2">8</span> 抽象合约和接口</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+抽象合约    可以定义状态变量等等
+Inteface  只有方法定义
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org325fc1b" class="outline-2">
+<h2 id="org325fc1b"><span class="section-number-2">9</span> 数据类型</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org2f80b71" class="outline-3">
+<h3 id="org2f80b71"><span class="section-number-3">9.1</span> 不支持浮点数</h3>
+</div>
+<div id="outline-container-org82acf6c" class="outline-3">
+<h3 id="org82acf6c"><span class="section-number-3">9.2</span> mapping</h3>
+<div class="outline-text-3" id="text-9-2">
+<p>
+不使用数组+链表实现，加入很多元素后不需要扩容
+hash函数为keccak256hash, 在storage上存储,理论无限大的hash表
+无法遍历整个hash
+</p>
+
+<p>
+赋值 h[key] = value
+取值 value = h[key], 注意，这萝莉的value是引用，在storage上存储，可以直接修改; 当key不存在时，value是该类型的默认值
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org30006a6" class="outline-2">
+<h2 id="org30006a6"><span class="section-number-2">10</span> 函数参数返回</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+var 指定多个变量来接受返回的多值
+</p>
+
+<p>
+函数返回参数也可以命名，这样可以告诉外界调用者信息。这时候也可以不用写return
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1e09118" class="outline-2">
+<h2 id="org1e09118"><span class="section-number-2">11</span> truffle相关tip</h2>
+<div class="outline-text-2" id="text-11">
+</div>
+<div id="outline-container-orge366da0" class="outline-3">
+<h3 id="orge366da0"><span class="section-number-3">11.1</span> import lib 在compiled的bytecode里怎么显示， link怎么处理？</h3>
+</div>
+<div id="outline-container-org623835d" class="outline-3">
+<h3 id="org623835d"><span class="section-number-3">11.2</span> migrate后的合约的instance地址记录在compiled的文件中</h3>
+</div>
+
+<div id="outline-container-org8ec9e04" class="outline-3">
+<h3 id="org8ec9e04"><span class="section-number-3">11.3</span> web3.js 调用合约方法</h3>
+<div class="outline-text-3" id="text-11-3">
+<p>
+方法名.call() :          不修改合约的变量
+方法名.send()/方法名() ： 该方法修改合约变量
+</p>
+</div>
+</div>
+<div id="outline-container-org0b410b4" class="outline-3">
+<h3 id="org0b410b4"><span class="section-number-3">11.4</span> Truffle 测试</h3>
+<div class="outline-text-3" id="text-11-4">
+<p>
+可以选择js版或者solidity写测试
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org16ea8db" class="outline-2">
+<h2 id="org16ea8db"><span class="section-number-2">12</span> END</h2>
+<div class="outline-text-2" id="text-12">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273316453'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s13.cnzz.com/z_stat.php%3Fid%3D1273316453%26show%3Dpic2' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

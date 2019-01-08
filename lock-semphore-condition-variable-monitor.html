@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lock,Semphore,Condition Variable和Monitor</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-01-09</p>
+</div>
+<div id="content">
+<h1 class="title">Lock,Semphore,Condition Variable和Monitor</h1>
+<div class="abstract">
+<p>
+这篇文章是对于并发控制的一些操作符的介绍和整理。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org58c9430">1. 概述</a>
+<ul>
+<li><a href="#org542ca13">1.1. 概述</a></li>
+<li><a href="#orgab3ee63">1.2. 例子</a></li>
+<li><a href="#org187fd53">1.3. 哪些是共享资源</a></li>
+</ul>
+</li>
+<li><a href="#orgf0724d0">2. Lock</a>
+<ul>
+<li><a href="#org84b6ac8">2.1. 介绍</a></li>
+<li><a href="#org603e7e7">2.2. 实现1</a></li>
+<li><a href="#orgf5e9d96">2.3. 实现2</a></li>
+<li><a href="#orga82e450">2.4. 实现3</a></li>
+<li><a href="#orga735107">2.5. 实现4</a></li>
+</ul>
+</li>
+<li><a href="#orgaf1ddda">3. Semphore</a>
+<ul>
+<li><a href="#orgc5ca574">3.1. 介绍</a></li>
+<li><a href="#org1a330ae">3.2. 实现1</a></li>
+<li><a href="#orgafb52ee">3.3. 实现2</a></li>
+<li><a href="#orgd775c34">3.4. 实现3</a></li>
+<li><a href="#orgbc553ee">3.5. 总结</a></li>
+</ul>
+</li>
+<li><a href="#org6462ccc">4. Condition Variable</a>
+<ul>
+<li><a href="#orgad9ea79">4.1. 简介</a></li>
+<li><a href="#org72bbb2b">4.2. 使用例子</a></li>
+<li><a href="#orgbc2cfa5">4.3. 实现</a></li>
+<li><a href="#org2997041">4.4. 和semphore关系</a></li>
+</ul>
+</li>
+<li><a href="#orgd9e3629">5. <span class="todo TODO">TODO</span> Monitor</a>
+<ul>
+<li><a href="#org0d33d6a">5.1. 概述</a></li>
+<li><a href="#org77a120a">5.2. Hoare Monitor</a></li>
+<li><a href="#org49d15c3">5.3. Mesa Monitor</a></li>
+<li><a href="#org403d57e">5.4. 差别</a></li>
+<li><a href="#org901ef87">5.5. 例子</a></li>
+<li><a href="#orga8897e0">5.6. Java与Monitor</a></li>
+</ul>
+</li>
+<li><a href="#orgb1544cf">6. 参考资料</a></li>
+<li><a href="#orgf57751b">7. END</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org58c9430" class="outline-2">
+<h2 id="org58c9430"><span class="section-number-2">1</span> 概述</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org542ca13" class="outline-3">
+<h3 id="org542ca13"><span class="section-number-3">1.1</span> 概述</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+在一个多线程程序里，各个线程互相协作（共享资源或者串联执行结果等）来完成任务。
+</p>
+
+<p>
+为了使得多线程程序的正确性得到保证（因为线程以任意频率交错执行，由操作系统来调度，不由得用户程序控制），我们需要控制多线程间的协作。
+</p>
+
+<p>
+我们通过"同步"("synchronization")来控制多个线程间的协作（同步使得我们可以限制多个线程如何交互执行）。
+</p>
+
+<p>
+这里的讨论对于“多进程”来讲也是如此。
+</p>
+
+
+<p>
+首先考虑多线程中对共享资源的访问问题：
+有一些机制来控制共享资源："locks", "mutex", "semphores", "monitors", "condition variables"
+还有一些模式来控制和协作对共享资源的访问："Bounded buffer", "producer-consumer"等
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab3ee63" class="outline-3">
+<h3 id="orgab3ee63"><span class="section-number-3">1.2</span> 例子</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+举个基本的例子：银行账号余额的操作：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #f5871f;">withdraw</span> <span style="color: #4d4d4c;">(</span>account, amount<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    balance = get_balance<span style="color: #3e999f;">(</span>account<span style="color: #3e999f;">)</span>;
+    balance = balance &#8211; amount;
+    put_balance<span style="color: #3e999f;">(</span>account, balance<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">return</span> balance;
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+<p>
+两个线程同时执行上述方法，由于程序不可控的"context switch", 会导致当账户减了钱还没设置回去后，又由另外一个程序获取旧值操作，导致意外结果：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c">balance = get_balance<span style="color: #4d4d4c;">(</span>account<span style="color: #4d4d4c;">)</span>;
+balance = balance &#8211; amount;
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">-&gt; context switch &lt;-</span>
+
+balance = get_balance<span style="color: #4d4d4c;">(</span>account<span style="color: #4d4d4c;">)</span>;
+balance = balance &#8211; amount;
+<span style="color: #f5871f;">put_balance</span><span style="color: #4d4d4c;">(</span>account, balance<span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">-&gt; context switch &lt;-</span>
+
+<span style="color: #f5871f;">put_balance</span><span style="color: #4d4d4c;">(</span>account, balance<span style="color: #4d4d4c;">)</span>;
+
+</pre>
+</div>
+
+<p>
+问题在于两个线程访问一个共享资源却没有“同步”，所以导致了“竞争”(race condition)。
+所以需要一种机制，来控制对共享资源的访问。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org187fd53" class="outline-3">
+<h3 id="org187fd53"><span class="section-number-3">1.3</span> 哪些是共享资源</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+一个多线程程序执行数据结构示意:
+</p>
+
+<p>
+&lt;插入pic1&gt;
+</p>
+
+<ol class="org-ol">
+<li>线程的本地变量不是共享的，它们存储在自己的stack上</li>
+<li>全局变量和静态的一些数据是共享的，它们存储在static data上</li>
+<li>动态对象和其他一些heap上的对象是共享的，它们存储在heap上</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgf0724d0" class="outline-2">
+<h2 id="orgf0724d0"><span class="section-number-2">2</span> Lock</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org84b6ac8" class="outline-3">
+<h3 id="org84b6ac8"><span class="section-number-3">2.1</span> 介绍</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+我们用互斥("mutal exclusion")来同步对共享资源的访问。用互斥动作包过的代码称为"critical section".
+</p>
+
+<p>
+Lock提供了两个方法：
+</p>
+<ol class="org-ol">
+<li><code>acquire()</code> : 进入critical section</li>
+
+<li><code>releaase()</code> : 离开critical section</li>
+</ol>
+
+<p>
+线程在acquire和release之间，就称之为线程“持有”这个lock.
+</p>
+
+<p>
+acquire会处在等待状态，直到其它线程释放lock.
+</p>
+
+<p>
+lock可以分为“空转锁”("spin lock")和“等待锁”("mutex").
+</p>
+
+<p>
+采用lock机制，上面的银行账户操作例子可以写成:
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #f5871f;">withdraw</span> <span style="color: #4d4d4c;">(</span>account, amount<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    acquire<span style="color: #3e999f;">(</span>lock<span style="color: #3e999f;">)</span>;
+
+    balance = get_balance<span style="color: #3e999f;">(</span>account<span style="color: #3e999f;">)</span>;
+    balance = balance &#8211; amount;
+    put_balance<span style="color: #3e999f;">(</span>account, balance<span style="color: #3e999f;">)</span>;
+
+    release<span style="color: #3e999f;">(</span>lock<span style="color: #3e999f;">)</span>;
+
+    <span style="color: #718c00;">return</span> balance;
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org603e7e7" class="outline-3">
+<h3 id="org603e7e7"><span class="section-number-3">2.2</span> 实现1</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#36825;&#26159;&#19968;&#20010;&#26377;&#32570;&#38519;&#30340;&#23581;&#35797;</span>
+
+<span style="color: #718c00;">struct</span> <span style="color: #4271ae;">lock</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">held</span> = 0;
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">acquire</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>lock-&gt;held<span style="color: #3e999f;">)</span>;  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#34987;&#20854;&#23427;&#32447;&#31243;acquire&#20102;&#65292;&#36825;&#37324;&#20250;&#19968;&#30452;&#22312;&#36816;&#34892;&#65288;&#31354;&#36716;&#65289;&#65292;&#25152;&#20197;&#36825;&#20010;&#23454;&#29616;&#26159;spin lock</span>
+    <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#32570;&#38519;: &#22914;&#26524;&#22312;&#36825;&#37324;&#21457;&#29983;&#20102;context switch, &#37027;&#20040;&#20250;&#23548;&#33268;race condition</span>
+    lock-&gt;held = 1;
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">release</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    lock-&gt;held = 0;
+<span style="color: #4d4d4c;">}</span>
+</pre>
+</div>
+
+<p>
+所以我们在实现锁的时候还需要一种类似锁的机制？ 因为当中一些操作需要原子化(atomic)。
+</p>
+
+<p>
+硬件提供给我们一些帮助：
+Atomic 指令(如"test-and-set")和 "disable/enable interrupts"(防止context switch)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf5e9d96" class="outline-3">
+<h3 id="orgf5e9d96"><span class="section-number-3">2.3</span> 实现2</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20351;&#29992;test-and-set&#23454;&#29616;&#19968;&#20010;spinlock, &#26377;&#32570;&#38519;&#30340;</span>
+
+<span style="color: #718c00;">struct</span> <span style="color: #4271ae;">lock</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">held</span> = 0;
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">acquire</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>test-and-set<span style="color: #eab700;">(</span>&amp;lock-&gt;held<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">release</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    lock-&gt;held = 0;
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+
+<p>
+spinlock的问题：
+</p>
+
+<p>
+浪费资源，因为cpu一直在运行。
+而且在单核处理器上时，当一个线程在acquires时spinning，它一直占有cpu, 另外一个持有lock的线程无法进行下去。这就得第一个线程主动调用"yield","sleep"或者发起context switch才行。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orga82e450" class="outline-3">
+<h3 id="orga82e450"><span class="section-number-3">2.4</span> 实现3</h3>
+<div class="outline-text-3" id="text-2-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#37319;&#29992;disable interrupts&#26041;&#24335;, &#26377;&#32570;&#38519;&#30340;</span>
+
+<span style="color: #718c00;">struct</span> <span style="color: #4271ae;">lock</span> <span style="color: #4d4d4c;">{</span>
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">acquire</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">disable</span> <span style="color: #eab700;">interrupts</span>;
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">release</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">enable</span> <span style="color: #eab700;">interrupts</span>;
+<span style="color: #4d4d4c;">}</span>
+</pre>
+</div>
+
+<p>
+问题:
+</p>
+
+<p>
+acquire时disable interrupts了后，也阻断了（在critical section里）发生其它外部事件（比如timer）来触发context switch的可能。
+而且在真实的操作系统上只有kernel才能这么做。并且disable interrupts是一个并不高效的操作。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga735107" class="outline-3">
+<h3 id="orga735107"><span class="section-number-3">2.5</span> 实现4</h3>
+<div class="outline-text-3" id="text-2-5">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Higer-level synchronization</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">1. &#21482;&#22312;acquire&#21644;release&#37324;disable interrupts, &#32780;&#19981;&#26159;&#20687;&#19978;&#38754;&#37027;&#26679;&#22312;critical section&#37324;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">2. &#37319;&#29992;queue&#26469;&#20445;&#23384;acquire hold&#30340;&#32447;&#31243;&#65292;&#24182;&#35753;&#20854;sleep&#65292;&#31561;&#24453;release&#30340;&#21796;&#37266;&#65292;&#32780;&#36991;&#20813;&#20102;spinning</span>
+
+<span style="color: #718c00;">struct</span> <span style="color: #4271ae;">lock</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">held</span> = 0;
+    <span style="color: #4271ae;">queue</span> <span style="color: #eab700;">Q</span>;
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">acquire</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">Disable</span> <span style="color: #eab700;">interrupts</span>;
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>lock-&gt;held<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+        put current thread on <span style="color: #4271ae;">queue</span> <span style="color: #eab700;">Q</span>;
+        block <span style="color: #4271ae;">current</span> <span style="color: #eab700;">thread</span>;
+    <span style="color: #3e999f;">}</span>
+    lock-&gt;held = 1;
+    <span style="color: #4271ae;">Enable</span> <span style="color: #eab700;">interrupts</span>;
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">release</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">lock</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">Disable</span> <span style="color: #eab700;">interrupts</span>;
+    <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>Q<span style="color: #3e999f;">)</span> remove <span style="color: #4271ae;">waiting</span> <span style="color: #eab700;">thread</span>;
+    unblock <span style="color: #4271ae;">waiting</span> <span style="color: #eab700;">thread</span>;
+    lock-&gt;held = 0;
+    <span style="color: #4271ae;">Enable</span> <span style="color: #eab700;">interrupts</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgaf1ddda" class="outline-2">
+<h2 id="orgaf1ddda"><span class="section-number-2">3</span> Semphore</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgc5ca574" class="outline-3">
+<h3 id="orgc5ca574"><span class="section-number-3">3.1</span> 介绍</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+lock提供了一种互斥控制的机制。但是它的语义有限，仅仅是对资源的互斥访问。
+在其他一些情况下需要有更好的语义的操作符来控制对于共享资源的访问。
+就像接下来要介绍的：semaphore, condition variable, monitor。这些机制可以基于lock构建。
+</p>
+
+<p>
+semphore也是用来提供对critical section的保护。
+它提供了一种控制共享资源池的方式。
+</p>
+
+<p>
+semphore是一个共享的计数器，
+其支持两种操作：
+</p>
+
+<ol class="org-ol">
+<li><code>Wait()</code> , 又称 <code>P()</code> , <code>down()</code></li>
+</ol>
+
+<p>
+等待semphore大于0，然后减一。
+</p>
+
+<ol class="org-ol">
+<li><code>Signal()</code> , 又称 <code>V()</code></li>
+</ol>
+
+<p>
+对semphore加1
+</p>
+
+
+<p>
+Semphore可以分为:
+</p>
+
+<ol class="org-ol">
+<li>"Mutex semphore"(or binary semaphores)， 保证了对资源的单一访问</li>
+
+<li>"Counting semphore"(or general semphore)，用于处理对资源的多方访问</li>
+</ol>
+
+
+<p>
+上面银行账户的例子采用semphore：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #718c00;">struct</span> <span style="color: #4271ae;">Semaphore</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">value</span>;
+    <span style="color: #4271ae;">Queue</span> <span style="color: #eab700;">q</span>;
+<span style="color: #4d4d4c;">}</span> <span style="color: #eab700;">S</span>;
+
+<span style="color: #f5871f;">withdraw</span> <span style="color: #4d4d4c;">(</span>account, amount<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    wait<span style="color: #3e999f;">(</span>S<span style="color: #3e999f;">)</span>;
+
+    balance = get_balance<span style="color: #3e999f;">(</span>account<span style="color: #3e999f;">)</span>;
+    balance = balance &#8211; amount;
+    put_balance<span style="color: #3e999f;">(</span>account, balance<span style="color: #3e999f;">)</span>;
+
+    signal<span style="color: #3e999f;">(</span>S<span style="color: #3e999f;">)</span>;
+
+    <span style="color: #718c00;">return</span> balance;
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a330ae" class="outline-3">
+<h3 id="org1a330ae"><span class="section-number-3">3.2</span> 实现1</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26377;&#32570;&#38519;&#30340;&#23454;&#29616;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#30001;&#20110;P&#21644;V&#37324;&#26377;&#38656;&#35201;atomic&#30340;&#25805;&#20316;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21644;&#19978;&#38754;lock&#30340;&#23454;&#29616;&#19968;&#26679;&#65292; &#22312;P&#21644;V&#37324;&#38754;&#26377;&#21487;&#33021;&#21457;&#29983;context switch</span>
+
+<span style="color: #f5871f;">P</span><span style="color: #4d4d4c;">(</span>sem<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+   <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>sem &lt;= 0<span style="color: #3e999f;">)</span>
+   ;
+   sem = sem - 1;
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #f5871f;">V</span><span style="color: #4d4d4c;">(</span>sem<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+   sem = sem + 1;
+<span style="color: #4d4d4c;">}</span>
+
+
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgafb52ee" class="outline-3">
+<h3 id="orgafb52ee"><span class="section-number-3">3.3</span> 实现2</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#26377;&#32570;&#38519;&#30340;&#23454;&#29616;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#37319;&#29992;mutex&#65292;&#26469;&#20445;&#35777;P&#21644;V&#30340;critical section</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20294;&#21644;spinning lock&#19968;&#26679;&#65292; &#20250;&#21457;&#29983;spinning</span>
+
+<span style="color: #f5871f;">P</span> <span style="color: #4d4d4c;">(</span>csem<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+   <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span>  <span style="color: #3e999f;">{</span>
+      Acquire_mutex <span style="color: #eab700;">(</span>csem.mutex<span style="color: #eab700;">)</span>;
+      <span style="color: #718c00;">if</span> <span style="color: #eab700;">(</span>csem.value &lt;= 0<span style="color: #eab700;">)</span> <span style="color: #eab700;">{</span>
+         Release_mutex <span style="color: #718c00;">(</span>csem.mutex<span style="color: #718c00;">)</span>;
+         <span style="color: #718c00;">continue</span>;
+      <span style="color: #eab700;">}</span>
+      <span style="color: #718c00;">else</span> <span style="color: #eab700;">{</span>
+          csem.value = csem.value &#8211; 1;
+          Release_mutex <span style="color: #718c00;">(</span>csem.mutex<span style="color: #718c00;">)</span>;
+          <span style="color: #718c00;">break</span>;
+      <span style="color: #eab700;">}</span>
+   <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #f5871f;">V</span> <span style="color: #4d4d4c;">(</span>csem<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    Acquire_mutex <span style="color: #3e999f;">(</span>csem.mutex<span style="color: #3e999f;">)</span>;
+    csem.value = csem.value + 1;
+    Release_mutex <span style="color: #3e999f;">(</span>csem.mutex<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd775c34" class="outline-3">
+<h3 id="orgd775c34"><span class="section-number-3">3.4</span> 实现3</h3>
+<div class="outline-text-3" id="text-3-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#37319;&#29992;queue/block&#30340;&#26041;&#24335;&#26469;&#22788;&#29702;spinning</span>
+
+
+<span style="color: #4271ae;">Struct</span> <span style="color: #eab700;">Semphore</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">value</span>
+    mutex mutex
+    queue queue
+<span style="color: #4d4d4c;">}</span>
+<span style="color: #f5871f;">P</span> <span style="color: #4d4d4c;">(</span>csem<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+   <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span>  <span style="color: #3e999f;">{</span>
+      Acquire_mutex <span style="color: #eab700;">(</span>csem.mutex<span style="color: #eab700;">)</span>;
+      <span style="color: #718c00;">if</span> <span style="color: #eab700;">(</span>csem.value &lt;= 0<span style="color: #eab700;">)</span> <span style="color: #eab700;">{</span>
+         insert_queue <span style="color: #718c00;">(</span>getpid<span style="color: #4271ae;">()</span>, csem.queue<span style="color: #718c00;">)</span>;  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Add this thread to </span><span style="color: #8e908c; font-style: italic;">*/</span>
+         Release_mutex_and_block <span style="color: #718c00;">(</span>csem.mutex<span style="color: #718c00;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">atomic: lost wake-up </span><span style="color: #8e908c; font-style: italic;">*/</span>
+      <span style="color: #eab700;">}</span>
+      <span style="color: #718c00;">else</span> <span style="color: #eab700;">{</span>
+          csem.value = csem.value &#8211; 1;
+          Release_mutex <span style="color: #718c00;">(</span>csem.mutex<span style="color: #718c00;">)</span>;
+          <span style="color: #718c00;">break</span>;
+      <span style="color: #eab700;">}</span>
+   <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #f5871f;">V</span> <span style="color: #4d4d4c;">(</span>csem<span style="color: #4d4d4c;">)</span>
+<span style="color: #4d4d4c;">{</span>
+    Acquire_mutex <span style="color: #3e999f;">(</span>csem.mutex<span style="color: #3e999f;">)</span>;
+
+    csem.value = csem.value + 1;
+    dequeue_and_wakeup <span style="color: #3e999f;">(</span>csem.queue<span style="color: #3e999f;">)</span>
+
+    Release_mutex <span style="color: #3e999f;">(</span>csem.mutex<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#27880;&#24847;&#65292;&#22312;P()&#37324;&#65292; &#37322;&#25918;mutex&#24182;&#19988;sleep&#30340;&#38656;&#35201;&#21407;&#23376;&#21270;&#65292;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#19981;&#28982;&#65292;&#24403;&#32447;&#31243;1&#37322;&#25918;mutex&#24182;&#19988;sleep&#21069;&#21457;&#29983;context switch&#65292;&#36825;&#26102;&#20505;&#20854;&#23427;&#32447;&#31243;&#25191;&#34892;V()&#23581;&#35797;&#21796;&#37266;&#32447;&#31243;1</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#28982;&#21518;&#32447;&#31243;1&#25191;&#34892;sleep&#21448;&#31561;&#24102;&#20854;&#23427;&#21796;&#37266;&#23427;&#12290;</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#25805;&#20316;&#31995;&#32479;&#25552;&#20379;&#20102;&#36825;&#26679;&#30340;&#31995;&#32479;&#35843;&#29992;&#65306;sleep(mutex)&#26469;&#23454;&#29616;&#21407;&#23376;&#25805;&#20316;</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgbc553ee" class="outline-3">
+<h3 id="orgbc553ee"><span class="section-number-3">3.5</span> 总结</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+semphore可以被用来解决任何传统同步问题，但有些缺点：
+</p>
+<ol class="org-ol">
+<li>本质上是共享的全局变量</li>
+<li>semphore和保护的data之间没有直接联系</li>
+<li>同时用作critical sections(mutual exclusion)和 coordination(scheduling)（有时需要注释才清楚使用场景）</li>
+<li>不能保证合适的使用（有时难于发现错误）</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6462ccc" class="outline-2">
+<h2 id="org6462ccc"><span class="section-number-2">4</span> Condition Variable</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgad9ea79" class="outline-3">
+<h3 id="orgad9ea79"><span class="section-number-3">4.1</span> 简介</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Condition Variable 提供了一种等等事件发生的方式。
+</p>
+
+<p>
+Condition variable可以：
+</p>
+<ol class="org-ol">
+<li>等待某些condition发生</li>
+<li>通知其他线程某个condition发生</li>
+<li>是一个线程间发信号的有用方式</li>
+</ol>
+
+<p>
+Condition variable 表示的是一个事件， 并不能用来存储或者获取值。
+</p>
+
+<p>
+不同于semaphore，它不对资源进行计数和追踪。
+</p>
+
+<p>
+Condition Variable支持3种操作:
+</p>
+<ol class="org-ol">
+<li>Wait(mutex)</li>
+<li>Signal(mutex)</li>
+<li>Broadcase(mutex)</li>
+</ol>
+
+<p>
+为什么要和mutxe一起使用呢？
+因为Condition Variable的使用通常需要测试某个条件，如果条件满足那么wait,
+但为了控制wait前不会context switch，那么需要mutex保护。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org72bbb2b" class="outline-3">
+<h3 id="org72bbb2b"><span class="section-number-3">4.2</span> 使用例子</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20363;&#23376;1&#65292; &#31561;&#24453;couter&#22823;&#20110;&#31561;&#20110;10</span>
+<span style="color: #4271ae;">pthread_mutex_t</span> <span style="color: #eab700;">myLock</span>;
+<span style="color: #4271ae;">pthread_cond_t</span> <span style="color: #eab700;">myCV</span>;
+<span style="color: #4271ae;">int</span> <span style="color: #eab700;">counter</span> = 0;
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Thread A </span><span style="color: #8e908c; font-style: italic;">*/</span>
+pthread_mutex_lock<span style="color: #4d4d4c;">(</span>&amp;myLock<span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #718c00;">while</span> <span style="color: #4d4d4c;">(</span>counter &lt; 10<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    pthread_cond_wait<span style="color: #3e999f;">(</span>&amp;myCV, &amp;myLock<span style="color: #3e999f;">)</span>;  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#24403;counter&#23567;&#20110;10&#65292; &#31561;&#24453; , myLock&#29992;&#26469;&#20445;&#25252;counter</span>
+<span style="color: #4d4d4c;">}</span>
+
+pthread_mutex_unlock<span style="color: #4d4d4c;">(</span>&amp;myLock<span style="color: #4d4d4c;">)</span>;
+
+
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Thread B </span><span style="color: #8e908c; font-style: italic;">*/</span>
+pthread_mutex_lock<span style="color: #4d4d4c;">(</span>&amp;myLock<span style="color: #4d4d4c;">)</span>;
+
+counter++;
+<span style="color: #718c00;">if</span> <span style="color: #4d4d4c;">(</span>counter == 10<span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    pthread_cond_signal<span style="color: #3e999f;">(</span>&amp;myCV<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+pthread_mutex_unlock<span style="color: #4d4d4c;">(</span>&amp;myLock<span style="color: #4d4d4c;">)</span>;
+
+
+
+
+
+</pre>
+</div>
+
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20363;&#23376;2&#65306; Bounded buffer using CVS</span>
+
+
+
+<span style="color: #4271ae;">int</span> <span style="color: #eab700;">theArray</span><span style="color: #4d4d4c;">[</span>ARRAY_SIZE<span style="color: #4d4d4c;">]</span>, <span style="color: #eab700;">size</span>;
+<span style="color: #4271ae;">pthread_mutex_t</span> <span style="color: #eab700;">theLock</span>;
+<span style="color: #4271ae;">pthread_cond_t</span> <span style="color: #eab700;">theCV</span>;
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Initialize </span><span style="color: #8e908c; font-style: italic;">*/</span>
+pthread_mutex_init<span style="color: #4d4d4c;">(</span>&amp;theLock, <span style="color: #4271ae;">NULL</span><span style="color: #4d4d4c;">)</span>;
+pthread_condvar_init<span style="color: #4d4d4c;">(</span>&amp;theCV, <span style="color: #4271ae;">NULL</span><span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">put</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">int</span> <span style="color: #eab700;">val</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    pthread_mutex_lock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>size == ARRAY_SIZE<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+        pthread_cond_wait<span style="color: #eab700;">(</span>&amp;theCV, &amp;theLock<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+    addItemToArray<span style="color: #3e999f;">(</span>val<span style="color: #3e999f;">)</span>;
+    size++;
+
+    pthread_cond_signal<span style="color: #3e999f;">(</span>&amp;theCV<span style="color: #3e999f;">)</span>;
+
+    pthread_mutex_unlock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+
+
+<span style="color: #4271ae;">int</span> <span style="color: #f5871f;">get</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">item</span>;
+    pthread_mutex_lock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>size == 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+        pthread_cond_wait<span style="color: #eab700;">(</span>&amp;theCV, &amp;theLock<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+    item = getItemFromArray<span style="color: #3e999f;">()</span>;
+    size--;
+
+    pthread_cond_signal<span style="color: #3e999f;">(</span>&amp;theCV<span style="color: #3e999f;">)</span>
+
+    pthread_mutex_unlock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">return</span> item;
+<span style="color: #4d4d4c;">}</span>
+
+
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#25913;&#36827;&#29256;&#65292;&#26356;&#39640;&#25928;</span>
+
+<span style="color: #4271ae;">int</span> <span style="color: #eab700;">theArray</span><span style="color: #4d4d4c;">[</span>ARRAY_SIZE<span style="color: #4d4d4c;">]</span>, <span style="color: #eab700;">size</span>;
+<span style="color: #4271ae;">pthread_mutex_t</span> <span style="color: #eab700;">theLock</span>;
+<span style="color: #4271ae;">pthread_cond_t</span> <span style="color: #eab700;">theCV</span>;
+
+<span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Initialize </span><span style="color: #8e908c; font-style: italic;">*/</span>
+pthread_mutex_init<span style="color: #4d4d4c;">(</span>&amp;theLock, <span style="color: #4271ae;">NULL</span><span style="color: #4d4d4c;">)</span>;
+pthread_condvar_init<span style="color: #4d4d4c;">(</span>&amp;theCV, <span style="color: #4271ae;">NULL</span><span style="color: #4d4d4c;">)</span>;
+
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">put</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">int</span> <span style="color: #eab700;">val</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    pthread_mutex_lock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>size == ARRAY_SIZE<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+        pthread_cond_wait<span style="color: #eab700;">(</span>&amp;theCV, &amp;theLock<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+    addItemToArray<span style="color: #3e999f;">(</span>val<span style="color: #3e999f;">)</span>;
+    size++;
+    <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>size == 1<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&lt;-- &#24046;&#24322;</span>
+     pthread_cond_broadcast<span style="color: #eab700;">(</span>&amp;theCV<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+    pthread_mutex_unlock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+
+
+<span style="color: #4271ae;">int</span> <span style="color: #f5871f;">get</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">int</span> <span style="color: #eab700;">item</span>;
+    pthread_mutex_lock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>size == 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+        pthread_cond_wait<span style="color: #eab700;">(</span>&amp;theCV, &amp;theLock<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+    item = getItemFromArray<span style="color: #3e999f;">()</span>;
+    size--;
+    <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>size == ARRAY_SIZE-1<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&lt;-- &#24046;&#24322;</span>
+     pthread_cond_broadcast<span style="color: #eab700;">(</span>&amp;theCV<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+    pthread_mutex_unlock<span style="color: #3e999f;">(</span>&amp;theLock<span style="color: #3e999f;">)</span>;
+    <span style="color: #718c00;">return</span> item;
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc2cfa5" class="outline-3">
+<h3 id="orgbc2cfa5"><span class="section-number-3">4.3</span> 实现</h3>
+<div class="outline-text-3" id="text-4-3">
+<div class="org-src-container">
+<pre class="src src-c">
+<span style="color: #718c00;">struct</span> <span style="color: #4271ae;">condition</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">proc</span> <span style="color: #eab700;">next</span>;  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">doubly linked list implementation of </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    <span style="color: #4271ae;">proc</span> <span style="color: #eab700;">prev</span>;  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">queue for blocked threads </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    <span style="color: #4271ae;">mutex</span> <span style="color: #eab700;">listLock</span>; <span style="color: #8e908c; font-style: italic;">/*</span><span style="color: #8e908c; font-style: italic;">protects queue </span><span style="color: #8e908c; font-style: italic;">*/</span>
+<span style="color: #4d4d4c;">}</span>;
+
+
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">wait</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">condition</span> *<span style="color: #eab700;">c</span>, <span style="color: #4271ae;">mutex</span> *<span style="color: #eab700;">mx</span><span style="color: #4d4d4c;">)</span>
+  <span style="color: #4d4d4c;">{</span>
+    mutex_acquire<span style="color: #3e999f;">(</span>&amp;c-&gt;listLock<span style="color: #3e999f;">)</span>;  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">protect the queue </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    enqueue <span style="color: #3e999f;">(</span>&amp;c-&gt;next, &amp;c-&gt;prev, thr_self<span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">enqueue </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    mutex_release <span style="color: #3e999f;">(</span>&amp;c-&gt;listLock<span style="color: #3e999f;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">we're done with the list </span><span style="color: #8e908c; font-style: italic;">*/</span>
+
+    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">The suspend and release_mutex() operation should be atomic </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    release_mutex <span style="color: #3e999f;">(</span>mx<span style="color: #3e999f;">)</span>;
+    thr_suspend <span style="color: #3e999f;">(</span>self<span style="color: #3e999f;">)</span>;  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Sleep 'til someone wakes us </span><span style="color: #8e908c; font-style: italic;">*/</span>
+
+    mutex_acquire <span style="color: #3e999f;">(</span>mx<span style="color: #3e999f;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Woke up -- our turn, get resource lock </span><span style="color: #8e908c; font-style: italic;">*/</span>
+
+    <span style="color: #718c00;">return</span>;
+  <span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">signal</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">condition</span> *<span style="color: #eab700;">c</span><span style="color: #4d4d4c;">)</span>
+  <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">thread_id</span> <span style="color: #eab700;">tid</span>;
+
+    mutex_acquire <span style="color: #3e999f;">(</span>c-&gt;listlock<span style="color: #3e999f;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">protect the queue </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    tid = dequeue<span style="color: #3e999f;">(</span>&amp;c-&gt;next, &amp;c-&gt;prev<span style="color: #3e999f;">)</span>;
+    mutex_release <span style="color: #3e999f;">(</span>listLock<span style="color: #3e999f;">)</span>;
+
+    <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>tid&gt;0<span style="color: #3e999f;">)</span>
+      thr_continue <span style="color: #3e999f;">(</span>tid<span style="color: #3e999f;">)</span>;
+
+    <span style="color: #718c00;">return</span>;
+  <span style="color: #4d4d4c;">}</span>
+
+
+
+<span style="color: #4271ae;">void</span> <span style="color: #f5871f;">broadcast</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">condition</span> *<span style="color: #eab700;">c</span><span style="color: #4d4d4c;">)</span>
+  <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">thread_id</span> <span style="color: #eab700;">tid</span>;
+
+    mutex_acquire <span style="color: #3e999f;">(</span>c-&gt;listLock<span style="color: #3e999f;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">protect the queue </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    <span style="color: #718c00;">while</span> <span style="color: #3e999f;">(</span>&amp;c-&gt;next<span style="color: #3e999f;">)</span> <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">queue is not empty </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    <span style="color: #3e999f;">{</span>
+      tid = dequeue<span style="color: #eab700;">(</span>&amp;c-&gt;next, &amp;c-&gt;prev<span style="color: #eab700;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">wake one </span><span style="color: #8e908c; font-style: italic;">*/</span>
+      thr_continue <span style="color: #eab700;">(</span>tid<span style="color: #eab700;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">Make it runnable </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    <span style="color: #3e999f;">}</span>
+    mutex_release <span style="color: #3e999f;">(</span>c-&gt;listLock<span style="color: #3e999f;">)</span>; <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">done with the queue </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2997041" class="outline-3">
+<h3 id="org2997041"><span class="section-number-3">4.4</span> 和semphore关系</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+尽管condition variable和semphore可以用来互相实现对方，他们有不同的语义。
+</p>
+</div>
+
+<div id="outline-container-org7e6bdc3" class="outline-4">
+<h4 id="org7e6bdc3"><span class="section-number-4">4.4.1</span> wait和signal差异</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<p>
+condition variable wait时，需要通过lock控制，wait时要释放lock，然后block
+</p>
+
+<p>
+semphore wait时，仅仅block。
+</p>
+
+<p>
+condition variable signal时，如果没有等待的线程，那么这次signal就回丢失
+</p>
+
+<p>
+semphore signal时，如果没有等待的线程，那么这次signal会被计数留作将来使用。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd9e3629" class="outline-2">
+<h2 id="orgd9e3629"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> Monitor</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org0d33d6a" class="outline-3">
+<h3 id="org0d33d6a"><span class="section-number-3">5.1</span> 概述</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Monitort提供了一种对对象的并发控制封装机制，
+monitor对象里包含的变量、conditionVariables和方法都是受保护的（并发控制有保证）。
+</p>
+
+<p>
+Monitor里，同一时间最多只有一个线程活跃。
+</p>
+
+<p>
+当线程1进入monitor后，线程2线程3想访问monitor方法需要进入等待队列
+</p>
+
+<p>
+当线程1还在monitor里，但因某种情况wait后，线程2获取进入monitor的权利
+</p>
+
+<p>
+当线程2在monitor里因为某种情况signal后，接下来的操作分两种: "Hoare Monitor" 和 "Mesa Monitor".
+</p>
+</div>
+</div>
+
+<div id="outline-container-org77a120a" class="outline-3">
+<h3 id="org77a120a"><span class="section-number-3">5.2</span> Hoare Monitor</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+线程2 signal后，立即运行waiting的线程1，把持有的锁交给线程1。线程2进入等待状态
+</p>
+</div>
+</div>
+<div id="outline-container-org49d15c3" class="outline-3">
+<h3 id="org49d15c3"><span class="section-number-3">5.3</span> Mesa Monitor</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+线程2 signal后，waiting的线程1进入monitor的ready queue，线程2继续运行。线程1等到其可以获取到锁后再运行
+</p>
+
+<p>
+这也是phtreads, java, C#里的实现
+</p>
+</div>
+</div>
+
+<div id="outline-container-org403d57e" class="outline-3">
+<h3 id="org403d57e"><span class="section-number-3">5.4</span> 差别</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+Hoare Monitor里， 当线程1醒来后，触发线程2 signal的condition一定会成立。而在 Mesa Monitor里，醒来的线程1先要去再检查condition,确保其成立（因为可能在线程1等到获取锁的时候被另外的线程4等修改）
+</p>
+
+<div class="org-src-container">
+<pre class="src src-example">Hoare
+  if (empty)
+    wait(condition);
+
+
+Mesa
+  while (empty)
+    wait(condition);
+
+差异对比:
+Mesa更少的context switch和更容易支持broadcase，更易使用，更加高效
+
+Hoare可操作性少，但构建的程序更加容易理解
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org901ef87" class="outline-3">
+<h3 id="org901ef87"><span class="section-number-3">5.5</span> 例子</h3>
+<div class="outline-text-3" id="text-5-5">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Monitor Bounded Buffer</span>
+<span style="color: #4271ae;">Monitor</span> <span style="color: #eab700;">bounded_buffer</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #4271ae;">Resource</span> <span style="color: #eab700;">buffer</span><span style="color: #3e999f;">[</span>N<span style="color: #3e999f;">]</span>;
+
+    <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Variables for indexing buffer</span>
+    <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">monitor invariant involves these vars</span>
+    <span style="color: #4271ae;">Condition</span> <span style="color: #eab700;">not_full</span>; <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">space in buffer</span>
+    <span style="color: #4271ae;">Condition</span> <span style="color: #eab700;">not_empty</span>; <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">value in buffer</span>
+
+    <span style="color: #4271ae;">void</span> <span style="color: #f5871f;">put_resource</span> <span style="color: #3e999f;">(</span><span style="color: #4271ae;">Resource</span> <span style="color: #eab700;">R</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+        <span style="color: #718c00;">while</span> <span style="color: #eab700;">(</span>buffer array <span style="color: #4271ae;">is</span> <span style="color: #eab700;">full</span><span style="color: #eab700;">)</span>
+            wait<span style="color: #eab700;">(</span>not_full<span style="color: #eab700;">)</span>;
+
+        Add R to <span style="color: #4271ae;">buffer</span> <span style="color: #eab700;">array</span>;
+        signal<span style="color: #eab700;">(</span>not_empty<span style="color: #eab700;">)</span>;
+    <span style="color: #3e999f;">}</span>
+
+    <span style="color: #4271ae;">Resource</span> <span style="color: #f5871f;">get_resource</span><span style="color: #3e999f;">()</span> <span style="color: #3e999f;">{</span>
+        <span style="color: #718c00;">while</span> <span style="color: #eab700;">(</span><span style="color: #4271ae;">buffer</span> array <span style="color: #4271ae;">is</span> <span style="color: #eab700;">empty</span><span style="color: #eab700;">)</span>
+            wait<span style="color: #eab700;">(</span>not_empty<span style="color: #eab700;">)</span>;
+
+        Get resource R from <span style="color: #4271ae;">buffer</span> <span style="color: #eab700;">array</span>;
+        signal<span style="color: #eab700;">(</span>not_full<span style="color: #eab700;">)</span>;
+        <span style="color: #718c00;">return</span> R;
+    <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span> <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">end monitor</span>
+
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#36825;&#37324;&#23454;&#29616;&#20102;&#19968;&#20010;Monitor Bounded buffer, &#22810;&#32447;&#31243;&#23545;&#20854;&#26041;&#27861;put_resource&#21644;get_resource&#30340;&#20351;&#29992;&#26159;&#21463;&#20445;&#25252;&#30340;&#12290;</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orga8897e0" class="outline-3">
+<h3 id="orga8897e0"><span class="section-number-3">5.6</span> Java与Monitor</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+任何Java对象里都隐式包含了lock和condition variable。
+</p>
+
+<p>
+最多一个线程可以进入到Monitor里， 线程通过的方式执行标有"synchronized"的方法或者语句进入对象的monitor。
+</p>
+
+<p>
+一个例子
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #718c00;">class</span> <span style="color: #4271ae;">BoundedBuffer</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #718c00;">private</span> <span style="color: #4271ae;">int</span> <span style="color: #eab700;">size</span>;
+    <span style="color: #718c00;">private</span> <span style="color: #4271ae;">int</span> <span style="color: #eab700;">theArray</span><span style="color: #3e999f;">[</span>ARRAY_SIZE<span style="color: #3e999f;">]</span>;
+
+    <span style="color: #718c00;">public</span> <span style="color: #718c00;">synchronized</span> <span style="color: #4271ae;">void</span> <span style="color: #f5871f;">put</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">int</span> <span style="color: #eab700;">x</span><span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+      <span style="color: #718c00;">while</span> <span style="color: #eab700;">(</span>size == ARRAY_SIZE<span style="color: #eab700;">)</span> <span style="color: #718c00;">this</span>.wait<span style="color: #eab700;">()</span>;
+      theArray<span style="color: #eab700;">[</span>size<span style="color: #eab700;">]</span> = x;
+      size++;
+      <span style="color: #718c00;">if</span> <span style="color: #eab700;">(</span>size == 1<span style="color: #eab700;">)</span> <span style="color: #718c00;">this</span>.notifyAll<span style="color: #eab700;">()</span>;
+    <span style="color: #3e999f;">}</span>
+
+    <span style="color: #718c00;">public</span> <span style="color: #718c00;">synchronized</span> <span style="color: #4271ae;">int</span> <span style="color: #f5871f;">get</span><span style="color: #3e999f;">()</span> <span style="color: #3e999f;">{</span>
+      <span style="color: #718c00;">while</span> <span style="color: #eab700;">(</span>size == 0<span style="color: #eab700;">)</span> <span style="color: #718c00;">this</span>.wait<span style="color: #eab700;">()</span>;
+      size--;
+      <span style="color: #718c00;">if</span> <span style="color: #eab700;">(</span>size == ARRAY_SIZE-1<span style="color: #eab700;">)</span> <span style="color: #718c00;">this</span>.notifyAll<span style="color: #eab700;">()</span>;
+      <span style="color: #718c00;">return</span> theArray<span style="color: #eab700;">[</span>size<span style="color: #eab700;">]</span>;
+    <span style="color: #3e999f;">}</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+
+
+<p>
+#+END<sub>SRC</sub>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb1544cf" class="outline-2">
+<h2 id="orgb1544cf"><span class="section-number-2">6</span> 参考资料</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/index/lecture_index.html">https://cseweb.ucsd.edu/classes/sp17/cse120-a/index/lecture_index.html</a></li>
+<li><a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/cse120-sp17-lecture6.pdf">https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/cse120-sp17-lecture6.pdf</a></li>
+<li>TODO <a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/lecture6.html">https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/lecture6.html</a></li>
+<li><a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/cse120-sp17-lecture7.pdf">https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/cse120-sp17-lecture7.pdf</a></li>
+<li><a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/lecture7.html">https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/lecture7.html</a></li>
+<li><a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/cse120-sp17-lecture8.pdf">https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/cse120-sp17-lecture8.pdf</a></li>
+<li>TODO <a href="https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/lecture8.html">https://cseweb.ucsd.edu/classes/sp17/cse120-a/applications/ln/lecture8.html</a></li>
+<li><a href="https://courses.engr.illinois.edu/cs241/sp2012/">https://courses.engr.illinois.edu/cs241/sp2012/</a> search condition variables semaphore</li>
+<li><a href="https://courses.engr.illinois.edu/cs241/sp2012/lectures/23-inside_sem.pdf">https://courses.engr.illinois.edu/cs241/sp2012/lectures/23-inside_sem.pdf</a></li>
+<li><a href="https://courses.engr.illinois.edu/cs241/sp2012/lectures/24-using_sem.pdf">https://courses.engr.illinois.edu/cs241/sp2012/lectures/24-using_sem.pdf</a></li>
+<li><a href="https://courses.engr.illinois.edu/cs241/sp2012/lectures/25-condition.pdf">https://courses.engr.illinois.edu/cs241/sp2012/lectures/25-condition.pdf</a></li>
+<li><a href="https://cs61.seas.harvard.edu/wiki/images/1/12/Lec19-Semaphores.pdf">https://cs61.seas.harvard.edu/wiki/images/1/12/Lec19-Semaphores.pdf</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf57751b" class="outline-2">
+<h2 id="orgf57751b"><span class="section-number-2">7</span> END</h2>
+<div class="outline-text-2" id="text-7">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>明朝那些事儿</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-07-02</p>
+</div>
+<div id="content">
+<h1 class="title">明朝那些事儿</h1>
+<p>
+前后花了一个多月看完了《明朝那些事儿》，刷新了我的某些认知。
+读史可以知兴替，看完大明王朝十六位皇帝和诸多文臣武将凡夫俗子的事迹，感悟颇多。
+</p>
+
+<p>
+列举几件印象深刻的事，不分先后:
+</p>
+
+<div id="outline-container-org464ca36" class="outline-2">
+<h2 id="org464ca36"><span class="section-number-2">1</span> 苦难磨炼和造就人</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+以朱元璋和朱棣为代表，朱元璋“我本淮右布衣”，青少年时期亲人相继去世，当过和尚当过乞丐，苦难中磨炼出坚强的性格。
+而朱棣从装疯卖傻到起兵“靖难”，九死一生夺得皇位。这两位战争中成长起来的帝王干起活来也很劳模，帝国治理得有声有色，邻居也不敢捣乱。
+要比一些衣锦玉食中成长起来的后代强太多，比如宠爱万贵妃的明宪宗朱见深。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org23af058" class="outline-2">
+<h2 id="org23af058"><span class="section-number-2">2</span> 皇帝也会当俘虏</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在明朝的所有皇帝中，要论人生的传奇色彩与命运的跌宕起伏，估计除了朱元璋外，无人可与明英宗朱祁镇匹敌。
+朱祁镇在崇信的太监王振的唆使下率领二十万大军亲征瓦刺，导致全军覆没并且死掉一批精英大臣，自己也被蒙古人俘虏。
+天子也会意外被俘？真是开我眼界，让我意识到这个世界上再意外的事也有可能。
+更让我意外在于，朱祁镇之后居然回到故土当上了太上皇，被已经是皇帝的弟弟软禁了七年后，居然复位成功有当上了皇帝。
+惊呆。
+</p>
+
+<p>
+但也就是这位饱经磨难的皇帝，废除了非人道的嫔妃殉葬制度。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org761be5f" class="outline-2">
+<h2 id="org761be5f"><span class="section-number-2">3</span> 一生俯首拜阳明</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+以前对王阳明的认知仅限于历史书上背的心学之类，看完后才明白这位著名的哲学家、军事家、政治家、文学家、教育家的伟大。
+守仁格竹、龙场悟道、江西剿匪、平定叛乱，能思考哲学问题，能讨论军事擅长射箭，正直而不拘泥，读圣贤书又能考虑实际应用，其思想学问影响了许多人，令人敬佩不已。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orge994fdb" class="outline-2">
+<h2 id="orge994fdb"><span class="section-number-2">4</span> 世间已无张居正</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+张居正有理想有行动，敢于变法又善于变通，令人肃然起敬，摘自原书一段描写，觉得写得很棒:
+</p>
+<pre class="example">
+大家都是官员，都是既得利益者，百姓的死活与我们无关，你为什么要帮助他们，折腾我们呢？
+
+因为你们不明白，我和你们不同。
+
+我知道，贫苦的百姓也是人，也有父母妻儿，也想活下去。
+
+……
+
+我知道，在几十年之后，你们已经丢弃了当年的激情壮志，除了官位和名利，你们已别无所求，但我不同。
+
+因为在历经无数腥风血雨、宦海沉浮之后，我依然保存着我的理想。
+
+我相信，在这个世界上，还有公理和正义。
+
+我相信，在这个世界上，所有的人，无论贵贱，都有生存的权力。
+
+这就是我的理想，几十年来，一天也不曾放弃。
+
+这就是张居正，一个真正的张居正。
+
+在对他的描述中，我毫不避讳那些看上去似乎不太光彩的记载，他善于权谋，他对待政敌冷酷无情，他有经济问题，有生活作风问题，这一切的一切，可能都是真的。
+
+而我之所以如实记述这一切，只是想告诉你一个简单而重要的事实：张居正，是一个人，一个真实的人。
+
+没有人认为超人很伟大，因为他是超人。
+
+超人除了怕几块破石头外，没有任何弱点和缺点，是无所不能的，他压根就不是人。
+
+张居正不是超人，他出生于一个普通的家庭，从小熟读四书五经，挑灯苦读，是为了混碗饭吃，进入官场，参与权力斗争，拉帮结伙，是为了保住官位，无论从哪个角度看，他都是一个不折不扣的俗人。
+
+……
+
+所以我没有详写张居正一生中那些为人津津乐道的情节，比如整顿官场，比如惩办贪官，比如他每天都工作到很晚，再比如他也曾严辞拒收过贿赂，制止过亲属的腐化行为，在我看来，这些情节并不重要。
+
+只有当你知道，他是一个正常人，有正常的欲望，有自己的小算盘，有过犹豫和挣扎，有过贪婪和污点，你才能明白，那个不顾一切，顶住压力坚持改革的张居正，到底有多么的伟大。
+
+所有的英雄，都是平凡的人。
+
+千回百转，千锤百炼，矢志不改，如此而已。
+
+……
+
+在之前的文章中，我曾经写过无数个人物，有好人，也有坏人，而张居正，无疑是最为特殊的一个。
+
+他是一个天才，生于纷繁复杂之乱世，身负绝学，以一介草民闯荡二十余年，终成大器。
+
+他敢于改革，敢于创新，不惧风险，不怕威胁，是一个伟大的改革家，他也有缺点，他独断专行，待人不善，生活奢侈，表里不一，是个道德并不高尚的人。
+
+一句话，他不是好人，也不是坏人，而是一个复杂的人。
+
+但在明代浩如烟海的人物中，最打动我的，却正是这个复杂的人。
+
+十年前，当我即将踏入大学校园时，在一个极为特殊的场合，有一个人对我说过这样一番话：
+
+你还很年轻，将来你会遇到很多人，经历很多事，得到很多，也会失去很多，但无论如何，有两样东西，你绝不能丢弃，一个叫良心，另一个叫理想。
+
+我记得，当时我碍于形势，连连点头，虽然我并不知道这句话的真实含义。
+
+一晃十年过去了，如他所言，我得到了很多，也失去了很多。所幸，这两样东西我还带着，虽然不多，总算还有。
+
+当然，我并不因此感到自豪，因为这并非是我的意志有多坚强，或是人格有多高尚。唯一的原因在于，我遇到的人还不够坏，经历的事情还不够多，吃的苦头还不够大。
+
+我也曾经见到，许多道貌岸然的所谓道学家，整日把仁义道德放在嘴边，所作所为却尽为男盗女娼之流。
+
+我并不愤怒，恰恰相反，我理解他们，在生存的压力和生命的尊严之间，他们选择了前者，仅此而已，虽不合理，却很合法。
+
+我不知道，是否所有的人在历经沧桑苦难之后，都会变成和他们一样的人。
+
+直到我真正读懂了张居正，读懂了他的经历，他的情感，以及他的选择。我才找到了一个答案，一个让人宽慰的答案。
+
+他用他的人生告诉我们，良知和理想是不会消失的，不因富贵而逝去，不因权势而凋亡。
+
+不是好人，不是坏人，他是一个有理想，有良心的人。
+
+
+张居正，字叔大，嘉靖四年（1525）生，湖广江陵人。
+
+少颖敏绝伦，嘉靖十八年（1539）中秀才，嘉靖十九年（1540）年中举人，人皆称道。
+　　
+嘉靖二十六年（1547），成进士，改庶吉士，授翰林编修，徐阶辈皆器重之。
+　　
+嘉靖四十一年（1562），徐阶代嵩首辅，倾心委于张居正，信任有加，草拟遗诏，引与共谋。
+　　
+隆庆元年（1567），张居正四十三岁，任礼部尚书兼武英殿大学士，加少保兼太子太保，进入内阁。
+　　
+隆庆六年（1572），隆庆驾崩，张居正引冯保为盟，密谋驱逐高拱，事成，遂代拱为内阁首辅。
+　　
+万历元年（1573），张居正主政，推行考成法，整顿官吏，贪吏闻风丧胆，政令传出，虽万里外，朝下而夕奉行。
+　　
+万历六年（1578），丈量天下土地，推行一条鞭法，百姓为之欢颜，天下丰饶，仓粟充盈，可支十年有余。
+　　
+万历十年（1582）六月，张居正年五十八岁，去世，死后抄家。长子自尽，次子充军。
+
+
+有的人活着，他已经死了。
+　　
+有的人死了，他还活着。
+
+世间已无张居正。
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgcdb01c9" class="outline-2">
+<h2 id="orgcdb01c9"><span class="section-number-2">5</span> 稍后再补</h2>
+<div class="outline-text-2" id="text-5">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

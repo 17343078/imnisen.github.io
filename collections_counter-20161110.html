@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python collections.counter</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-10</p>
+</div>
+<div id="content">
+<h1 class="title">Python collections.counter</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org316156f">1. class collections.Counter([iterable-or-mapping])</a>
+<ul>
+<li><a href="#org59eca33">1.1. 例子</a></li>
+<li><a href="#org8afbc0b">1.2. 使用实例</a></li>
+</ul>
+</li>
+<li><a href="#org0fd3f24">2. collections.Counter 源码实现</a>
+<ul>
+<li><a href="#org0fc09a1">2.1. <code>__init__</code></a></li>
+<li><a href="#orgdd4c71c">2.2. <code>update</code></a></li>
+<li><a href="#orga644683">2.3. <code>most_common</code></a>
+<ul>
+<li><a href="#org1f68bce">2.3.1. <code>itemgetter</code></a></li>
+<li><a href="#orgb14a4df">2.3.2. <code>heapquue</code></a></li>
+</ul>
+</li>
+<li><a href="#org978fd15">2.4. <code>elements</code></a>
+<ul>
+<li><a href="#org9f9e6c8">2.4.1. <code>repeat</code></a></li>
+<li><a href="#org3d27890">2.4.2. <code>starmap</code></a></li>
+<li><a href="#orge026a33">2.4.3. <code>chain.from_iterable</code></a></li>
+</ul>
+</li>
+<li><a href="#org162d945">2.5. <code>substract</code></a></li>
+<li><a href="#org6f9f598">2.6. <code>+, -, &amp;, |</code></a></li>
+<li><a href="#org8810d9f">2.7. 其它</a></li>
+</ul>
+</li>
+<li><a href="#org5d37a72">3. 总结</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org316156f" class="outline-2">
+<h2 id="org316156f"><span class="section-number-2">1</span> class collections.Counter([iterable-or-mapping])</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>Counter</code> 是实现的 <code>dict</code> 的一个子类，可以用来方便地计数。
+</p>
+</div>
+<div id="outline-container-org59eca33" class="outline-3">
+<h3 id="org59eca33"><span class="section-number-3">1.1</span> 例子</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+举个计数的例子，需要统计一个文件中，每个单词出现的次数。实现方法如下
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#26222;&#36890;&#38738;&#24180;</span>
+<span style="color: #eab700;">d</span> = <span style="color: #4d4d4c;">{}</span>
+<span style="color: #718c00;">with</span> <span style="color: #8959a8;">open</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/etc/passwd'</span><span style="color: #4d4d4c;">)</span> <span style="color: #718c00;">as</span> f:
+    <span style="color: #718c00;">for</span> line <span style="color: #718c00;">in</span> f:
+        <span style="color: #718c00;">for</span> word <span style="color: #718c00;">in</span> line.strip<span style="color: #4d4d4c;">()</span>.split<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">':'</span><span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">if</span> word <span style="color: #718c00;">not</span> <span style="color: #718c00;">in</span> d:
+                <span style="color: #eab700;">d</span><span style="color: #4d4d4c;">[</span>word<span style="color: #4d4d4c;">]</span> = 1
+            <span style="color: #718c00;">else</span>:
+                <span style="color: #eab700;">d</span><span style="color: #4d4d4c;">[</span>word<span style="color: #4d4d4c;">]</span> += 1
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#25991;&#33402;&#38738;&#24180;</span>
+<span style="color: #eab700;">d</span> = defaultdict<span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">int</span><span style="color: #4d4d4c;">)</span>
+   <span style="color: #718c00;">with</span> <span style="color: #8959a8;">open</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/etc/passwd'</span><span style="color: #4d4d4c;">)</span> <span style="color: #718c00;">as</span> f:
+       <span style="color: #718c00;">for</span> line <span style="color: #718c00;">in</span> f:
+           <span style="color: #718c00;">for</span> word <span style="color: #718c00;">in</span> line.strip<span style="color: #4d4d4c;">()</span>.split<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">':'</span><span style="color: #4d4d4c;">)</span>:
+               <span style="color: #eab700;">d</span><span style="color: #4d4d4c;">[</span>word<span style="color: #4d4d4c;">]</span> += 1
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#37239;&#37239;&#38738;&#24180;</span>
+<span style="color: #eab700;">word_counts</span> = Counter<span style="color: #4d4d4c;">()</span>
+<span style="color: #718c00;">with</span> <span style="color: #8959a8;">open</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'/etc/passwd'</span><span style="color: #4d4d4c;">)</span> <span style="color: #718c00;">as</span> f:
+    <span style="color: #718c00;">for</span> line <span style="color: #718c00;">in</span> f:
+word_counts.update<span style="color: #4d4d4c;">(</span>line.strip<span style="color: #3e999f;">()</span>.split<span style="color: #3e999f;">(</span><span style="color: #3e999f;">':'</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8afbc0b" class="outline-3">
+<h3 id="org8afbc0b"><span class="section-number-3">1.2</span> 使用实例</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+可以像下面例子一样来创建一个 <code>Counter</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">()</span>                           <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#21019;&#24314;&#19968;&#20010;&#26032;&#30340;&#31354;counter</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'abcasdf'</span><span style="color: #4d4d4c;">)</span>                  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#19968;&#20010;&#36845;&#20195;&#23545;&#35937;&#29983;&#25104;&#30340;counter</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'red'</span>: 4, <span style="color: #3e999f;">'yello'</span>: 2<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>      <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#19968;&#20010;&#26144;&#23556;&#29983;&#25104;&#30340;counter</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span>cats=2, dogs=5<span style="color: #4d4d4c;">)</span>             <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20851;&#38190;&#23383;&#21442;&#25968;&#29983;&#25104;&#30340;counter</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">counter &#29983;&#25104;counter, &#34429;&#28982;&#36825;&#37324;&#24182;&#27809;&#26377;&#20160;&#20040;&#29992;</span>
+&gt;&gt;&gt; <span style="color: #718c00;">from</span> collections <span style="color: #718c00;">import</span> Counter
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'abcasd'</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'a'</span>: 2, <span style="color: #3e999f;">'c'</span>: 1, <span style="color: #3e999f;">'b'</span>: 1, <span style="color: #3e999f;">'s'</span>: 1, <span style="color: #3e999f;">'d'</span>: 1<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c2</span> = Counter<span style="color: #4d4d4c;">(</span>c<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c2
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'a'</span>: 2, <span style="color: #3e999f;">'c'</span>: 1, <span style="color: #3e999f;">'b'</span>: 1, <span style="color: #3e999f;">'s'</span>: 1, <span style="color: #3e999f;">'d'</span>: 1<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+
+<p>
+因为 <code>Counter</code> 实现了字典的 <code>__missing__</code> 方法， 所以当访问不存在的key的时候，返回值为0:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">[</span><span style="color: #3e999f;">'apple'</span>, <span style="color: #3e999f;">'pear'</span><span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'orange'</span><span style="color: #4d4d4c;">]</span>
+0
+
+</pre>
+</div>
+
+<p>
+<code>Counter</code> 常用的方法：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">elements() &#25353;&#29031;counter&#30340;&#35745;&#25968;&#65292;&#37325;&#22797;&#36820;&#22238;&#20803;&#32032;</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span>a=4, b=2, c=0, d=-2<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; <span style="color: #8959a8;">list</span><span style="color: #4d4d4c;">(</span>c.elements<span style="color: #3e999f;">()</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">'a'</span>, <span style="color: #3e999f;">'a'</span>, <span style="color: #3e999f;">'a'</span>, <span style="color: #3e999f;">'a'</span>, <span style="color: #3e999f;">'b'</span>, <span style="color: #3e999f;">'b'</span><span style="color: #4d4d4c;">]</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">most_common(n) &#25353;&#29031;counter&#30340;&#35745;&#25968;&#65292;&#25353;&#29031;&#38477;&#24207;&#65292;&#36820;&#22238;&#21069;n&#39033;&#32452;&#25104;&#30340;list; n&#24573;&#30053;&#26102;&#36820;&#22238;&#20840;&#37096;</span>
+&gt;&gt;&gt; Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'abracadabra'</span><span style="color: #4d4d4c;">)</span>.most_common<span style="color: #4d4d4c;">(</span>3<span style="color: #4d4d4c;">)</span>
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">'a'</span>, 5<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'r'</span>, 2<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'b'</span>, 2<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">]</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">subtract([iterable-or-mapping]) counter&#25353;&#29031;&#30456;&#24212;&#30340;&#20803;&#32032;&#65292;&#35745;&#25968;&#30456;&#20943;</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span>a=4, b=2, c=0, d=-2<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; <span style="color: #eab700;">d</span> = Counter<span style="color: #4d4d4c;">(</span>a=1, b=2, c=3, d=4<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c.subtract<span style="color: #4d4d4c;">(</span>d<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'a'</span>: 3, <span style="color: #3e999f;">'b'</span>: 0, <span style="color: #3e999f;">'c'</span>: -3, <span style="color: #3e999f;">'d'</span>: -6<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">update([iterable-or-mapping]) &#19981;&#21516;&#20110;&#23383;&#20856;&#30340;update&#26041;&#27861;&#65292;&#36825;&#37324;&#26356;&#26032;counter&#26102;&#65292;&#30456;&#21516;&#30340;key&#30340;value&#20540;&#30456;&#21152;&#32780;&#19981;&#26159;&#35206;&#30422;</span>
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#23454;&#20363;&#21270; Counter &#26102;&#65292; &#23454;&#38469;&#20063;&#26159;&#35843;&#29992;&#36825;&#20010;&#26041;&#27861;</span>
+
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Counter &#38388;&#30340;&#25968;&#23398;&#38598;&#21512;&#25805;&#20316;</span>
+&gt;&gt;&gt; <span style="color: #eab700;">c</span> = Counter<span style="color: #4d4d4c;">(</span>a=3, b=1, c=5<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; <span style="color: #eab700;">d</span> = Counter<span style="color: #4d4d4c;">(</span>a=1, b=2, d=4<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c + d                       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">counter&#30456;&#21152;, &#30456;&#21516;&#30340;key&#30340;value&#30456;&#21152;</span>
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'c'</span>: 5, <span style="color: #3e999f;">'a'</span>: 4, <span style="color: #3e999f;">'d'</span>: 4, <span style="color: #3e999f;">'b'</span>: 3<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c - d                       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">counter&#30456;&#20943;, &#30456;&#21516;&#30340;key&#30340;value&#30456;&#20943;&#65292;&#21482;&#20445;&#30041;&#27491;&#20540;&#30340;value</span>
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'c'</span>: 5, <span style="color: #3e999f;">'a'</span>: 2<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c &amp; d                       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20132;&#38598;:  &#21462;&#20004;&#32773;&#37117;&#26377;&#30340;key,value&#21462;&#23567;&#30340;&#37027;&#19968;&#20010;</span>
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'a'</span>: 1, <span style="color: #3e999f;">'b'</span>: 1<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; c | d                       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#24182;&#38598;:  &#27719;&#32858;&#25152;&#26377;&#30340;key, key&#30456;&#21516;&#30340;&#24773;&#20917;&#19979;&#65292;&#21462;&#22823;&#30340;value</span>
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'c'</span>: 5, <span style="color: #3e999f;">'d'</span>: 4, <span style="color: #3e999f;">'a'</span>: 3, <span style="color: #3e999f;">'b'</span>: 2<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#24120;&#35265;&#20570;&#27861;:</span>
+<span style="color: #8959a8;">sum</span><span style="color: #4d4d4c;">(</span>c.values<span style="color: #3e999f;">()</span><span style="color: #4d4d4c;">)</span>                 <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#32487;&#25215;&#33258;&#23383;&#20856;&#30340;.values()&#26041;&#27861;&#36820;&#22238;values&#30340;&#21015;&#34920;&#65292;&#20877;&#27714;&#21644;</span>
+c.clear<span style="color: #4d4d4c;">()</span>                       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#32487;&#25215;&#33258;&#23383;&#20856;&#30340;.clear()&#26041;&#27861;&#65292;&#28165;&#31354;counter</span>
+<span style="color: #8959a8;">list</span><span style="color: #4d4d4c;">(</span>c<span style="color: #4d4d4c;">)</span>                         <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36820;&#22238;key&#32452;&#25104;&#30340;list</span>
+<span style="color: #8959a8;">set</span><span style="color: #4d4d4c;">(</span>c<span style="color: #4d4d4c;">)</span>                          <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36820;&#22238;key&#32452;&#25104;&#30340;set</span>
+<span style="color: #8959a8;">dict</span><span style="color: #4d4d4c;">(</span>c<span style="color: #4d4d4c;">)</span>                         <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36716;&#21270;&#25104;&#23383;&#20856;</span>
+c.items<span style="color: #4d4d4c;">()</span>                       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#36716;&#21270;&#25104;(&#20803;&#32032;&#65292;&#35745;&#25968;&#20540;)&#32452;&#25104;&#30340;&#21015;&#34920;</span>
+Counter<span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">dict</span><span style="color: #3e999f;">(</span>list_of_pairs<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20174;(&#20803;&#32032;&#65292;&#35745;&#25968;&#20540;)&#32452;&#25104;&#30340;&#21015;&#34920;&#36716;&#21270;&#25104;Counter</span>
+c.most_common<span style="color: #4d4d4c;">()[</span>:-n-1:-1<span style="color: #4d4d4c;">]</span>       <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#26368;&#23567;n&#20010;&#35745;&#25968;&#30340;(&#20803;&#32032;&#65292;&#35745;&#25968;&#20540;)&#32452;&#25104;&#30340;&#21015;&#34920;</span>
+<span style="color: #eab700;">c</span> += Counter<span style="color: #4d4d4c;">()</span>                  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#21033;&#29992;counter&#30340;&#30456;&#21152;&#26469;&#21435;&#38500;&#36127;&#20540;&#21644;0&#30340;&#20540;</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org0fd3f24" class="outline-2">
+<h2 id="org0fd3f24"><span class="section-number-2">2</span> collections.Counter 源码实现</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<code>Counter</code> 的相关源码在lib下的collections.py里，本文所提及的源码是python2.7版本, 可参见<a href="https://github.com/python/cpython/blob/2.7/Lib/collections.py">github</a>。
+</p>
+</div>
+<div id="outline-container-org0fc09a1" class="outline-3">
+<h3 id="org0fc09a1"><span class="section-number-3">2.1</span> <code>__init__</code></h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+<code>Counter</code> 继承字典类来实现，初始化中对参数进行有效性校验，其中 <code>args</code> 接受除了 <code>self</code> 外最多一个未知参数。校验完成后调用自身的 <code>update</code> 方法来具体创建数据结构。
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">class</span> <span style="color: #4271ae;">Counter</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">dict</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'''Dict subclass for counting hashable items.  Sometimes called a bag</span>
+<span style="color: #8959a8;">    or multiset.  Elements are stored as dictionary keys and their counts</span>
+<span style="color: #8959a8;">    are stored as dictionary values.</span>
+<span style="color: #8959a8;">    '''</span>
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__init__</span><span style="color: #4d4d4c;">(</span>*args, **kwds<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'''Create a new, empty Counter object.  And if given, count elements</span>
+<span style="color: #8959a8;">        from an input iterable.  Or, initialize the count from another mapping</span>
+<span style="color: #8959a8;">        of elements to their counts.</span>
+
+<span style="color: #8959a8;">        &gt;&gt;&gt; c = Counter()                           # a new, empty counter</span>
+<span style="color: #8959a8;">        &gt;&gt;&gt; c = Counter('gallahad')                 # a new counter from an iterable</span>
+<span style="color: #8959a8;">        &gt;&gt;&gt; c = Counter({'a': 4, 'b': 2})           # a new counter from a mapping</span>
+<span style="color: #8959a8;">        &gt;&gt;&gt; c = Counter(a=4, b=2)                   # a new counter from keyword args</span>
+
+<span style="color: #8959a8;">        '''</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> args:
+            <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"descriptor '__init__' of 'Counter' object "</span>
+                            <span style="color: #3e999f;">"needs an argument"</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">self</span> = args<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+        <span style="color: #eab700;">args</span> = args<span style="color: #4d4d4c;">[</span>1:<span style="color: #4d4d4c;">]</span>
+        <span style="color: #718c00;">if</span> <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>args<span style="color: #4d4d4c;">)</span> &gt; 1:
+            <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'expected at most 1 arguments, got %d'</span> % <span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span>args<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #8959a8;">super</span><span style="color: #4d4d4c;">(</span>Counter, <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>.__init__<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">self</span>.update<span style="color: #4d4d4c;">(</span>*args, **kwds<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdd4c71c" class="outline-3">
+<h3 id="orgdd4c71c"><span class="section-number-3">2.2</span> <code>update</code></h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">update</span><span style="color: #4d4d4c;">(</span>*args, **kwds<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'''Like dict.update() but add counts instead of replacing them.</span>
+<span style="color: #8959a8;">    '''</span>
+    <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> args:
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"descriptor 'update' of 'Counter' object "</span>
+                        <span style="color: #3e999f;">"needs an argument"</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">self</span> = args<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+    <span style="color: #eab700;">args</span> = args<span style="color: #4d4d4c;">[</span>1:<span style="color: #4d4d4c;">]</span>
+    <span style="color: #718c00;">if</span> <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>args<span style="color: #4d4d4c;">)</span> &gt; 1:
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'expected at most 1 arguments, got %d'</span> % <span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span>args<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #eab700;">iterable</span> = args<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> <span style="color: #718c00;">if</span> args <span style="color: #718c00;">else</span> <span style="color: #4271ae;">None</span>
+    <span style="color: #718c00;">if</span> iterable <span style="color: #718c00;">is</span> <span style="color: #718c00;">not</span> <span style="color: #4271ae;">None</span>:
+        <span style="color: #718c00;">if</span> <span style="color: #8959a8;">isinstance</span><span style="color: #4d4d4c;">(</span>iterable, Mapping<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">if</span> <span style="color: #718c00;">self</span>:
+                <span style="color: #eab700;">self_get</span> = <span style="color: #718c00;">self</span>.get
+                <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> iterable.iteritems<span style="color: #4d4d4c;">()</span>:
+                    <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = self_get<span style="color: #4d4d4c;">(</span>elem, 0<span style="color: #4d4d4c;">)</span> + count
+            <span style="color: #718c00;">else</span>:
+                <span style="color: #8959a8;">super</span><span style="color: #4d4d4c;">(</span>Counter, <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>.update<span style="color: #4d4d4c;">(</span>iterable<span style="color: #4d4d4c;">)</span> <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">fast path when counter is empty</span>
+        <span style="color: #718c00;">else</span>:
+            <span style="color: #eab700;">self_get</span> = <span style="color: #718c00;">self</span>.get
+            <span style="color: #718c00;">for</span> elem <span style="color: #718c00;">in</span> iterable:
+                <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = self_get<span style="color: #4d4d4c;">(</span>elem, 0<span style="color: #4d4d4c;">)</span> + 1
+    <span style="color: #718c00;">if</span> kwds:
+        <span style="color: #718c00;">self</span>.update<span style="color: #4d4d4c;">(</span>kwds<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+<code>update</code> 方法先检查参数，位置参数除了self外只允许有一个。然后对传入的参数进行判断，如果是以 <code>Counter(a=1,b=2)</code> 的方式调用的，这时候取出 <code>kwds({'a':1,'b'=2})</code> 再调用自身，将关键字参数转化为位置参数处理。
+如果传入的位置参数是一个mapping类型的，对应于 <code>Counter({'a':1,'b':2})</code> 这样的方式调用，这种情况会判断self是否为空，在初始化状态下self总是空的，这边加上判断是因为update 方法不仅近在 <code>__init__()</code> 里调用，还可以这样调用:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #eab700;">x1</span> = collections.Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'a'</span>: 1, <span style="color: #3e999f;">'b'</span>: 2<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #eab700;">x2</span> = collections.Counter<span style="color: #4d4d4c;">(</span>a=1, b=2<span style="color: #4d4d4c;">)</span>
+x1.update<span style="color: #4d4d4c;">(</span>x2<span style="color: #4d4d4c;">)</span>      <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Counter()&#31867;&#22411; isinstance(iterable, Mapping) &#20063;&#36820;&#22238; True</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#25110;&#32773;&#36825;&#26679;&#35843;&#29992;</span>
+<span style="color: #eab700;">x1</span> = collections.Counter<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">{</span><span style="color: #3e999f;">'a'</span>: 1, <span style="color: #3e999f;">'b'</span>: 2<span style="color: #3e999f;">}</span><span style="color: #4d4d4c;">)</span>
+x1.update<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'aab'</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+如果传入的不是一个mapping类型，那么会迭代该参数的每一项作为key添加到Counter中
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga644683" class="outline-3">
+<h3 id="orga644683"><span class="section-number-3">2.3</span> <code>most_common</code></h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">most_common</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, n=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'''List the n most common elements and their counts from the most</span>
+<span style="color: #8959a8;">    common to the least.  If n is None, then list all element counts.</span>
+
+<span style="color: #8959a8;">    &gt;&gt;&gt; Counter('abcdeabcdabcaba').most_common(3)</span>
+<span style="color: #8959a8;">    [('a', 5), ('b', 4), ('c', 3)]</span>
+
+<span style="color: #8959a8;">    '''</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Emulate Bag.sortedByCount from Smalltalk</span>
+    <span style="color: #718c00;">if</span> n <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>:
+        <span style="color: #718c00;">return</span> <span style="color: #8959a8;">sorted</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>.iteritems<span style="color: #3e999f;">()</span>, key=_itemgetter<span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span>, reverse=<span style="color: #4271ae;">True</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">return</span> _heapq.nlargest<span style="color: #4d4d4c;">(</span>n, <span style="color: #718c00;">self</span>.iteritems<span style="color: #3e999f;">()</span>, key=_itemgetter<span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+如果调用 <code>most_common</code> 不指定参数n则默认返回全部(key, value)组成的列表，按照value降序排列。
+</p>
+</div>
+
+<div id="outline-container-org1f68bce" class="outline-4">
+<h4 id="org1f68bce"><span class="section-number-4">2.3.1</span> <code>itemgetter</code></h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+这里用到了有趣的 <code>itemgetter(代码里用了别名_itemgetter)</code> , 它是来自 <code>operator</code> 模块中的方法，可以从下面的代码感受一下:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20363;&#23376;&#26469;&#28304;python&#25991;&#26723;</span>
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#20030;&#20363;:</span>
+After <span style="color: #eab700;">f</span> = itemgetter<span style="color: #4d4d4c;">(</span>1<span style="color: #4d4d4c;">)</span>, the call f<span style="color: #4d4d4c;">(</span>r<span style="color: #4d4d4c;">)</span> returns r<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span>.
+After <span style="color: #eab700;">g</span> = itemgetter<span style="color: #4d4d4c;">(</span>2, 5, 3<span style="color: #4d4d4c;">)</span>, the call g<span style="color: #4d4d4c;">(</span>r<span style="color: #4d4d4c;">)</span> returns <span style="color: #4d4d4c;">(</span>r<span style="color: #3e999f;">[</span>2<span style="color: #3e999f;">]</span>, r<span style="color: #3e999f;">[</span>5<span style="color: #3e999f;">]</span>, r<span style="color: #3e999f;">[</span>3<span style="color: #3e999f;">]</span><span style="color: #4d4d4c;">)</span>.
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#23454;&#29616;:</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">itemgetter</span><span style="color: #4d4d4c;">(</span>*items<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">if</span> <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>items<span style="color: #4d4d4c;">)</span> == 1:
+        <span style="color: #eab700;">item</span> = items<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+        <span style="color: #718c00;">def</span> <span style="color: #f5871f;">g</span><span style="color: #4d4d4c;">(</span>obj<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">return</span> obj<span style="color: #4d4d4c;">[</span>item<span style="color: #4d4d4c;">]</span>
+    <span style="color: #718c00;">else</span>:
+        <span style="color: #718c00;">def</span> <span style="color: #f5871f;">g</span><span style="color: #4d4d4c;">(</span>obj<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">return</span> <span style="color: #8959a8;">tuple</span><span style="color: #4d4d4c;">(</span>obj<span style="color: #3e999f;">[</span>item<span style="color: #3e999f;">]</span> <span style="color: #718c00;">for</span> item <span style="color: #718c00;">in</span> items<span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">return</span> g
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#24120;&#35265;&#29992;&#27861;:</span>
+&gt;&gt;&gt; itemgetter<span style="color: #4d4d4c;">(</span>1<span style="color: #4d4d4c;">)(</span><span style="color: #3e999f;">'ABCDEFG'</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #3e999f;">'B'</span>
+&gt;&gt;&gt; itemgetter<span style="color: #4d4d4c;">(</span>1,3,5<span style="color: #4d4d4c;">)(</span><span style="color: #3e999f;">'ABCDEFG'</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'B'</span>, <span style="color: #3e999f;">'D'</span>, <span style="color: #3e999f;">'F'</span><span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; itemgetter<span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">slice</span><span style="color: #3e999f;">(</span>2,<span style="color: #4271ae;">None</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)(</span><span style="color: #3e999f;">'ABCDEFG'</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #3e999f;">'CDEFG'</span>
+
+&gt;&gt;&gt; <span style="color: #eab700;">inventory</span> = <span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">'apple'</span>, 3<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'banana'</span>, 2<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'pear'</span>, 5<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'orange'</span>, 1<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">]</span>
+&gt;&gt;&gt; <span style="color: #eab700;">getcount</span> = itemgetter<span style="color: #4d4d4c;">(</span>1<span style="color: #4d4d4c;">)</span>
+&gt;&gt;&gt; <span style="color: #8959a8;">map</span><span style="color: #4d4d4c;">(</span>getcount, inventory<span style="color: #4d4d4c;">)</span>
+<span style="color: #4d4d4c;">[</span>3, 2, 5, 1<span style="color: #4d4d4c;">]</span>
+&gt;&gt;&gt; <span style="color: #8959a8;">sorted</span><span style="color: #4d4d4c;">(</span>inventory, key=getcount<span style="color: #4d4d4c;">)</span>
+<span style="color: #4d4d4c;">[</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">'orange'</span>, 1<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'banana'</span>, 2<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'apple'</span>, 3<span style="color: #3e999f;">)</span>, <span style="color: #3e999f;">(</span><span style="color: #3e999f;">'pear'</span>, 5<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">]</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb14a4df" class="outline-4">
+<h4 id="orgb14a4df"><span class="section-number-4">2.3.2</span> <code>heapquue</code></h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+heap queue是“queue algorithm”算法的python实现，调用 <code>_heapq.nlargest()</code> 返回了根据每个value排序前n个大的(key, value)元组组成的列表。具体heap queue使用参见<a href="https://docs.python.org/2/library/heapq.html">文档</a>。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org978fd15" class="outline-3">
+<h3 id="org978fd15"><span class="section-number-3">2.4</span> <code>elements</code></h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+<code>elements</code> 方法实现了按照value的数值重复返回key。它的实现很精妙，只有一行:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">elements</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'''Iterator over elements repeating each as many times as its count.</span>
+
+<span style="color: #8959a8;">    &gt;&gt;&gt; c = Counter('ABCABC')</span>
+<span style="color: #8959a8;">    &gt;&gt;&gt; sorted(c.elements())</span>
+<span style="color: #8959a8;">    ['A', 'A', 'B', 'B', 'C', 'C']</span>
+<span style="color: #8959a8;">    '''</span>
+    <span style="color: #718c00;">return</span> _chain.from_iterable<span style="color: #4d4d4c;">(</span>_starmap<span style="color: #3e999f;">(</span>_repeat, <span style="color: #718c00;">self</span>.iteritems<span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+<p>
+该实现里用到了 <code>itertools</code> 里的 <code>repeat</code> <code>starmap</code> <code>chain</code> 三个方法, 直接按照每项计数的次数重复返回每项内容，拼成一个列表。
+</p>
+</div>
+
+<div id="outline-container-org9f9e6c8" class="outline-4">
+<h4 id="org9f9e6c8"><span class="section-number-4">2.4.1</span> <code>repeat</code></h4>
+<div class="outline-text-4" id="text-2-4-1">
+<p>
+repeat生成一个迭代器，根据第二个参数不停滴返回接受的第一个参数。直接看实现，很好理解, 类似实现如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">repeat</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">object</span>, times=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">repeat(10, 3) --&gt; 10 10 10</span>
+    <span style="color: #718c00;">if</span> times <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>:
+        <span style="color: #718c00;">while</span> <span style="color: #4271ae;">True</span>:
+            <span style="color: #718c00;">yield</span> <span style="color: #8959a8;">object</span>
+    <span style="color: #718c00;">else</span>:
+        <span style="color: #718c00;">for</span> i <span style="color: #718c00;">in</span> <span style="color: #8959a8;">xrange</span><span style="color: #4d4d4c;">(</span>times<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">yield</span> <span style="color: #8959a8;">object</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3d27890" class="outline-4">
+<h4 id="org3d27890"><span class="section-number-4">2.4.2</span> <code>starmap</code></h4>
+<div class="outline-text-4" id="text-2-4-2">
+<p>
+starmap接受的第一个参数是一个函数，生成一个迭代器，不停滴将该函数以第二个参数传来的每一项为参数进行调用（说得抽象，看例子好理解）,类似实现如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">starmap</span><span style="color: #4d4d4c;">(</span>function, iterable<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">starmap(pow, [(2,5), (3,2), (10,3)]) --&gt; 32 9 1000</span>
+    <span style="color: #718c00;">for</span> args <span style="color: #718c00;">in</span> iterable:
+        <span style="color: #718c00;">yield</span> function<span style="color: #4d4d4c;">(</span>*args<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge026a33" class="outline-4">
+<h4 id="orge026a33"><span class="section-number-4">2.4.3</span> <code>chain.from_iterable</code></h4>
+<div class="outline-text-4" id="text-2-4-3">
+<p>
+chain.from<sub>iterable</sub> 接受一个可迭代对象，返回一个迭代器，不停滴返回可迭代对象的每一项，类似实现如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">from_iterable</span><span style="color: #4d4d4c;">(</span>iterables<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">chain.from_iterable(['ABC', 'DEF']) --&gt; A B C D E F</span>
+    <span style="color: #718c00;">for</span> it <span style="color: #718c00;">in</span> iterables:
+        <span style="color: #718c00;">for</span> element <span style="color: #718c00;">in</span> it:
+            <span style="color: #718c00;">yield</span> element
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org162d945" class="outline-3">
+<h3 id="org162d945"><span class="section-number-3">2.5</span> <code>substract</code></h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+substract的实现和update实现很像，不同之处在counter()相同的项的计数相加改成了相减。
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">subtract</span><span style="color: #4d4d4c;">(</span>*args, **kwds<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'''Like dict.update() but subtracts counts instead of replacing them.</span>
+<span style="color: #8959a8;">    Counts can be reduced below zero.  Both the inputs and outputs are</span>
+<span style="color: #8959a8;">    allowed to contain zero and negative counts.</span>
+
+<span style="color: #8959a8;">    Source can be an iterable, a dictionary, or another Counter instance.</span>
+
+<span style="color: #8959a8;">    &gt;&gt;&gt; c = Counter('which')</span>
+<span style="color: #8959a8;">    &gt;&gt;&gt; c.subtract('witch')             # subtract elements from another iterable</span>
+<span style="color: #8959a8;">    &gt;&gt;&gt; c.subtract(Counter('watch'))    # subtract elements from another counter</span>
+<span style="color: #8959a8;">    &gt;&gt;&gt; c['h']                          # 2 in which, minus 1 in witch, minus 1 in watch</span>
+<span style="color: #8959a8;">    0</span>
+<span style="color: #8959a8;">    &gt;&gt;&gt; c['w']                          # 1 in which, minus 1 in witch, minus 1 in watch</span>
+<span style="color: #8959a8;">    -1</span>
+
+<span style="color: #8959a8;">    '''</span>
+    <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> args:
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"descriptor 'subtract' of 'Counter' object "</span>
+                        <span style="color: #3e999f;">"needs an argument"</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">self</span> = args<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+    <span style="color: #eab700;">args</span> = args<span style="color: #4d4d4c;">[</span>1:<span style="color: #4d4d4c;">]</span>
+    <span style="color: #718c00;">if</span> <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>args<span style="color: #4d4d4c;">)</span> &gt; 1:
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'expected at most 1 arguments, got %d'</span> % <span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span>args<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #eab700;">iterable</span> = args<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> <span style="color: #718c00;">if</span> args <span style="color: #718c00;">else</span> <span style="color: #4271ae;">None</span>
+    <span style="color: #718c00;">if</span> iterable <span style="color: #718c00;">is</span> <span style="color: #718c00;">not</span> <span style="color: #4271ae;">None</span>:
+        <span style="color: #eab700;">self_get</span> = <span style="color: #718c00;">self</span>.get
+        <span style="color: #718c00;">if</span> <span style="color: #8959a8;">isinstance</span><span style="color: #4d4d4c;">(</span>iterable, Mapping<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> iterable.items<span style="color: #4d4d4c;">()</span>:
+                <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = self_get<span style="color: #4d4d4c;">(</span>elem, 0<span style="color: #4d4d4c;">)</span> - count
+        <span style="color: #718c00;">else</span>:
+            <span style="color: #718c00;">for</span> elem <span style="color: #718c00;">in</span> iterable:
+                <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = self_get<span style="color: #4d4d4c;">(</span>elem, 0<span style="color: #4d4d4c;">)</span> - 1
+    <span style="color: #718c00;">if</span> kwds:
+        <span style="color: #718c00;">self</span>.subtract<span style="color: #4d4d4c;">(</span>kwds<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6f9f598" class="outline-3">
+<h3 id="org6f9f598"><span class="section-number-3">2.6</span> <code>+, -, &amp;, |</code></h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+通过对 <code>__add__</code>, <code>__sub__</code>, <code>__or__</code>, <code>__and__</code> 的定义，重写了 <code>+, -, &amp;, |</code> ,实现了Counter间类似于集合的操作, 代码不难理解，值得注意的是，将非正的结果略去了:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">__add__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, other<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'''Add counts from two counters.</span>
+
+<span style="color: #8959a8;">        &gt;&gt;&gt; Counter('abbb') + Counter('bcc')</span>
+<span style="color: #8959a8;">        Counter({'b': 4, 'c': 2, 'a': 1})</span>
+
+<span style="color: #8959a8;">        '''</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #8959a8;">isinstance</span><span style="color: #4d4d4c;">(</span>other, Counter<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">return</span> <span style="color: #4271ae;">NotImplemented</span>
+        <span style="color: #eab700;">result</span> = Counter<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span>.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #eab700;">newcount</span> = count + other<span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span>
+            <span style="color: #718c00;">if</span> newcount &gt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = newcount
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> other.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #718c00;">if</span> elem <span style="color: #718c00;">not</span> <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span> <span style="color: #718c00;">and</span> count &gt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = count
+        <span style="color: #718c00;">return</span> result
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__sub__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, other<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">''' Subtract count, but keep only results with positive counts.</span>
+
+<span style="color: #8959a8;">        &gt;&gt;&gt; Counter('abbbc') - Counter('bccd')</span>
+<span style="color: #8959a8;">        Counter({'b': 2, 'a': 1})</span>
+
+<span style="color: #8959a8;">        '''</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #8959a8;">isinstance</span><span style="color: #4d4d4c;">(</span>other, Counter<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">return</span> <span style="color: #4271ae;">NotImplemented</span>
+        <span style="color: #eab700;">result</span> = Counter<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span>.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #eab700;">newcount</span> = count - other<span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span>
+            <span style="color: #718c00;">if</span> newcount &gt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = newcount
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> other.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #718c00;">if</span> elem <span style="color: #718c00;">not</span> <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span> <span style="color: #718c00;">and</span> count &lt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = 0 - count
+        <span style="color: #718c00;">return</span> result
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__or__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, other<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'''Union is the maximum of value in either of the input counters.</span>
+
+<span style="color: #8959a8;">        &gt;&gt;&gt; Counter('abbb') | Counter('bcc')</span>
+<span style="color: #8959a8;">        Counter({'b': 3, 'c': 2, 'a': 1})</span>
+
+<span style="color: #8959a8;">        '''</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #8959a8;">isinstance</span><span style="color: #4d4d4c;">(</span>other, Counter<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">return</span> <span style="color: #4271ae;">NotImplemented</span>
+        <span style="color: #eab700;">result</span> = Counter<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span>.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #eab700;">other_count</span> = other<span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span>
+            <span style="color: #eab700;">newcount</span> = other_count <span style="color: #718c00;">if</span> count &lt; other_count <span style="color: #718c00;">else</span> count
+            <span style="color: #718c00;">if</span> newcount &gt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = newcount
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> other.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #718c00;">if</span> elem <span style="color: #718c00;">not</span> <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span> <span style="color: #718c00;">and</span> count &gt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = count
+        <span style="color: #718c00;">return</span> result
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__and__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, other<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">''' Intersection is the minimum of corresponding counts.</span>
+
+<span style="color: #8959a8;">        &gt;&gt;&gt; Counter('abbb') &amp; Counter('bcc')</span>
+<span style="color: #8959a8;">        Counter({'b': 1})</span>
+
+<span style="color: #8959a8;">        '''</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #8959a8;">isinstance</span><span style="color: #4d4d4c;">(</span>other, Counter<span style="color: #4d4d4c;">)</span>:
+            <span style="color: #718c00;">return</span> <span style="color: #4271ae;">NotImplemented</span>
+        <span style="color: #eab700;">result</span> = Counter<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">for</span> elem, count <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span>.items<span style="color: #4d4d4c;">()</span>:
+            <span style="color: #eab700;">other_count</span> = other<span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span>
+            <span style="color: #eab700;">newcount</span> = count <span style="color: #718c00;">if</span> count &lt; other_count <span style="color: #718c00;">else</span> other_count
+            <span style="color: #718c00;">if</span> newcount &gt; 0:
+                <span style="color: #eab700;">result</span><span style="color: #4d4d4c;">[</span>elem<span style="color: #4d4d4c;">]</span> = newcount
+        <span style="color: #718c00;">return</span> result
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8810d9f" class="outline-3">
+<h3 id="org8810d9f"><span class="section-number-3">2.7</span> 其它</h3>
+<div class="outline-text-3" id="text-2-7">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#24403;&#29992;Pickler&#24207;&#21015;&#21270;&#26102;&#65292;&#36935;&#21040;&#19981;&#30693;&#36947;&#24590;&#20040;&#24207;&#21015;&#21270;&#26102;&#65292;&#26597;&#25214;__reduce__&#26041;&#27861;</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">__reduce__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">return</span> <span style="color: #718c00;">self</span>.__class__, <span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">dict</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">self</span><span style="color: #3e999f;">)</span>,<span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#37325;&#20889;&#21024;&#38500;&#26041;&#27861;&#65292;&#24403;Counter&#26377;&#36825;&#20010;key&#20877;&#21024;&#38500;&#65292;&#36991;&#20813;KeyError</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">__delitem__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, elem<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'Like dict.__delitem__() but does not raise KeyError for missing values.'</span>
+    <span style="color: #718c00;">if</span> elem <span style="color: #718c00;">in</span> <span style="color: #718c00;">self</span>:
+        <span style="color: #8959a8;">super</span><span style="color: #4d4d4c;">(</span>Counter, <span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>.__delitem__<span style="color: #4d4d4c;">(</span>elem<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">%s : String (converts any Python object using str()).</span>
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">%r : String (converts any Python object using repr()).</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">__repr__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #718c00;">self</span>:
+        <span style="color: #718c00;">return</span> <span style="color: #3e999f;">'%s()'</span> % <span style="color: #718c00;">self</span>.__class__.<span style="color: #8959a8;">__name__</span>
+    <span style="color: #eab700;">items</span> = <span style="color: #3e999f;">', '</span>.join<span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">map</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">'%r: %r'</span>.__mod__, <span style="color: #718c00;">self</span>.most_common<span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">return</span> <span style="color: #3e999f;">'%s({%s})'</span> % <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>.__class__.<span style="color: #8959a8;">__name__</span>, items<span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4271ae;">@classmethod</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">fromkeys</span><span style="color: #4d4d4c;">(</span>cls, iterable, v=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">There is no equivalent method for counters because setting v=1</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">means that no element can have a count greater than one.</span>
+    <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span><span style="color: #4d4d4c;">(</span>
+        <span style="color: #3e999f;">'Counter.fromkeys() is undefined.  Use Counter(iterable) instead.'</span><span style="color: #4d4d4c;">)</span>
+
+
+ <span style="color: #8e908c; font-style: italic;">#  </span><span style="color: #8e908c; font-style: italic;">&#23454;&#29616;__missing__&#26041;&#27861;&#65292;&#24403;Couter['no_field'] =&gt; 0, &#23383;&#20856;&#40664;&#35748;&#30340;__missing__ &#26041;&#27861;&#19981;&#23454;&#29616;&#20250;&#25253;&#38169;(KeyError)</span>
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">__missing__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, key<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'The count of elements not in the Counter is zero.'</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Needed so that self[missing_item] does not raise KeyError</span>
+    <span style="color: #718c00;">return</span> 0
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5d37a72" class="outline-2">
+<h2 id="org5d37a72"><span class="section-number-2">3</span> 总结</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+总体来说，Counter通过对内置字典类型的继承重写来的实现，比较简洁，逻辑也很清楚，从源码中可以学到很多标准库里提供的很多的不常见的方法的使用，可以使代码更加简洁，思路更加流畅。
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BIP30(duplicate transactions)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-12-10</p>
+</div>
+<div id="content">
+<h1 class="title">BIP30(duplicate transactions)</h1>
+
+
+<div id="outline-container-org8da374b" class="outline-2">
+<h2 id="org8da374b"><span class="section-number-2">1</span> BIP地址</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">BIP30</a>
+</p>
+
+<pre class="example">
+BIP: 30
+Layer: Consensus (soft fork)
+Title: Duplicate transactions
+Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+Comments-Summary: No comments yet.
+Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0030
+Status: Final
+Type: Standards Track
+Created: 2012-02-22
+License: BSD-2-Clause
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org32874c4" class="outline-2">
+<h2 id="org32874c4"><span class="section-number-2">2</span> 原因和目的</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Bitcoin参考实现默认重复交易（txid相同）不存在，但这是不对的，特别是coinbase tx很容易去重复。针对重复交易可以发起一些攻击来时的完全确认但交易回滚，从而导致双花等问题。
+</p>
+
+<p>
+BIP30提出了一个处理重复交易的方案。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org996bd88" class="outline-2">
+<h2 id="org996bd88"><span class="section-number-2">3</span> 细节</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+规则是： 不允许包含与未完全花费的交易id相同id的交易到区块链。
+</p>
+
+<p>
+Mainnet从March 15, 2012, 00:00 UTC (testnet: February 20, 2012 00:00 UTC)开始应用，除去两个历史的例外block(blocks at heights 91842 and 91880)
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org750a95e" class="outline-2">
+<h2 id="org750a95e"><span class="section-number-2">4</span> 相关实现</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+参考btcd的实现
+</p>
+
+<p>
+检查是不是例外的block
+</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">isBIP0030Node returns whether or not the passed node represents one of the</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">two blocks that violate the BIP0030 rule which prevents transactions from</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">overwriting old ones.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">isBIP0030Node</span><span style="color: #4d4d4c;">(</span>node *<span style="color: #4271ae;">blockNode</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">bool</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">if</span> node.height == 91842 &amp;&amp; node.hash.<span style="color: #f5871f;">IsEqual</span><span style="color: #3e999f;">(</span>block91842Hash<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">true</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">if</span> node.height == 91880 &amp;&amp; node.hash.<span style="color: #f5871f;">IsEqual</span><span style="color: #3e999f;">(</span>block91880Hash<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">true</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> <span style="color: #4271ae;">false</span>
+
+</pre>
+</div>
+
+
+<p>
+检查是否和未花费的utxo相同id
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">checkBIP0030 ensures blocks do not contain duplicate transactions which</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">'overwrite' older transactions that are not fully spent.  This prevents an</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">attack where a coinbase and all of its dependent transactions could be</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">duplicated to effectively revert the overwritten transactions to a single</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">confirmation thereby making them vulnerable to a double spend.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">For more details, see</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki and</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">http://r6.ca/blog/20120206T005236Z.html.</span>
+<span style="color: #8e908c; font-style: italic;">//</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">This function MUST be called with the chain state lock held (for reads).</span>
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>b *<span style="color: #4271ae;">BlockChain</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">checkBIP0030</span><span style="color: #4d4d4c;">(</span>node *<span style="color: #4271ae;">blockNode</span>, block *<span style="color: #4271ae;">btcutil.Block</span>, view *<span style="color: #4271ae;">UtxoViewpoint</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">error</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Fetch utxos for all of the transaction ouputs in this block.</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Typically, there will not be any utxos for any of the outputs.</span>
+        fetchSet := <span style="color: #8959a8;">make</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">map</span><span style="color: #eab700;">[</span><span style="color: #4271ae;">wire.OutPoint</span><span style="color: #eab700;">]</span><span style="color: #718c00;">struct</span><span style="color: #eab700;">{}</span><span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">for</span> _, tx := <span style="color: #718c00;">range</span> block.<span style="color: #f5871f;">Transactions</span><span style="color: #3e999f;">()</span> <span style="color: #3e999f;">{</span>
+                prevOut := wire.<span style="color: #4271ae;">OutPoint</span><span style="color: #eab700;">{</span>Hash: *tx.<span style="color: #f5871f;">Hash</span><span style="color: #718c00;">()</span><span style="color: #eab700;">}</span>
+                <span style="color: #718c00;">for</span> txOutIdx := <span style="color: #718c00;">range</span> tx.<span style="color: #f5871f;">MsgTx</span><span style="color: #eab700;">()</span>.TxOut <span style="color: #eab700;">{</span>
+                        prevOut.Index = <span style="color: #f5871f;">uint32</span><span style="color: #718c00;">(</span>txOutIdx<span style="color: #718c00;">)</span>
+                        fetchSet<span style="color: #718c00;">[</span>prevOut<span style="color: #718c00;">]</span> = <span style="color: #718c00;">struct</span><span style="color: #718c00;">{}{}</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+        err := view.<span style="color: #f5871f;">fetchUtxos</span><span style="color: #3e999f;">(</span>b.db, fetchSet<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> err
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Duplicate transactions are only allowed if the previous transaction</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">is fully spent.</span>
+        <span style="color: #718c00;">for</span> outpoint := <span style="color: #718c00;">range</span> fetchSet <span style="color: #3e999f;">{</span>
+                utxo := view.<span style="color: #f5871f;">LookupEntry</span><span style="color: #eab700;">(</span>outpoint<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> utxo != <span style="color: #4271ae;">nil</span> &amp;&amp; !utxo.<span style="color: #f5871f;">IsSpent</span><span style="color: #eab700;">()</span> <span style="color: #eab700;">{</span>
+                        str := fmt.<span style="color: #f5871f;">Sprintf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"tried to overwrite transaction %v "</span>+
+                                <span style="color: #3e999f;">"at block height %d that is not fully spent"</span>,
+                                outpoint.Hash, utxo.<span style="color: #f5871f;">BlockHeight</span><span style="color: #4271ae;">()</span><span style="color: #718c00;">)</span>
+                        <span style="color: #718c00;">return</span> <span style="color: #f5871f;">ruleError</span><span style="color: #718c00;">(</span>ErrOverwriteTx, str<span style="color: #718c00;">)</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+
+<p>
+检查区块有效性的方法，核心是调用上面两个方法
+</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>b *<span style="color: #4271ae;">BlockChain</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">checkConnectBlock</span><span style="color: #4d4d4c;">(</span>node *<span style="color: #4271ae;">blockNode</span>, block *<span style="color: #4271ae;">btcutil.Block</span>, view *<span style="color: #4271ae;">UtxoViewpoint</span>, stxos *<span style="color: #3e999f;">[]</span><span style="color: #4271ae;">SpentTxOut</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">error</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#20854;&#23427; */</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">BIP0030 added a rule to prevent blocks which contain duplicate</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transactions that 'overwrite' older transactions which are not fully</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">spent.  See the documentation for checkBIP0030 for more details.</span>
+        <span style="color: #8e908c; font-style: italic;">//</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">There are two blocks in the chain which violate this rule, so the</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">check must be skipped for those blocks.  The isBIP0030Node function</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">is used to determine if this block is one of the two blocks that must</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">be skipped.</span>
+        <span style="color: #8e908c; font-style: italic;">//</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">In addition, as of BIP0034, duplicate coinbases are no longer</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">possible due to its requirement for including the block height in the</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">coinbase and thus it is no longer possible to create transactions</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">that 'overwrite' older ones.  Therefore, only enforce the rule if</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">BIP0034 is not yet active.  This is a useful optimization because the</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">BIP0030 check is expensive since it involves a ton of cache misses in</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">the utxoset.</span>
+        <span style="color: #718c00;">if</span> !<span style="color: #f5871f;">isBIP0030Node</span><span style="color: #3e999f;">(</span>node<span style="color: #3e999f;">)</span> &amp;&amp; <span style="color: #3e999f;">(</span>node.height &lt; b.chainParams.BIP0034Height<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                err := b.<span style="color: #f5871f;">checkBIP0030</span><span style="color: #eab700;">(</span>node, block, view<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">return</span> err
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#20854;&#23427; */</span>
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org72d76e7" class="outline-2">
+<h2 id="org72d76e7"><span class="section-number-2">5</span> END</h2>
+<div class="outline-text-2" id="text-5">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

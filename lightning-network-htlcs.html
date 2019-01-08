@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>理解闪电网络2——引入HTLCs</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-01-17</p>
+</div>
+<div id="content">
+<h1 class="title">理解闪电网络2——引入HTLCs</h1>
+
+<div id="outline-container-org65b7382" class="outline-2">
+<h2 id="org65b7382"><span class="section-number-2">1</span> 网络概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+假设Alice和Bob已经建立了支付通道，Bob和Carol也已经建立了通道，这时候Alice转账1BTC给Carol。
+</p>
+
+<p>
+Alice可以再和Carol建立通道，但她没有这个必要，Alice可以通过Bob这个中间点来进行:Alice给Bob 1BTC，Bob给Carol 1BTC。
+</p>
+
+<p>
+但是Bob要是不可信的呢？如果Alice给了Bob 1BTC，Bob不给Carol呢？ 或者Bob给了Carol 1BTC, Carol不承认Bob给了呢，这时候Alice要相信谁呢？
+</p>
+
+<p>
+这时候需要一种机制，使得Alice仅当Bob赋给Carol 1BTC后才给Carol 1BTC，这个通过Hash来做到，
+如下图这样：
+</p>
+
+<p>
+Note: 图片较大，建议新建窗口浏览。图片来源于<a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-creating-the-network-1465326903/">bitcoinmagazine</a>，上面关于lightning network的文章写得很好，非常推荐阅读。
+</p>
+
+<p>
+<a href="static/images/lightning-network-4.jpg">图1：加密的信任机制</a>
+</p>
+
+
+<p>
+流程解读：
+</p>
+
+<ol class="org-ol">
+<li>当Alice想通过第三方Bob给Carol发送1BTC时，Alice告诉Carol，让Carol生成一个密钥1(value1),然后将其hash值发送给Alice，并且Alice告诉Carol如果Bob给Carol 1BTC，那么Carol将密钥1(value1)告诉Bob</li>
+<li>Alice将此hash发给Bob，并告诉Bob，如果Bob有Carol的value1（通过hash验证），那么自己会给Bob 1BTC</li>
+<li>Bob将1 BTC发给Carol, Carol将密钥1(value1)告诉Bob.</li>
+<li>Bob用获取到的密钥1来向Alice兑换Alice允诺的1BTC</li>
+</ol>
+
+
+<p>
+问题： 上面这个流程中，Bob还是得“相信”Alice和Carol，
+万一Bob给Carol 1BTC后，Carol不给Bob密钥呢，或者Bob拿到密钥后，Alice不兑现承诺，不给Bob 1BTC呢？
+</p>
+
+<p>
+这时候就需要下面的“哈希时间锁合约”(Hash Time-Locked Contracts)。
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgdca44f2" class="outline-2">
+<h2 id="orgdca44f2"><span class="section-number-2">2</span> Hash Time-Locked Contracts(HTLCs)</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="static/images/lightning-network-5.jpg">图2：Hash Time-Locked COntracts下信任机制</a>
+</p>
+
+
+<p>
+解读：
+</p>
+
+<ol class="org-ol">
+<li>图中包含了2个HTLC，上面的是Bob和Carol之间的，下面的是Alice和Bob之间的</li>
+<li>以Bob和Carol间的HTLC为例，Bob花费了自己的1BTC，输出是2选1，要么Carol使用密钥(Value)来花费，要么一定时间后Bob可以取回资金</li>
+<li>Bob和Alice之间的HTLC也是类似，Alice花费1BTC, 要么Bob通过Value来花费，要么一定时间后，Alice可以取回</li>
+<li>第2步一旦Carol取走了1BTC，那么其同来取资金的Value将会公开，这时候Bob将会得知Carol的Value，并用来取回Alice的1BTC</li>
+<li>可以看到，采用HTLC才保证了上面“信任问题”，使得：1.如果Carol获得Bob的1BTC后，一定会告诉Bob它的Value（因为交易公开），2. 如果Bob取得Value后，一定可以向Alice获取1BTC（因为资金已经到一个写好条件的合约中）</li>
+<li>等等，上面一步中，如果Bob拿到Value后，Alice设置的期限到了，Alice已经取回了1BTC了呢？</li>
+<li>所以需要Bob和Carol的HTLC的过期时间要早于 Bob和Alice之间的HTLC(通过CTLV)，这样Bob获取Value后，确保Bob和Alice之间的合约不会已经到期</li>
+</ol>
+
+
+<p>
+A和B之间的Hash Time-Locked Contracts(HTLCs)可以理解成：A想让B帮她做某件事，两人定额一个合约，规定时间内如果B做好了（做完事有凭证来证明），那么A一定会给她费用，如果时间到了，A取回这笔资金。
+</p>
+
+<p>
+通过HTLCs，通道和通道间可以构建成一个网络，资金在这个网络上流转，就好像Internet一样。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org19b04ff" class="outline-2">
+<h2 id="org19b04ff"><span class="section-number-2">3</span> HTLCs + Payment-Channel</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+上面的HTLCs例子是以广播在比特币网络上的交易为基础的，如果将其和支付通道相结合呢（好处是不需要每笔交易都记录到比特币网络）？
+</p>
+
+<p>
+结合<a href="lightning-network-payment-channel.html">上一篇</a>讲支付通道的文章来看，假设现在的状态是：Alice和Bob建立完通道后，发生了2笔交易，第一笔是Alice转账给Bob 1BTC（见图3）, 第二笔是Bob转给Alice 1BTC（见图4）， Alice和Bob现在各自拥有5BTC。
+</p>
+
+
+<p>
+<a href="static/images/lightning-network-1.jpg">图3：Alice转给Bob 1BTC状态</a>
+</p>
+
+
+<p>
+<a href="static/images/lightning-network-2.jpg">图4：Bob转给Alice 1BTC状态</a>
+</p>
+
+<p>
+现在Alice想要给Carol转1BTC(通过Bob和Carol之间的通道)：
+</p>
+
+
+
+<p>
+<a href="static/images/lightning-network-6.jpg">图5：HLTCs+Payment-channel状态1</a>
+</p>
+
+<p>
+<a href="static/images/lightning-network-7.jpg">图6：HLTCs+Payment-channel状态2</a>
+</p>
+
+<p>
+<a href="static/images/lightning-network-3.jpg">图7：达成共识，通道关闭</a>
+</p>
+
+
+<p>
+解读：
+</p>
+<ol class="org-ol">
+<li>图5中， Alice生成类似的commitment tx：4BTC给Alice, 5BTC在1000blocks后给Bob（或者Bob给Alice取消的权利后给Alice），剩下的1BTC分3种情况：1.如果Bob获取到了Carol的Value后，在1000blocks后给Bob 2,一定期限后(CLTV)给Alice, 3.Bob给Alice取消的权利后给Alice. 生成完commitment tx自己签名后发给Bob。</li>
+
+<li>同样的, Bob也生成commitment tx: 5BTC给Bob， 4BTC在1000blocks后给Alice（或者Alice给Bob取消的权利后给Bob），剩下的1BTC分3种情况：1. 如果Bob获取到了Carol的Value后给Bob， 2. 一定期限后(CLTV)给Alice, 3. Alice给Bob取消的权利后给Bob。生成完commitment tx自己签名后发给Alice。</li>
+
+<li>现在考虑下Alice和 Bob生成的commitment tx的1BTC的部分：</li>
+
+<li>第1种情况都是Bob获取Value后可以（可能要等待）得到这1BTC，第2种情况都是一定日期后，钱退给Alice，第3中情况都是如果一方作弊，钱给对方</li>
+
+<li>现在考虑第1种情况：如果Commit Tx是Bob广播的Tx(Alice生成的那个)，那么Bob如果有需要的 Value后要多等1000blocks后才可以获取这1BTC。如果是Alice广播的，那Bob一旦有需要的Value，那么可以立即获得。这么做的目的是防止Bob在广播旧的Commitment Tx，如果这样，给Alice留有时间去收回给Bob的1BTC。</li>
+
+<li>如果Alice作弊广播了旧的交易，那么Bob可以用Alice新给的Key来收回这1BTC（而且还不需要Value）</li>
+
+<li>现在假设Bob从Carol那里获得了Value，那么他就可以用来获得他应得的1BTC，只需要签名和广播Alice给他的Commitment Tx,并建立后续交易，将1BTC转到自己的地址上。</li>
+
+<li>然而，Bob也可以告知Alice这个Value，就算Alice得知Value后，也无法改变Bob可以取走这1BTC的行为</li>
+
+<li>所以Alice和Bob可以达成一种约定：现在Alice拥有4BTC，Bob拥有6BTC，并建立新的Commitment Tx，和旧的密钥一起交给对方。这时状态就变成图7（交换旧的密钥是为了交换惩罚对方作弊的权力）</li>
+
+<li>这时候通道的状态就变成了普通的状态，接下来可以保持通道开放，或者任一方请求关闭通道，见图7</li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-org6a20499" class="outline-2">
+<h2 id="org6a20499"><span class="section-number-2">4</span> 总结和体会</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+回顾整个通道和网络的流程，可以发现这样一个约束机制：如果两人要有条件的达成共识（比如我们各有5BTC,你要向我转1BTC，怎么确保数据不上区块链的情况下我们都统一这1BTC转账确实发生了），那么各自授权对自己有利的事情交给对方曲儿，如果对方确认了（对自己不利还确认），说明这件事是符合共识的。
+</p>
+
+<p>
+什么是对自己有利的事呢，比如我可以立即获得6BTC,你得等一段时间才能获得4BTC，而且这段时间内，如果发现你作弊了，那么我有权利把属于你的4BTC也拿过来。
+</p>
+
+<p>
+作弊惩罚的机制通过互相生成新的密钥和交换旧的密钥来实现，一旦双方达成新的共识，之前的共识（假设现在同意我有7BTC,你有3BTC，而不是之前的我6BTC，你4BTC）就会被作废（如果使用旧共识，那么会有惩罚）。
+</p>
+
+<p>
+像上面的是确定数额的转账（比如我7BTC，你3BTC）, 在现实生活中是确定的，要么发生要么不发生。当涉及到HTLCs后，这个通道的状态就变成不确定的了（可能Bob获取到了Value也可能没有），这时候生成的交易的3个条件分别是：事情发生了的情况、事情没发生了的情况、对方作弊的情况。考虑到可以对对方作弊进行惩罚的权利，对对方有利的事情得等待才能发生。
+</p>
+
+<p>
+闪电网络的构建实现了一个事情：如果在防止对方作弊的条件下达成共识。
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgf48c3e0" class="outline-2">
+<h2 id="orgf48c3e0"><span class="section-number-2">5</span> 参考列表</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-building-a-bidirectional-payment-channel-1464710791/">https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-building-a-bidirectional-payment-channel-1464710791/</a></li>
+<li><a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-creating-the-network-1465326903/">https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-creating-the-network-1465326903/</a></li>
+<li><a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-completing-the-puzzle-and-closing-the-channel-1466178980/">https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-completing-the-puzzle-and-closing-the-channel-1466178980/</a></li>
+<li><a href="https://blog.chainside.net/understanding-payment-channels-4ab018be79d4">https://blog.chainside.net/understanding-payment-channels-4ab018be79d4</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgba70e26" class="outline-2">
+<h2 id="orgba70e26"><span class="section-number-2">6</span> END</h2>
+<div class="outline-text-2" id="text-6">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

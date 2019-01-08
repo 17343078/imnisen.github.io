@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kademlia协议简述</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-07-10</p>
+</div>
+<div id="content">
+<h1 class="title">Kademlia协议简述</h1>
+
+<div id="outline-container-org2900e72" class="outline-2">
+<h2 id="org2900e72"><span class="section-number-2">1</span> 基本介绍</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+分布式哈希表（<a href="https://en.wikipedia.org/wiki/Distributed_hash_table">DHT</a> ）是一类去中心化的技术，提供了节点之间的查找服务。
+通常在一个中心化系统中，中心节点可以负责管理子节点，告诉彼此位置，像Napster，虽然是点对点下载，但是查找资源的位置时，还是通过中心服务器获得的。
+而DHT解决的问题是，在一个没有中心化节点的系统中，各个节点如何相互发现、查找以及路由。
+其解决方案大体是每个节点各自按一定规则维护一个结构化的路由表，当有节点加入和离开的时候，更新自己的路由表，这样就可以按照这个规则互相查找了。
+</p>
+
+<p>
+Kademlia协议（以下简称Kad）是一种DHT技术实现，除此以外，还有其他像Chord、CAN、Pastry等DHT实现。
+相较而言，Kad通过异或算法计算节点间距离，建立了一种全新的拓扑结构，使得路由的查询和跳转更加快速清晰。
+目前像BitTorrent、IPFS都是采用的类kad协议来做节点路由。
+</p>
+
+<p>
+Kad协议论文可以参考这里: <a href="https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf">英文版</a>， <a href="https://blog.csdn.net/hoping/article/details/5307320">中文翻译版</a>。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org42f22dc" class="outline-2">
+<h2 id="org42f22dc"><span class="section-number-2">2</span> 协议要点</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org77c3e5d" class="outline-3">
+<h3 id="org77c3e5d"><span class="section-number-3">2.1</span> XOR</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Kad协议中，节点的ID是160bit的值，两个节点间的距离采用两个节点ID异或（XOR）值表示。XOR来描述距离有以下几个特性：
+</p>
+<ol class="org-ol">
+<li>每个点到自己的距离是0， d(x,x)=0</li>
+<li>点到其他点的距离大于0， d(x,y)&gt;0 (x != y)</li>
+<li>点到其它点的距离等于其它点到自己的距离，d(x,y)=d(y,x)</li>
+<li>点X到点Y的距离 + 点Y到点Z的距离 &gt;= 点X到点Z距离， d(x,y)+d(y,z) &gt;= d(x,z)</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgf07fbc4" class="outline-3">
+<h3 id="orgf07fbc4"><span class="section-number-3">2.2</span> Kbuckets和路由表</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Kad协议中，每个节点自己维护有路由表，对于位于[0,160)中的每个i，每个节点都保存有一个 &lt;IP 地址， UDP 端口，节点 ID&gt; 三元组列表， 三元组中的节点 ID 为那些和其距离位于 2<sup>i</sup> 和 2<sup>(i+1)</sup>之间的节点的 ID 。这些列表为 k-buckets。 所以对于小的i值来说，k-buckets一般都是空的（因为不存在没有合适节点），对于大一些的i值，列表的长度可以扩展到k ， k是系统范围内定义的参数。
+</p>
+
+<p>
+节点在将一个新节点加入路由表时，会将其插入相应的kbucket, 如果该kbucket已满而且包含自身节点，那么将该kbucket分裂成两个，并重新重复插入节点流程。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org816cd00" class="outline-3">
+<h3 id="org816cd00"><span class="section-number-3">2.3</span> RPCs</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Kad协议由4个RPC组成
+</p>
+<ol class="org-ol">
+<li><code>PING</code> : 对一个节点进行探测以确定其是否在线</li>
+<li><code>STORE</code> : 指示一个节点存储一个 &lt;key,value&gt; 对，以用于以后的获取</li>
+<li><code>FIND_NODE</code> : 向一个节点发送查询节点的请求，接收者要返回它所知道的距离目标最近的k个节点的三元组&lt;IP 地址， UDP 端口，节点 ID&gt; 列表</li>
+<li><code>FIND_VALUE</code> : 和 <code>FIND_NODE</code> 的行为相似，也是返回三元组 &lt;IP 地址， UDP 端口，节点 ID&gt; 列表，不过有一个例外。如果该 RPC 的接收者曾经收到过针对该 key 的 STORE请求 ，那么它仅返回所存储的值</li>
+</ol>
+
+<p>
+所以Kad节点主要需要的事情就是找出距离给定节点ID最近的k个节点。其算法大体是：节点先从自己路由表中找到距离ID最近的K个节点，挑选出“aplha”个，“aplha”是一个系统范围并发参数，挑选出“aplha”个节点后，向其同时发送异步的 <code>FIND_NODE</code> RPC , 对于每一个获得的结果，对返回的结果中未联系过的的节点，再发送 <code>FIND_NODE</code> RPC，直到所有已知的节点都联系过，找出最近的K个节点。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge5906ce" class="outline-2">
+<h2 id="orge5906ce"><span class="section-number-2">3</span> Q&amp;A</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org78b0e18" class="outline-3">
+<h3 id="org78b0e18"><span class="section-number-3">3.1</span> 新节点如何加入网络</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+新节点u需要找到一个已在网络中的节点w,然后向w发起查找自身的请求(FIND<sub>NODE,参数为u</sub>)，
+</p>
+
+<p>
+对于u来说，当连接上w的时候，已经将w加入自己的kbucket，
+</p>
+
+<p>
+对于w来说，其向自己的距离u来说最近的kbucket中断å个节点同时发送查找u(FIND<sub>NODE,参数为u</sub>)的请求，
+每个请求一般会返回k个&lt;ip,port,nodeid&gt;节点。
+u再比较(TODO 如何比较)所有这些节点，向其发送查找u的请求，知道返回最接近的节点，
+w会将k个距离u最近的节点返回给u。
+</p>
+
+<p>
+u接受到w返回的k个节点后，根据这些节点更新自己的路由表，也就是相应的更新kbuckets.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc477450" class="outline-3">
+<h3 id="orgc477450"><span class="section-number-3">3.2</span> <span class="todo TODO">TODO</span> 如何查找某一资源</h3>
+</div>
+<div id="outline-container-org2e45c17" class="outline-3">
+<h3 id="org2e45c17"><span class="section-number-3">3.3</span> <span class="todo TODO">TODO</span> 如何存储某一资源</h3>
+</div>
+<div id="outline-container-org9b6568d" class="outline-3">
+<h3 id="org9b6568d"><span class="section-number-3">3.4</span> <span class="todo TODO">TODO</span> 某一点节点u如何寻找距离资源w最近的k个节点</h3>
+</div>
+<div id="outline-container-org668cce7" class="outline-3">
+<h3 id="org668cce7"><span class="section-number-3">3.5</span> <span class="todo TODO">TODO</span> 算法层面上有哪些优化</h3>
+</div>
+<div id="outline-container-org5a40b31" class="outline-3">
+<h3 id="org5a40b31"><span class="section-number-3">3.6</span> <span class="todo TODO">TODO</span> 亦或算法意义</h3>
+</div>
+</div>
+
+<div id="outline-container-orgdd373a0" class="outline-2">
+<h2 id="orgdd373a0"><span class="section-number-2">4</span> 我的实现</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+自己尝试用Commin Lisp实现Kad协议， 项目<a href="https://github.com/imnisen/cl-kademlia">在这里</a>， 项目结构参考了这个 <a href="https://github.com/bmuller/kademlia">python的实现</a>。
+目前还只是完成了基本的几个RPC和初始的bootstrap，整体非常粗糙， 对于论文中所提的一些优化和考虑还没有实现。
+在实践过程中遇到一个common lisp里并发异步地发送UDP的RPC请求的问题。
+</p>
+
+<p>
+目前在项目里实现了一个基于udp的RPC框架，但还不能异步并发地执行。问题在于没有找到合适的同时发送udp请求方式。可以考虑的方式有基于 <code>select, poll, epoll, kqueue</code> 等的事件循环机制，或者采用多线程的方式。
+而在python里，有asyncio库可以方便地封装udp RPC，在golang里，也可以用goroutine方便地实现并发请求。
+为此我在<a href="https://www.reddit.com/r/Common_Lisp/comments/8szurv/how_to_send_and_receive_data_over_udp/">reddit</a> 的提问里有一些讨论。所以近期在看相关内容，有时间尝试下看能不能成功。
+</p>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

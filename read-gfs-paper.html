@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GFS论文阅读笔记</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2020-06-06</p>
+</div>
+<div id="content">
+<h1 class="title">GFS论文阅读笔记</h1>
+<div class="abstract">
+<p>
+本文是我阅读GFS论文的一个简要笔记。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8b425ca">1. 设计总览</a>
+<ul>
+<li><a href="#org531bda8">1.1. 特性</a></li>
+<li><a href="#orgc10a6c7">1.2. API</a></li>
+<li><a href="#org757edc7">1.3. 架构</a></li>
+<li><a href="#orgd55f8f1">1.4. Signal Master</a></li>
+<li><a href="#org93cb7c2">1.5. Chunk Size</a></li>
+<li><a href="#orge624619">1.6. 元数据Metadata</a></li>
+<li><a href="#orgbd0aac4">1.7. 一致性模型Consistency Model</a></li>
+</ul>
+</li>
+<li><a href="#org1a712ea">2. 系统交互</a>
+<ul>
+<li><a href="#org6db4ba7">2.1. lease</a></li>
+<li><a href="#org9cb7d53">2.2. data flow</a></li>
+<li><a href="#orgd19bf7a">2.3. atomic record append</a></li>
+<li><a href="#orgc42b7dc">2.4. snapshot</a></li>
+<li><a href="#org856cf7e">2.5. 其他</a></li>
+</ul>
+</li>
+<li><a href="#orgd599927">3. Master Operation</a>
+<ul>
+<li><a href="#org455f4a9">3.1. namespace管理和锁</a></li>
+<li><a href="#org5564a04">3.2. 副本放置 replica placement</a></li>
+<li><a href="#orgdfe2a60">3.3. Chunk副本的创建、重新复制和均衡</a>
+<ul>
+<li><a href="#orgf1e12f8">3.3.1. 创建</a></li>
+<li><a href="#org463dc49">3.3.2. 重复制</a></li>
+<li><a href="#orgd82b1b9">3.3.3. 重分配</a></li>
+</ul>
+</li>
+<li><a href="#org341c104">3.4. Garbage Collection 垃圾回收</a></li>
+<li><a href="#org7b9dc1f">3.5. 陈旧副本检测 Stale Replica Detection</a></li>
+</ul>
+</li>
+<li><a href="#org0dabab4">4. 容错和诊断，fault tolerance and diagnosis</a>
+<ul>
+<li><a href="#org9867878">4.1. 高可用 High Availability</a>
+<ul>
+<li><a href="#orgfcfc09c">4.1.1. 快速恢复</a></li>
+<li><a href="#orgf9bf0a9">4.1.2. chunk副本</a></li>
+<li><a href="#org2f37cf0">4.1.3. master副本</a></li>
+</ul>
+</li>
+<li><a href="#org167a0ed">4.2. 数据完整性 Data Intergrity</a></li>
+<li><a href="#org0be2580">4.3. 诊断工具 Diagnostic Tools</a></li>
+</ul>
+</li>
+<li><a href="#org766100d">5. 其它</a>
+<ul>
+<li><a href="#org203d76b">5.1. Measurement</a></li>
+<li><a href="#org704812b">5.2. Experiences</a></li>
+<li><a href="#orgf4d22b6">5.3. Related work</a></li>
+<li><a href="#orgeaf4b3e">5.4. 结论</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org8b425ca" class="outline-2">
+<h2 id="org8b425ca"><span class="section-number-2">1</span> 设计总览</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org531bda8" class="outline-3">
+<h3 id="org531bda8"><span class="section-number-3">1.1</span> 特性</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+GFS设计的时候几个特性和取舍点：
+1.由于采用大量的常规机器，错误是常见的，所以需要实时监控、容错和自动修复机制。
+2.文件很大，总体是TB级别的，单一的几个GB的文件很常见。也支持KB级别小文件，但优化不是必须的。
+3.负载主要由两种读构成：大的流读取和小的随机读取
+4.负载还包括大量的序列写，文件采用Append的方式而不是覆盖的方式进行修改。
+5.系统需要实现多个客户端并发写入文件的语义。
+6.高带宽比低延迟重要，目标客户端通常采用批处理的方式来交互。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgc10a6c7" class="outline-3">
+<h3 id="orgc10a6c7"><span class="section-number-3">1.2</span> API</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+GFS提供常规的文件系统API：create,delete,open,close,read,write，除此之外，还支持snapshot和record append.
+snapshot低成本复制，record append允许多个客户端并发操作时以最小的锁代价来保持原子性等。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org757edc7" class="outline-3">
+<h3 id="org757edc7"><span class="section-number-3">1.3</span> 架构</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+一个master + 多个chunk servers的架构，然后应用通过集成GFS客户端来和master以及相应的chunk servers通信。
+可以参考论文上的Figure1图片。
+</p>
+
+<p>
+文件被分成固定尺寸的chunks，根据设定存到多个chunk servers上（论文上说默认3个）。
+每个chunk在创建时，被master分配了一个无法修改的全局惟一的64bit的chunk handle。
+chunk servers在本地的linux文件系统上读写文件的时候通过chunk handle来
+</p>
+
+<p>
+master管理所有文件的元信息：namespece,access control infomation, mapping from files to chunks, the current location of chunks。
+还包括系统级别的活动:
+1.chunk lease管理
+2.孤儿chunk 回收
+3.chunk在chunk servers之间迁移
+还有master和chunk servers直接的：hearbeat和收集状态信息等。
+</p>
+
+
+<p>
+GFS客户端访问master获取元信息，然后和chunk servers通信获取数据。
+GFS client和chunk servers不会cache 传输的文件数据，因为太大了。
+不过clients会cache元数据。
+chunkservers不需要cache file data因为本身linux的文件系统会自由缓存常访问的文件到内存。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd55f8f1" class="outline-3">
+<h3 id="orgd55f8f1"><span class="section-number-3">1.4</span> Signal Master</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+这里描述了客户端和master以及chunk servers的请求过程。
+</p>
+
+<p>
+采用单一master的方式简化了整个设计，但master容易成为瓶颈，所以设计上需要注意。
+比如客户端不会从 master上读写文件，客户端请求master获取文件存储在哪个chunk server上，并且将这些信息缓存一段时间。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org93cb7c2" class="outline-3">
+<h3 id="org93cb7c2"><span class="section-number-3">1.5</span> Chunk Size</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+选择chunksize 为64MB，64MB比通常的文件系统区块大小(通常512Bytes)大得多，这样做的几个好处，也有一些弊端。
+好处:
+</p>
+<ol class="org-ol">
+<li>减少clients和master通信次数</li>
+<li>由于chunk比较大，客户端访问一个chunk server操作的可能性比较大，也降低了网络负载。（参考原文描述）</li>
+<li>减少master meatadata存储的数量</li>
+</ol>
+
+<p>
+缺点：
+</p>
+<blockquote>
+<p>
+
+</p>
+
+<p>
+A small file consists of a small number of chunks, perhaps just one.
+The chunkservers storing those chunks may become hot spots if many clients are accessing the same file.
+In practice, hot spots have not been a major issue because our applications mostly read large multi-chunk files sequentially.
+</p>
+</blockquote>
+
+
+<p>
+可能的解决途径：存储到更多的分片、错开访问、允许客户端从其他客户端获取等
+</p>
+<blockquote>
+<p>
+However, hot spots did develop when GFS was first used by a batch-queue system: an executable was written to GFS as a single-chunk file and then started on hundreds of ma- chines at the same time. The few chunkservers storing this executable were overloaded by hundreds of simultaneous re- quests. We fixed this problem by storing such executables with a higher replication factor and by making the batch- queue system stagger application start times. A potential long-term solution is to allow clients to read data from other clients in such situations.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orge624619" class="outline-3">
+<h3 id="orge624619"><span class="section-number-3">1.6</span> 元数据Metadata</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+Master主要存储三类元数据:
+1.file and chunk namesapces
+</p>
+<ol class="org-ol">
+<li>mapping from files to chunks</li>
+<li>locations of each chunk's replicas</li>
+</ol>
+
+<p>
+上面都存储在master内存里。
+前两者还会以"operation log"的方式持久化存储在master的硬盘上(还有checkpoint机制)，并且复制给远端的机器。这样方便恢复master。
+第三类数据在master启动的时候会询问chunserver相关信息，不做持久存储。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgbd0aac4" class="outline-3">
+<h3 id="orgbd0aac4"><span class="section-number-3">1.7</span> 一致性模型Consistency Model</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+1.file namespace mutations是原子性的，由master通过锁来全局控制
+2.file region的状态变化参见下面的图标table 1，与是write还是 record append以及 顺序操作、并发操作以及是否成功相关。
+</p>
+
+<p>
+这些是大体是如何保证的，以及对客户端的影响，参见论文2.7
+</p>
+
+<p>
+状态转换图表(论文table 1)
+<img src="static/images/gfs-01.png" alt="gfs-01.png" />
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org1a712ea" class="outline-2">
+<h2 id="org1a712ea"><span class="section-number-2">2</span> 系统交互</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org6db4ba7" class="outline-3">
+<h3 id="org6db4ba7"><span class="section-number-3">2.1</span> lease</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+引入leases概念，在chunserver中选取一个作为primary，其他作为secondary(也就是chunservers之间建立主从关系)。减少master的负担。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9cb7d53" class="outline-3">
+<h3 id="org9cb7d53"><span class="section-number-3">2.2</span> data flow</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+另外将control flow和 data flow解耦，也就是说，client可以将数据先传输到一个（可以是地理位置近的）secondary chunkserver上，然后这个server再将数据传输到它最近的还未有这个数据的server上，以此复制到整个网络。
+数据流在不同server间的传输是线性的，这样也是最大的利用机器带宽，每个机器的出网带宽都被用来传输给一个数据接受方，而不是同时传输给多个。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd19bf7a" class="outline-3">
+<h3 id="orgd19bf7a"><span class="section-number-3">2.3</span> atomic record append</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+gfs提供原子性的操作:record append。也是多个客户端并发操作同一个文件时使用的。这样不需要额外的同步机制（比如一个分布式的锁）。
+在record append的机制下，客户端指定写的数据，gfs来至少一次原子性的把它添加到文件上。文件通常server as一个multi-producer/sigle-consumer的队列，或者包含合并各个客户端的结果。
+</p>
+
+<p>
+数据大小方面，record append的数据有最大限制(64MB的1/4)。
+对于目前的记录到的chunk，如果操作的数据使得目前的chunk溢出（chunk最大的size(64MB)），那么primary会将当前的chunk padding完，然后通知各个secondary也如此做，最后通知clients在下一个chunk重试操作。
+如果操作的数据在当前chunk放得下，那么primary将data append执行，然后通知secondaries在同样的offset来写入，最后回复客户端成功。
+</p>
+
+<p>
+如果record append在某一个副本失败了，那么客户端会重试。也就是说同一个chunk的不同副本可能会包含不同的数据（很有可能是一个记录的不同重复的副本）。
+gfs不保证所有的副本是bytewise idential，它只保证数据至少被一次原子性的写入。
+这个是基于，如果chunkservers回复操作成功的话，那么所有的副本里都会写在同一个offset。这样即使是其他的副本变成了primary，新操作的成功的append offset一定是所有副本最高的。
+</p>
+
+<p>
+客户端何处理inconsistent regions的问题（TODO）
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc42b7dc" class="outline-3">
+<h3 id="orgc42b7dc"><span class="section-number-3">2.4</span> snapshot</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+当master收到客户端对文件或者目录的snapshot请求时，它向所有相关的chunk的primary server撤回lease.
+然后等撤回后，master先将该操作记录存储在硬盘上，然后应用到内存中保存的元信息的状态上（也就是复制相应的元数据m -&gt; m'，这些新复制的元数据m'指向和m一样的chunks）。
+</p>
+
+<p>
+snapshot操作执行完后,如果有客户端想写入某个chunk C，那么master会发现有两份元数据(m和m')指向C，它会让有C的server创建一个新的C'。（创建的时候都是server本机复制，不涉及网络传输）。
+然后master保证这些副本里的一个lease来操作C'。（这里总结的有点乱，可以看原文3.4。）
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org856cf7e" class="outline-3">
+<h3 id="org856cf7e"><span class="section-number-3">2.5</span> 其他</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+还有一些细节，比如chunkserver对于接收到的数据的缓存、primary的排序、以及client对错误的处理，详细见论文3.1
+</p>
+
+<p>
+交互流程图如下（论文figure2）:
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/gfs-02.png" alt="gfs-02.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgd599927" class="outline-2">
+<h2 id="orgd599927"><span class="section-number-2">3</span> Master Operation</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+master处理所有namespace相关操作，以及管理整个系统的chunk replicas。
+</p>
+</div>
+
+<div id="outline-container-org455f4a9" class="outline-3">
+<h3 id="org455f4a9"><span class="section-number-3">3.1</span> namespace管理和锁</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+由于有些文件操作会花费一些时间，而同时不希望其它不想关的操作一直等待，所以采用锁的机制来管理namespace如何并行操作如何序列执行的。
+</p>
+
+<p>
+GFS将namespace表示成一个full-pathnames 到 metadata的查找表。同时相同的前缀会压缩。这样的数据结构可以高效地表示在内存里。
+</p>
+
+<p>
+每个路径上的node都会关联一个read-write锁。比如master operation涉及到一个路径 <code>/d1/d2/.../dn/leaf</code> ，它会在 <code>/d1</code>, <code>/d1/d2</code>, &#x2026;, <code>/d1/d2/.../dn</code> 上加上一个read 锁，
+然后在 <code>/d1/d2/.../dn/leaf</code> 上增加一个read或者write锁。这样设计的好处之一是允许同一个目录并发的操作。
+</p>
+
+<p>
+由于namcespace可以包含非常多的node，read-write锁对象惰性分配，当不需要的时候再删除，而且相互之间以一致的顺序来获取（预防死锁）：
+先按照namcespace tree里的顺序，然后同一目录下按照词典顺序排序。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5564a04" class="outline-3">
+<h3 id="org5564a04"><span class="section-number-3">3.2</span> 副本放置 replica placement</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+chunk副本分配策略有两个目的：
+1.最大化data reliability和availability
+2.最大化网络带宽利用率
+</p>
+
+<p>
+所以不仅需要将副本分配到不同的机器上，还需要分配到不同的机架(rack)上，防止一个rack整体遇到问题，由于不同rack之间到网络传输速率比同一个rack不同机器之间的小了很多，
+所以在读写时会要考虑到跨rack的形式。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdfe2a60" class="outline-3">
+<h3 id="orgdfe2a60"><span class="section-number-3">3.3</span> Chunk副本的创建、重新复制和均衡</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+chunk replicas创建的3个原因:
+</p>
+<ol class="org-ol">
+<li>chunk creation</li>
+<li>chunk re-relication</li>
+<li>chunk rebalancing</li>
+</ol>
+</div>
+
+<div id="outline-container-orgf1e12f8" class="outline-4">
+<h4 id="orgf1e12f8"><span class="section-number-4">3.3.1</span> 创建</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+创建一个chunk的时候，选择哪里去存放的时候，需要考虑的因素:
+</p>
+<ol class="org-ol">
+<li>放到磁盘利用率低的chunk servers上，这回均衡所有服务器的磁盘使用率</li>
+<li>限制在每个chunk server上“最新创建”的的频率，因为“最新创建”多了，意味着之后的读写也多</li>
+<li>将副本分配到不同的rack上</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org463dc49" class="outline-4">
+<h4 id="org463dc49"><span class="section-number-4">3.3.2</span> 重复制</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+当一个chunk的副本数量小于设定的值，master会re-replicate这个chunk。
+每个需要被re-replicated的chunk会排一个优秀顺序，比如：
+1.差两个副本的优先级比差一个的高
+2.live files的副本的优先级比deleted files的副本的优先级高
+3.block客户端进程的的chunk的副本优先级高
+</p>
+
+<p>
+master会选择优先级最高的，然后选择相应的chunk server来通知它复制数据，选择哪个server的考虑因素和上面新建是一样的。
+</p>
+
+<p>
+为了复制时不影响client的流量，master会现在clone操作的数量，每个chunk server也会限制其clone相关的带宽占比。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd82b1b9" class="outline-4">
+<h4 id="orgd82b1b9"><span class="section-number-4">3.3.3</span> 重分配</h4>
+<div class="outline-text-4" id="text-3-3-3">
+<p>
+master会阶段性的检测目前的副本分布来达到更好的磁盘利用率以及负载均衡。
+当有新的chunkserver加入时， master会逐渐的的复制过去数据而不是瞬时复制好多（考虑到流量）。
+通常也会选择移除那些磁盘剩余空间低于平均值的server上的副本。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org341c104" class="outline-3">
+<h3 id="org341c104"><span class="section-number-3">3.4</span> Garbage Collection 垃圾回收</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+当一个文件被删除时,gfs并不是立即回收相应存储空间的。文件会被重命名并标记上删除时间。
+在之后master会扫描文件系统namespace，如果删除时间在某一段时间之前（比如过了三天了），那么会在文件系统上删除。
+</p>
+
+<p>
+在扫描namespace时，也会寻找孤儿chunks删除这些chunks的metadata. chunk servers在每次和master的HeartBeat消息时会报告其有哪些chunks，
+master会回复哪些chunks不再存在于metadata中，chunkservers可以自由删除这些。
+</p>
+
+<p>
+采用这种垃圾回收模式的考虑：
+1.在一个大规模的分布式系统中，错误很常见，所以容易发生因某些错误而存在的无效副本等。垃圾回收提供了一个简单可靠的方式来处理这些错误文件。
+2.它将回收存储空间合并到了常规后台任务中，这样可以集成到其它消息中通信、可以批处理和当master相对空闲时操作。
+3.延迟删除提供了一个机制防止意外和不可逆的删除
+</p>
+
+<p>
+不好的地方：
+磁盘吃紧的时候无法立即删除降级磁盘使用率，特别是在一些需要不断重复的创建和删除临时文件的时候。
+</p>
+
+<p>
+解决方案：
+</p>
+<ol class="org-ol">
+<li>如果一个文件被显式地再删除，会加急回收过程</li>
+</ol>
+<p>
+2.允许用户在不同的namcespaces上应用不同的分片和回收机制，比如说有些文件的chunks不需要额外副本存储，并且可以立即删除等。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7b9dc1f" class="outline-3">
+<h3 id="org7b9dc1f"><span class="section-number-3">3.5</span> 陈旧副本检测 Stale Replica Detection</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+master会维护chunk version number来区分chunk servers上存储的副本的新旧。防止由于server宕机导致的文件操作不是最新的。
+</p>
+
+<p>
+当客户端写chunk的之前，master分配一个chunk的lease的时候，它会增加chunk版本号，并且通知其它副本。
+master和副本都会持久化存储这个版本号。
+</p>
+
+<p>
+如果master发现有些chunk server的版本号过旧，会将这些标记为要移除。垃圾回收的时候会去移除这些副本。
+同时，master也会在和client以及chunkserver通信时带上chunk的版本号来作双重保证不会使用旧的。
+</p>
+
+<p>
+如果master发现版本号比master记录的还新，那么会根据这个新的版本号来更新。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0dabab4" class="outline-2">
+<h2 id="org0dabab4"><span class="section-number-2">4</span> 容错和诊断，fault tolerance and diagnosis</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org9867878" class="outline-3">
+<h3 id="org9867878"><span class="section-number-3">4.1</span> 高可用 High Availability</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+使用两种策略来实现高可用：快速恢复和副本
+</p>
+</div>
+<div id="outline-container-orgfcfc09c" class="outline-4">
+<h4 id="orgfcfc09c"><span class="section-number-4">4.1.1</span> 快速恢复</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+master和chunserver都设计成可以根据日志快递恢复状态。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf9bf0a9" class="outline-4">
+<h4 id="orgf9bf0a9"><span class="section-number-4">4.1.2</span> chunk副本</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+每个chunk在不同都rack上会创建一定数量的副本，默认数量是3，可以根据不同namespace设置不同的副本数量。
+</p>
+
+<p>
+除此之快，还可以考虑其它冗余方式，比如例如parity(TODO 什么是parity 奇偶校验位?)和erasure code.
+</p>
+</div>
+</div>
+<div id="outline-container-org2f37cf0" class="outline-4">
+<h4 id="org2f37cf0"><span class="section-number-4">4.1.3</span> master副本</h4>
+<div class="outline-text-4" id="text-4-1-3">
+<p>
+master本身也会将操作日志和checkpoints复制到不同的机器上。
+对于master的状态操作会等日志被存储到本地磁盘和复制到副本上才会认为成功。
+</p>
+
+<p>
+简单起见，当后台进程（比如垃圾回收）内部改变系统时候，也会有进程来负责master的状态改变。
+当它失败时，可以及时重启，如果机器故障，外部的监控系统会重启一个master。客户端访问失败后会重试到请求这个新起来的master(借助DNS类似的域名转发功能)。
+</p>
+
+<p>
+初次之外，还有shadow master提供对外文系统的只读访问。
+它们可能比master状态稍微延迟一点。
+它们提供了对于不经常修改的文件的访问的可用性。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org167a0ed" class="outline-3">
+<h3 id="org167a0ed"><span class="section-number-3">4.2</span> 数据完整性 Data Intergrity</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+chunkservers通过给chunk添加checksum来保证数据的完成性。
+一个chunk被划分成64kb的区块，每一个块有一个32bit的checksum。
+checksums保存在内存里，也会持久化存储到logging里。
+</p>
+
+<p>
+处理读请求时，chunkserver会先校对读取范围内的数据的checksum。如果不对，会返回错误给请求方（可以是client或者其它server），并且报告给master。
+然后master会新创建一个复制，然后通知这个chunkserver删除这个无效的副本。
+</p>
+
+<p>
+同时chunkserver在idle时期会启动检查checksum任务，这也减少了了在读取时发现错误的可能性。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0be2580" class="outline-3">
+<h3 id="org0be2580"><span class="section-number-3">4.3</span> 诊断工具 Diagnostic Tools</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+采用尽可能详细的日志来记录系统发生了什么，比如不同服务的启动停止，各种RPC请求等。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org766100d" class="outline-2">
+<h2 id="org766100d"><span class="section-number-2">5</span> 其它</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org203d76b" class="outline-3">
+<h3 id="org203d76b"><span class="section-number-3">5.1</span> Measurement</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+这部分实测数据没有细看（TODO）。
+</p>
+</div>
+</div>
+<div id="outline-container-org704812b" class="outline-3">
+<h3 id="org704812b"><span class="section-number-3">5.2</span> Experiences</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+这部分主要概述了构建和部署GFS遇到的一些linux相关的问题。没有细研究。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf4d22b6" class="outline-3">
+<h3 id="orgf4d22b6"><span class="section-number-3">5.3</span> Related work</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+这部分主要概述了其它一些系统（AFS, xFS, swift, Frangipani,RAID approches， Lustre，NASD架构，River&#x2026;）相比，GFS的考虑和侧重。
+</p>
+</div>
+</div>
+<div id="outline-container-orgeaf4b3e" class="outline-3">
+<h3 id="orgeaf4b3e"><span class="section-number-3">5.4</span> 结论</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+这部分概述了GFS这样设计历程和原因等等。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

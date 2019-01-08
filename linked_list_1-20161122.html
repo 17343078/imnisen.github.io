@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>双向链表的疑问</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-22</p>
+</div>
+<div id="content">
+<h1 class="title">双向链表的疑问</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgab170fa">1. 问题</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgab170fa" class="outline-2">
+<h2 id="orgab170fa"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在看 <code>collections.OrderedDict</code> 的源码时，对于它如何构造有序的结构这一部分不是很理解，代码如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00; font-weight: bold;">class</span> <span style="color: #4271ae; font-weight: bold;">OrderedDict</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">dict</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">'Dictionary that remembers insertion order'</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">An inherited dict maps keys to values.</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">The inherited dict provides __getitem__, __len__, __contains__, and get.</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">The remaining methods are order-aware.</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Big-O running times for all methods are the same as regular dictionaries.</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">The internal self.__map dict maps keys to links in a doubly linked list.</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">The circular doubly linked list starts and ends with a sentinel element.</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">The sentinel element never gets deleted (this simplifies the algorithm).</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Each link is stored as a list of length three:  [PREV, NEXT, KEY].</span>
+
+    <span style="color: #718c00; font-weight: bold;">def</span> <span style="color: #f5871f;">__init__</span><span style="color: #4d4d4c;">(</span>*args, **kwds<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'''Initialize an ordered dictionary.  The signature is the same as</span>
+<span style="color: #8959a8;">        regular dictionaries, but keyword arguments are not recommended because</span>
+<span style="color: #8959a8;">        their insertion order is arbitrary.</span>
+
+<span style="color: #8959a8;">        '''</span>
+        <span style="color: #718c00; font-weight: bold;">if</span> <span style="color: #718c00; font-weight: bold;">not</span> args:
+            <span style="color: #718c00; font-weight: bold;">raise</span> <span style="color: #4271ae; font-weight: bold;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"descriptor '__init__' of 'OrderedDict' object "</span>
+                            <span style="color: #3e999f;">"needs an argument"</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00; font-weight: bold;">self</span> = args<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+        <span style="color: #eab700;">args</span> = args<span style="color: #4d4d4c;">[</span>1:<span style="color: #4d4d4c;">]</span>
+        <span style="color: #718c00; font-weight: bold;">if</span> <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>args<span style="color: #4d4d4c;">)</span> &gt; 1:
+            <span style="color: #718c00; font-weight: bold;">raise</span> <span style="color: #4271ae; font-weight: bold;">TypeError</span><span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'expected at most 1 arguments, got %d'</span> % <span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span>args<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00; font-weight: bold;">try</span>:
+            <span style="color: #718c00; font-weight: bold;">self</span>.__root
+        <span style="color: #718c00; font-weight: bold;">except</span> <span style="color: #4271ae; font-weight: bold;">AttributeError</span>:
+            <span style="color: #718c00; font-weight: bold;">self</span>.__root = <span style="color: #eab700;">root</span> = <span style="color: #4d4d4c;">[]</span>                     <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">sentinel node</span>
+            <span style="color: #eab700;">root</span><span style="color: #4d4d4c;">[</span>:<span style="color: #4d4d4c;">]</span> = <span style="color: #4d4d4c;">[</span>root, root, <span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">]</span>
+            <span style="color: #718c00; font-weight: bold;">self</span>.__map = <span style="color: #4d4d4c;">{}</span>
+        <span style="color: #718c00; font-weight: bold;">self</span>.__update<span style="color: #4d4d4c;">(</span>*args, **kwds<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00; font-weight: bold;">def</span> <span style="color: #f5871f;">__setitem__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span>, key, value, dict_setitem=<span style="color: #8959a8;">dict</span>.__setitem__<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'od.__setitem__(i, y) &lt;==&gt; od[i]=y'</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Setting a new item creates a new link at the end of the linked list,</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">and the inherited dictionary is updated with the new key/value pair.</span>
+        <span style="color: #718c00; font-weight: bold;">if</span> key <span style="color: #718c00; font-weight: bold;">not</span> <span style="color: #718c00; font-weight: bold;">in</span> <span style="color: #718c00; font-weight: bold;">self</span>:
+            <span style="color: #eab700;">root</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__root
+            <span style="color: #eab700;">last</span> = root<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+            <span style="color: #eab700;">last</span><span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span> = <span style="color: #eab700;">root</span><span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__map<span style="color: #4d4d4c;">[</span>key<span style="color: #4d4d4c;">]</span> = <span style="color: #4d4d4c;">[</span>last, root, key<span style="color: #4d4d4c;">]</span>
+        <span style="color: #718c00; font-weight: bold;">return</span> dict_setitem<span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span>, key, value<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00; font-weight: bold;">def</span> <span style="color: #f5871f;">__delitem__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span>, key, dict_delitem=<span style="color: #8959a8;">dict</span>.__delitem__<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'od.__delitem__(y) &lt;==&gt; del od[y]'</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Deleting an existing item uses self.__map to find the link which gets</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">removed by updating the links in the predecessor and successor nodes.</span>
+        dict_delitem<span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span>, key<span style="color: #4d4d4c;">)</span>
+        <span style="color: #eab700;">link_prev</span>, <span style="color: #eab700;">link_next</span>, <span style="color: #eab700;">_</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__map.pop<span style="color: #4d4d4c;">(</span>key<span style="color: #4d4d4c;">)</span>
+        <span style="color: #eab700;">link_prev</span><span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span> = link_next                        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">update link_prev[NEXT]</span>
+        <span style="color: #eab700;">link_next</span><span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> = link_prev                        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">update link_next[PREV]</span>
+
+    <span style="color: #718c00; font-weight: bold;">def</span> <span style="color: #f5871f;">__iter__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'od.__iter__() &lt;==&gt; iter(od)'</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Traverse the linked list in order.</span>
+        <span style="color: #eab700;">root</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__root
+        <span style="color: #eab700;">curr</span> = root<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span>                                  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">start at the first node</span>
+        <span style="color: #718c00; font-weight: bold;">while</span> curr <span style="color: #718c00; font-weight: bold;">is</span> <span style="color: #718c00; font-weight: bold;">not</span> root:
+            <span style="color: #718c00; font-weight: bold;">yield</span> curr<span style="color: #4d4d4c;">[</span>2<span style="color: #4d4d4c;">]</span>                               <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">yield the curr[KEY]</span>
+            <span style="color: #eab700;">curr</span> = curr<span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span>                              <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">move to next node</span>
+
+    <span style="color: #718c00; font-weight: bold;">def</span> <span style="color: #f5871f;">__reversed__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'od.__reversed__() &lt;==&gt; reversed(od)'</span>
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Traverse the linked list in reverse order.</span>
+        <span style="color: #eab700;">root</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__root
+        <span style="color: #eab700;">curr</span> = root<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>                                  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">start at the last node</span>
+        <span style="color: #718c00; font-weight: bold;">while</span> curr <span style="color: #718c00; font-weight: bold;">is</span> <span style="color: #718c00; font-weight: bold;">not</span> root:
+            <span style="color: #718c00; font-weight: bold;">yield</span> curr<span style="color: #4d4d4c;">[</span>2<span style="color: #4d4d4c;">]</span>                               <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">yield the curr[KEY]</span>
+            <span style="color: #eab700;">curr</span> = curr<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>                              <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">move to previous node</span>
+
+    <span style="color: #718c00; font-weight: bold;">def</span> <span style="color: #f5871f;">clear</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">'od.clear() -&gt; None.  Remove all items from od.'</span>
+        <span style="color: #eab700;">root</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__root
+        <span style="color: #eab700;">root</span><span style="color: #4d4d4c;">[</span>:<span style="color: #4d4d4c;">]</span> = <span style="color: #4d4d4c;">[</span>root, root, <span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">]</span>
+        <span style="color: #718c00; font-weight: bold;">self</span>.__map.clear<span style="color: #4d4d4c;">()</span>
+        <span style="color: #8959a8;">dict</span>.clear<span style="color: #4d4d4c;">(</span><span style="color: #718c00; font-weight: bold;">self</span><span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+<p>
+主要是对于初始化里和set方法里的做法不清楚, wtf doing here&#x2026;:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">            <span style="color: #718c00; font-weight: bold;">self</span>.__root = <span style="color: #eab700;">root</span> = <span style="color: #4d4d4c;">[]</span>                     <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">sentinel node</span>
+            <span style="color: #eab700;">root</span><span style="color: #4d4d4c;">[</span>:<span style="color: #4d4d4c;">]</span> = <span style="color: #4d4d4c;">[</span>root, root, <span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">]</span>
+            <span style="color: #718c00; font-weight: bold;">self</span>.__map = <span style="color: #4d4d4c;">{}</span>
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#21644;</span>
+            <span style="color: #eab700;">root</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__root
+            <span style="color: #eab700;">last</span> = root<span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span>
+            <span style="color: #eab700;">last</span><span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span> = <span style="color: #eab700;">root</span><span style="color: #4d4d4c;">[</span>0<span style="color: #4d4d4c;">]</span> = <span style="color: #718c00; font-weight: bold;">self</span>.__map<span style="color: #4d4d4c;">[</span>key<span style="color: #4d4d4c;">]</span> = <span style="color: #4d4d4c;">[</span>last, root, key<span style="color: #4d4d4c;">]</span>
+
+
+</pre>
+</div>
+
+<p>
+后来在网上提问并且自己查询了相关资料后明白这是个带哨兵的双向链表的实现，关于双向链表的知识自己补了下，可以参见<a href="http://chuansong.me/n/364767351146">这里</a> 和 <a href="http://ictar.github.io/2016/01/04/%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%85%B6Python%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">这里</a>。
+</p>
+
+<p>
+然而对于它为什么要这样实现我还不是很清楚，留待以后继续探究。
+</p>
+
+<p>
+<a href="https://www.v2ex.com/t/322177#reply3">这里</a> 是我在v2ex上关于这个问题的提问。
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273316453'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s13.cnzz.com/z_stat.php%3Fid%3D1273316453%26show%3Dpic2' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

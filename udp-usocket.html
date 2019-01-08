@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CommonLisp UDP库usocket使用心得</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-01-27</p>
+</div>
+<div id="content">
+<h1 class="title">CommonLisp UDP库usocket使用心得</h1>
+<p>
+本文记录了自己使用usocket创建一个UDP over RPC框架时遇到的一个问题。
+</p>
+
+<p>
+当我刚开始做的时候，是这样的流程：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">server &#20808;bind&#26412;&#22320;&#19968;&#20010;port</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-connect nil <span style="color: #8959a8;">:protocol</span> <span style="color: #8959a8;">:datagram</span>
+                            <span style="color: #8959a8;">:local-host</span> server-host
+                            <span style="color: #8959a8;">:local-port</span> server-port<span style="color: #4d4d4c;">)</span>
+-&gt; server-socket
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#28982;&#21518;server&#35843;&#29992;receive&#26469;&#30417;&#21548;&#36825;&#20010;socket</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-receive server-socket nil data-max-length<span style="color: #4d4d4c;">)</span> <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#30452;&#21040;&#26377;&#25968;&#25454;</span>
+-&gt; return-buffer return-length client-host client-port
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">client &#36890;&#36807;connect&#26469;&#36830;&#25509;&#21040;server&#30340;host port</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-connect server-host server-port
+                        <span style="color: #8959a8;">:protocol</span> <span style="color: #8959a8;">:datagram</span>
+                        <span style="color: #8959a8;">:local-host</span> client-host
+                        <span style="color: #8959a8;">:local-port</span> client-port<span style="color: #4d4d4c;">)</span>
+-&gt; client-socket
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">client &#30417;&#21548; server&#30340;&#36820;&#22238;</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-receive client-socket nil data-max-length<span style="color: #4d4d4c;">)</span> <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#30452;&#21040;&#26377;&#25968;&#25454;</span>
+
+-&gt; return-buffer return-length server-host server-port
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#28982;&#21518;client &#21457;&#36865;&#25968;&#25454;</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-send client-socket buffer <span style="color: #3e999f;">(</span>length buffer<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">server&#25910;&#21040;&#25968;&#25454;&#21518;&#65292;&#21457;&#36865;&#22238;&#25968;&#25454;</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-send server-socket buffer <span style="color: #3e999f;">(</span>length buffer<span style="color: #3e999f;">)</span>
+                         <span style="color: #8959a8;">:host</span> client-host
+                         <span style="color: #8959a8;">:port</span> client-port<span style="color: #4d4d4c;">)</span>
+
+
+</pre>
+</div>
+
+<p>
+采用上面的收发逻辑是可以实现一个UDP服务器和客户端交互的，
+然而总觉得怪怪的，因为server和client的非对称性，而UDP协议中两者是“对称”的。
+</p>
+
+<p>
+现在比如说有多个节点s1, s2, s3&#x2026;， 其中每个节点同时要充当server相应其它节点的请求，和充当client在自己有需要时请求其它节点。
+按照上面的流程，当其中的一个节点比如s1先充当server bind到一个port后（调用一次 <code>socket-connect</code> ），当它要向s2发送消息时(充当client)，又需要调用 <code>socket-connect</code> 指定s2的地址端口和自己的地址端口时，
+会产生错误“端口已被使用”（因为两次生成的socket绑定到同一个port），而我需要对于每个节点来说收发都在同一个port上（因为其他节点根据收到你消息的port来给你发信息）。
+</p>
+
+
+<p>
+我之所以陷入这种困境是受<a href="https://gist.github.com/shortsightedsid/a760e0d83a9557aaffcc">这个例子</a>的影响，限制了思维，经过一番研究发现更为合适的流程是下面这样的，而且更为“美观”：
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">server &#20808;bind&#26412;&#22320;&#19968;&#20010;port &#24314;&#31435;&#19968;&#20010;socket</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-connect nil <span style="color: #8959a8;">:protocol</span> <span style="color: #8959a8;">:datagram</span>
+                            <span style="color: #8959a8;">:local-host</span> server-host
+                            <span style="color: #8959a8;">:local-port</span> server-port<span style="color: #4d4d4c;">)</span>
+-&gt; server-socket
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#28982;&#21518;server&#35843;&#29992;receive&#26469;&#30417;&#21548;&#36825;&#20010;socket</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-receive server-socket nil data-max-length<span style="color: #4d4d4c;">)</span> <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#30452;&#21040;&#26377;&#25968;&#25454;</span>
+-&gt; return-buffer return-length client-host client-port
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">client &#20063;&#20808;bind&#21040;&#26412;&#22320;&#19968;&#20010;port &#24314;&#31435;&#19968;&#20010;socket</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-connect server-host server-port
+                        <span style="color: #8959a8;">:protocol</span> <span style="color: #8959a8;">:datagram</span>
+                        <span style="color: #8959a8;">:local-host</span> client-host
+                        <span style="color: #8959a8;">:local-port</span> client-port<span style="color: #4d4d4c;">)</span>
+-&gt; client-socket
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">client &#30417;&#21548; socket&#19978;&#30340;&#25968;&#25454;</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-receive client-socket nil data-max-length<span style="color: #4d4d4c;">)</span> <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#30452;&#21040;&#26377;&#25968;&#25454;</span>
+
+-&gt; return-buffer return-length server-host server-port
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;client &#38656;&#35201;&#21457;&#36865;&#25968;&#25454;</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-send client-socket buffer <span style="color: #3e999f;">(</span>length buffer<span style="color: #3e999f;">)</span>
+                     <span style="color: #8959a8;">:host</span> server-host
+                     <span style="color: #8959a8;">:port</span> server-port <span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">server &#25910;&#21040;&#25968;&#25454;&#21518;&#65292;&#21457;&#36865;&#22238;&#25968;&#25454;</span>
+<span style="color: #4d4d4c;">(</span>usocket:socket-send server-socket buffer <span style="color: #3e999f;">(</span>length buffer<span style="color: #3e999f;">)</span>
+                     <span style="color: #8959a8;">:host</span> client-host
+                     <span style="color: #8959a8;">:port</span> client-port<span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+
+<p>
+可以看到这个流程是对称的，对比之前的步骤差异就在建立client socket的时候没有绑定到另外一端到哪个地址，而是在发送的时候指定地址，并且同时可以监听这个socket上的消息。
+</p>
+
+<p>
+这样可以解决上面举的例子的困境，因为节点充当server或者client的时候其实用的是同一个socket，在上面收发而已。
+</p>
+
+<p>
+也就是说，之前的client在创建socket的时候就指定了另一端(server)的方向，和server创建时不指定相冲突，而现在client创建的socket是不指定另一端的，而在发送时指定地址，
+该socket同时也能作为server使用，这样端口不冲突。其实从receive/send的角度来考虑会比server/client的方式要清晰。
+</p>
+
+<p>
+理清楚其实很简单。可惜我一开始在上面困住了时候看不透，究其原因：
+</p>
+
+<ol class="org-ol">
+<li>自己对于socket网络编程的不清晰（UDP的具体流程和受TCP方式的影响）</li>
+<li>common lisp的usocket库 API说明不清晰，或者设计有些许不合理</li>
+<li>缺乏common lisp UDP 相关文档示例</li>
+</ol>
+
+<p>
+故此做个小记。
+</p>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

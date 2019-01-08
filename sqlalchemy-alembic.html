@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python数据模型构建和迁移方案：SQLAlchemy&amp;Alembic</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-04-27</p>
+</div>
+<div id="content">
+<h1 class="title">Python数据模型构建和迁移方案：SQLAlchemy&amp;Alembic</h1>
+<div class="abstract">
+<p>
+本文介绍了在Python web世界中，常见的数据模型构建和迁移方案:SQLAlchemy配合Alembic。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7f01da8">1. 初始化和配置</a></li>
+<li><a href="#org45dad80">2. 运行</a></li>
+<li><a href="#org9f4de3b">3. 其它</a></li>
+</ul>
+</div>
+</div>
+
+
+<div class="figure">
+<p><img src="static/images/sqlalchemy-alembic-01.png" alt="sqlalchemy-alembic-01.png" />
+</p>
+</div>
+
+<p>
+Python的世界里有许多web框架：比如大而全的 <a href="https://www.djangoproject.com/">Django</a>， 提供了模型定义迁移，到路由处理，再到视图的渲染等整套功能；比如小巧灵活的<a href="http://flask.pocoo.org/">Flask</a>， 虽然只包含了核心的请求处理内容，但却可以通过安装生态丰富的插件来完成大多数所需功能；比如面向ERP行业的<a href="https://www.odoo.com">Odoo</a>, 除了基础的MVC, 还提供了常用的进销存和人力资源等模块以及方便的web数据管理界面；比如以异步IO为特色的<a href="https://github.com/channelcat/sanic">Sanic</a> 和 <a href="http://www.tornadoweb.org/en/stable/">Tonado</a>， 提供了一套基于异步IO的请求处理方案；还有其他<a href="https://bottlepy.org/docs/dev/">Bottle</a>, <a href="https://github.com/cherrypy/cherrypy">Cherrypy</a>, <a href="https://github.com/Pylons/pyramid">Pyramid</a> 等。
+</p>
+
+<p>
+这么多web框架其中一类是全套web解决方案的，像django,pyramid,odoo等，一类是提供路由和请求处理的"api"微型框架，像flask, sanic, bottle, cherrpy等。当使用到后者这类微型框架时，根据业务场景不同，如果需要处理模型的建立、升级和迁移的问题，可以考虑下接下来要介绍的<a href="https://www.sqlalchemy.org/">sqlalchemy</a> 和<a href="http://alembic.zzzcomputing.com/en/latest/">Alembic</a>。
+</p>
+
+<p>
+SQLAlchemy是python里的处理模ORM(模型关系映射)一套工具，可以通过直观地通过定义python中的class来定义数据表结构，通过操作class的具体object来操作数据记录。 Alembic是一套管理数据库升降级的迁移工具，比如在实际业务场景中需要对已经定义好的模型进行增删字段操作，可以通过alembic来对升降级进行方便地可控地操作。
+</p>
+
+<p>
+SQLAlchemy和alembic的安装和详细配置可以参考官方文档，这里我通过一个示例来说明如何实现model的定义和迁移。代码地址在<a href="https://github.com/imnisen/sqlalchemy-alembic">这里</a>。
+</p>
+
+<div id="outline-container-org7f01da8" class="outline-2">
+<h2 id="org7f01da8"><span class="section-number-2">1</span> 初始化和配置</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+安装python依赖(主要是SQLAlchemy和alembic):
+</p>
+<pre class="example">
+pip install -r requirements.txt
+
+</pre>
+
+<p>
+初始化alembic:
+</p>
+<pre class="example">
+alembic init YOUR_ALEMBIC_DIR
+
+</pre>
+
+<p>
+alembic会在根目录创建 <code>YOUR_ALEMBIC_DIR</code> 目录和 <code>alembic.ini</code> 文件，
+所以在我的示例代码里， <code>alembic_dir</code> 和 <code>alembic.ini</code> 是运行 <code>alembic init alembic_dir</code> 初始化创建的。
+</p>
+
+<p>
+<code>alembic.ini</code> 文件 提供了一些基本的配置，比如数据库的连接选项。
+</p>
+
+<p>
+<code>alembic_dir</code> 的目录结构和作用为：
+</p>
+<pre class="example">
+$ tree alembic_dir
+
+alembic_dir
+├── README
+├── env.py          # 每次执行Alembic都会加载这个模块，主要提供项目Sqlalchemy Model 的连接
+├── script.py.mako  # 迁移脚本生成模版
+└── versions        # 存放生成的迁移脚本目录
+
+1 directory, 4 files
+
+</pre>
+
+
+<p>
+接下来先来看看sqlalchemy里model的定义，在model目录里：
+</p>
+<pre class="example">
+$ tree
+.
+├── __init__.py # 打包成一个模块
+├── base.py     # 定义所有模型继承的Base类
+├── role.py     # 定义“角色”模型
+└── user.py     # 定义“用户”模型
+
+0 directories, 4 files
+
+
+
+</pre>
+
+<p>
+其中，sqlalchemy的模型类继承自一个由 <code>declarative_base()</code> 方法生成的类，所以在 <code>base.py</code> 里有如下两行代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">from</span> sqlalchemy.ext.declarative <span style="color: #718c00;">import</span> declarative_base
+
+<span style="color: #eab700;">Base</span> = declarative_base<span style="color: #4d4d4c;">()</span>
+
+</pre>
+</div>
+
+
+<p>
+模型定义完成后，我们需要告诉alembic去哪里找寻模型定义，所以在 <code>alembic_dir/env.py</code> 的21行左右可以看到指定：
+</p>
+<div class="org-src-container">
+<pre class="src src-python">
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Custmosized</span>
+<span style="color: #718c00;">import</span> os
+<span style="color: #718c00;">import</span> sys
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">&#23558;&#24403;&#21069;&#30446;&#24405;(&#39033;&#30446;&#26356;&#30446;&#24405;)&#21152;&#20837;sys.path, &#24403;&#28982;&#20063;&#21487;&#20197;&#23558;&#26681;&#30446;&#24405;&#19979;&#30340;model&#21152;&#20837;sys.path,&#36825;&#26679;&#23601;&#19981;&#38656;&#35201;&#23558;model&#23553;&#35013;&#25104;&#27169;&#22359;</span>
+sys.path.append<span style="color: #4d4d4c;">(</span>os.getcwd<span style="color: #3e999f;">()</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #718c00;">from</span> model <span style="color: #718c00;">import</span> Base
+<span style="color: #eab700;">target_metadata</span> = Base.metadata
+
+</pre>
+</div>
+
+<p>
+另外通常我们也改一下生成模板 <code>script.py.mako</code> ，加上编码信息，否则在升级脚本中如果有中文会报错，参见 <code>alembic_dir/script.py.mako</code> 的前两行。
+</p>
+
+<p>
+接下来需要配置alembic连接管理那个数据库，在 <code>alembic.ini</code> 的第38行修改数据库连接选项，这里代码中采用本地的mysql为示例:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #eab700;">sqlalchemy.url</span> = mysql://root:@localhost/test2
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org45dad80" class="outline-2">
+<h2 id="org45dad80"><span class="section-number-2">2</span> 运行</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+配置工作做完后，确保本地mysql服务启动，并且有上面配置的数据库后，让我们来生成第一份迁移脚本, 在 <code>sqlalchemy-alembic</code> 目录下运行:
+</p>
+<pre class="example">
+# 其中 "First create user add role table" 是这次迁移脚本的备注，类似git commit的message
+alembic revision --autogenerate -m "First create user add role table"
+
+</pre>
+
+<p>
+运行完命令后，会发现在 <code>sqlalchemy-alembic/alembic_dir/versions</code> 下生成了一个迁移脚本，迁移脚本的主体是:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #718c00;">def</span> <span style="color: #f5871f;">upgrade</span><span style="color: #4d4d4c;">()</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">### commands auto generated by Alembic - please adjust! ###</span>
+    op.create_table<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'roles'</span>,
+    sa.Column<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'id'</span>, sa.Integer<span style="color: #eab700;">()</span>, nullable=<span style="color: #4271ae;">False</span><span style="color: #3e999f;">)</span>,
+    sa.Column<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'name'</span>, sa.String<span style="color: #eab700;">()</span>, nullable=<span style="color: #4271ae;">True</span><span style="color: #3e999f;">)</span>,
+    sa.PrimaryKeyConstraint<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'id'</span><span style="color: #3e999f;">)</span>
+    <span style="color: #4d4d4c;">)</span>
+    op.create_table<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'user'</span>,
+    sa.Column<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'id'</span>, sa.Integer<span style="color: #eab700;">()</span>, nullable=<span style="color: #4271ae;">False</span><span style="color: #3e999f;">)</span>,
+    sa.Column<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'username'</span>, sa.VARCHAR<span style="color: #eab700;">(</span>length=32<span style="color: #eab700;">)</span>, nullable=<span style="color: #4271ae;">True</span><span style="color: #3e999f;">)</span>,
+    sa.Column<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'password'</span>, sa.VARCHAR<span style="color: #eab700;">(</span>length=32<span style="color: #eab700;">)</span>, nullable=<span style="color: #4271ae;">True</span><span style="color: #3e999f;">)</span>,
+    sa.Column<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'email'</span>, sa.VARCHAR<span style="color: #eab700;">(</span>length=32<span style="color: #eab700;">)</span>, nullable=<span style="color: #4271ae;">True</span><span style="color: #3e999f;">)</span>,
+    sa.PrimaryKeyConstraint<span style="color: #3e999f;">(</span><span style="color: #3e999f;">'id'</span><span style="color: #3e999f;">)</span>
+    <span style="color: #4d4d4c;">)</span>
+    op.create_index<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'ix_email_pwd'</span>, <span style="color: #3e999f;">'user'</span>, <span style="color: #3e999f;">[</span><span style="color: #3e999f;">'email'</span>, <span style="color: #3e999f;">'password'</span><span style="color: #3e999f;">]</span>, unique=<span style="color: #4271ae;">False</span><span style="color: #4d4d4c;">)</span>
+    op.create_index<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'ix_user_pwd'</span>, <span style="color: #3e999f;">'user'</span>, <span style="color: #3e999f;">[</span><span style="color: #3e999f;">'username'</span>, <span style="color: #3e999f;">'password'</span><span style="color: #3e999f;">]</span>, unique=<span style="color: #4271ae;">False</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">### end Alembic commands ###</span>
+
+
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">downgrade</span><span style="color: #4d4d4c;">()</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">### commands auto generated by Alembic - please adjust! ###</span>
+    op.drop_index<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'ix_user_pwd'</span>, table_name=<span style="color: #3e999f;">'user'</span><span style="color: #4d4d4c;">)</span>
+    op.drop_index<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'ix_email_pwd'</span>, table_name=<span style="color: #3e999f;">'user'</span><span style="color: #4d4d4c;">)</span>
+    op.drop_table<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'user'</span><span style="color: #4d4d4c;">)</span>
+    op.drop_table<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'roles'</span><span style="color: #4d4d4c;">)</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">### end Alembic commands ###</span>
+
+
+</pre>
+</div>
+
+<p>
+可以发现，是根据model定义的内容，自带生成的升级和降级代码，实际项目中需要检查一下升降级脚本是否有误。
+</p>
+
+<p>
+接下来，在项目根目录下运行升级命令:
+</p>
+<pre class="example">
+$ alembic upgrade head
+
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -&gt; 8deb154aaaa3, First create user add role table
+
+</pre>
+<p>
+其中 <code>head</code> 表示升级到迁移脚本中最新的版本。
+</p>
+
+<p>
+这时候检查数据库，可以发现生成了3张表，升级工作就完成了。
+</p>
+<pre class="example">
+alembic_version  # alembic用来追踪目前数据库表的版本的表，表的内容只有一行，为当前版本号，对应于升级脚本上的版本号
+roles            # 自动生成的表
+user             # 自动生成的表
+
+</pre>
+
+<p>
+接下来，如果对模型有其它改动，比如新增字段等，可以再次生成迁移脚本，检查无误后运行upgrade完成迁移动作。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9f4de3b" class="outline-2">
+<h2 id="org9f4de3b"><span class="section-number-2">3</span> 其它</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>alembic的迁移脚本也是可以自己手写的，这样不需要配置 <code>env.py</code> 里的 <code>target_metadata</code> ，每次迁移做的事完全有手动来决定对数据库操作。</li>
+<li>alembic的降级可以用类似 <code>alembic downgrade -1</code> 的命令， <code>-1</code> 代表降级到上个版本，也支持其他参数，具体可以查询文档。</li>
+<li>sqlalchemy 可以以ORM的方式在业务逻辑处理的时候引用，这样每次查询到一条或多条数据，就可以得到一个或多个对象，类似于django的model。</li>
+<li>在使用类似sanic这样的异步框架时，需要注意orm的选取，是否需要一个异步的orm框架呢，可以考虑的异步orm可以参照<a href="https://github.com/timofurrer/awesome-asyncio#database-drivers">这里</a> ，另外sqlalchemy的作者在15年对此有思考，这篇<a href="http://techspot.zzzeek.org/2015/02/15/asynchronous-python-and-databases/">文章 </a>可以看看。而我在使用sanic的实际项目中是操作的原生sql，异步io类型的orm配合使用留待以后探究。</li>
+</ul>
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

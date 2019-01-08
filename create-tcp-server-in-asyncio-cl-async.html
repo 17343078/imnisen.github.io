@@ -1,0 +1,1090 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Asyncio与cl-async创建TCPServer对比</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-01-01</p>
+</div>
+<div id="content">
+<h1 class="title">Asyncio与cl-async创建TCPServer对比</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgdb786d3">1. 概述</a></li>
+<li><a href="#org4f4daf5">2. 接口定义</a></li>
+<li><a href="#orge7c5569">3. 分析</a>
+<ul>
+<li><a href="#org16c0ccb">3.1. asyncio</a>
+<ul>
+<li><a href="#orge0658b7">3.1.1. Protocol</a></li>
+<li><a href="#org4d16612">3.1.2. Transport</a></li>
+</ul>
+</li>
+<li><a href="#org0f86a3b">3.2. cl-async</a></li>
+</ul>
+</li>
+<li><a href="#org810f3be">4. 调用对比</a>
+<ul>
+<li><a href="#org73edbc1">4.1. Sanic</a></li>
+<li><a href="#org260d7c1">4.2. Wookie</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdb786d3" class="outline-2">
+<h2 id="orgdb786d3"><span class="section-number-2">1</span> 概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+本文比较python3的asyncio库和common lisp的cl-async这两个个类似的库在创建TCP server上的一点差异。
+</p>
+</div>
+</div>
+<div id="outline-container-org4f4daf5" class="outline-2">
+<h2 id="org4f4daf5"><span class="section-number-2">2</span> 接口定义</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+python asyncio库 <code>create_server</code> 接口定义:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">create_server</span><span style="color: #4d4d4c;">(</span>protocol_factory, host=<span style="color: #4271ae;">None</span>, port=<span style="color: #4271ae;">None</span>,
+                 *, family=socket.AF_UNSPEC, flags=socket.AI_PASSIVE,
+                 sock=<span style="color: #4271ae;">None</span>, backlog=100, ssl=<span style="color: #4271ae;">None</span>, reuse_address=<span style="color: #4271ae;">None</span>, reuse_port=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">=&gt; Create a TCP server (socket type SOCK_STREAM) bound to host and port.</span>
+</pre>
+</div>
+
+<p>
+common lisp cl-async tcp-server 接口定义:
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">tcp-server</span> <span style="color: #3e999f;">(</span>bind-address port read-cb event-cb
+                   <span style="color: #4271ae;">&amp;key</span> connect-cb <span style="color: #eab700;">(</span>backlog -1<span style="color: #eab700;">)</span> stream<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+<span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">=&gt; tcp-server</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge7c5569" class="outline-2">
+<h2 id="orge7c5569"><span class="section-number-2">3</span> 分析</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org16c0ccb" class="outline-3">
+<h3 id="org16c0ccb"><span class="section-number-3">3.1</span> asyncio</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+相较于cl-async,python的asynio库引入了protocol和transport两个抽象概念。
+</p>
+</div>
+<div id="outline-container-orge0658b7" class="outline-4">
+<h4 id="orge0658b7"><span class="section-number-4">3.1.1</span> Protocol</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+protocol是对callback based api的抽象。
+</p>
+
+<p>
+asyncio 的protocol代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">file: cpython/Lib/asyncio/protocols.py</span>
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">BaseProtocol</span>:
+    <span style="color: #8959a8;">"""Common base class for protocol interfaces.</span>
+
+<span style="color: #8959a8;">    Usually user implements protocols that derived from BaseProtocol</span>
+<span style="color: #8959a8;">    like Protocol or ProcessProtocol.</span>
+
+<span style="color: #8959a8;">    The only case when BaseProtocol should be implemented directly is</span>
+<span style="color: #8959a8;">    write-only transport like write pipe</span>
+<span style="color: #8959a8;">    """</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">connection_made</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, transport<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Called when a connection is made.</span>
+
+<span style="color: #8959a8;">        The argument is the transport representing the pipe connection.</span>
+<span style="color: #8959a8;">        To receive data, wait for data_received() calls.</span>
+<span style="color: #8959a8;">        When the connection is closed, connection_lost() is called.</span>
+<span style="color: #8959a8;">        """</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">connection_lost</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, exc<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Called when the connection is lost or closed.</span>
+
+<span style="color: #8959a8;">        The argument is an exception object or None (the latter</span>
+<span style="color: #8959a8;">        meaning a regular EOF is received or the connection was</span>
+<span style="color: #8959a8;">        aborted or closed).</span>
+<span style="color: #8959a8;">        """</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">pause_writing</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Called when the transport's buffer goes over the high-water mark.</span>
+
+<span style="color: #8959a8;">        Pause and resume calls are paired -- pause_writing() is called</span>
+<span style="color: #8959a8;">        once when the buffer goes strictly over the high-water mark</span>
+<span style="color: #8959a8;">        (even if subsequent writes increases the buffer size even</span>
+<span style="color: #8959a8;">        more), and eventually resume_writing() is called once when the</span>
+<span style="color: #8959a8;">        buffer size reaches the low-water mark.</span>
+
+<span style="color: #8959a8;">        Note that if the buffer size equals the high-water mark,</span>
+<span style="color: #8959a8;">        pause_writing() is not called -- it must go strictly over.</span>
+<span style="color: #8959a8;">        Conversely, resume_writing() is called when the buffer size is</span>
+<span style="color: #8959a8;">        equal or lower than the low-water mark.  These end conditions</span>
+<span style="color: #8959a8;">        are important to ensure that things go as expected when either</span>
+<span style="color: #8959a8;">        mark is zero.</span>
+
+<span style="color: #8959a8;">        NOTE: This is the only Protocol callback that is not called</span>
+<span style="color: #8959a8;">        through EventLoop.call_soon() -- if it were, it would have no</span>
+<span style="color: #8959a8;">        effect when it's most needed (when the app keeps writing</span>
+<span style="color: #8959a8;">        without yielding until pause_writing() is called).</span>
+<span style="color: #8959a8;">        """</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">resume_writing</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Called when the transport's buffer drains below the low-water mark.</span>
+
+<span style="color: #8959a8;">        See pause_writing() for details.</span>
+<span style="color: #8959a8;">        """</span>
+
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">Protocol</span><span style="color: #4d4d4c;">(</span>BaseProtocol<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">"""Interface for stream protocol.</span>
+
+<span style="color: #8959a8;">    The user should implement this interface.  They can inherit from</span>
+<span style="color: #8959a8;">    this class but don't need to.  The implementations here do</span>
+<span style="color: #8959a8;">    nothing (they don't raise exceptions).</span>
+
+<span style="color: #8959a8;">    When the user wants to requests a transport, they pass a protocol</span>
+<span style="color: #8959a8;">    factory to a utility function (e.g., EventLoop.create_connection()).</span>
+
+<span style="color: #8959a8;">    When the connection is made successfully, connection_made() is</span>
+<span style="color: #8959a8;">    called with a suitable transport object.  Then data_received()</span>
+<span style="color: #8959a8;">    will be called 0 or more times with data (bytes) received from the</span>
+<span style="color: #8959a8;">    transport; finally, connection_lost() will be called exactly once</span>
+<span style="color: #8959a8;">    with either an exception object or None as an argument.</span>
+
+<span style="color: #8959a8;">    State machine of calls:</span>
+
+<span style="color: #8959a8;">      start -&gt; CM [-&gt; DR*] [-&gt; ER?] -&gt; CL -&gt; end</span>
+
+<span style="color: #8959a8;">    * CM: connection_made()</span>
+<span style="color: #8959a8;">    * DR: data_received()</span>
+<span style="color: #8959a8;">    * ER: eof_received()</span>
+<span style="color: #8959a8;">    * CL: connection_lost()</span>
+<span style="color: #8959a8;">    """</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">data_received</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, data<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Called when some data is received.</span>
+
+<span style="color: #8959a8;">        The argument is a bytes object.</span>
+<span style="color: #8959a8;">        """</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">eof_received</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Called when the other end calls write_eof() or equivalent.</span>
+
+<span style="color: #8959a8;">        If this returns a false value (including None), the transport</span>
+<span style="color: #8959a8;">        will close itself.  If it returns a true value, closing the</span>
+<span style="color: #8959a8;">        transport is up to the protocol.</span>
+<span style="color: #8959a8;">        """</span>
+
+
+</pre>
+</div>
+
+<p>
+asyncio的BaseProtocol类定义了 <code>connection_made</code> , <code>connection_lost</code> , <code>pause_writing</code> , <code>resume_writing</code> 回调, 继承BaseProtocol的Protocol类定义了 <code>data_received</code>, <code>eof_received</code> 方法, 可以看到BaseProtocol的 <code>connection_made</code> 方法接受一个"transport"作为参数, Protocol的 <code>data_reveived</code> 方法接受data作为参数。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4d16612" class="outline-4">
+<h4 id="org4d16612"><span class="section-number-4">3.1.2</span> Transport</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+Transport是对socket操作的抽象。
+</p>
+
+<p>
+asyncio 的transport代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">file: cpython/Lib/asyncio/transports.py</span>
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">BaseTransport</span>:
+    <span style="color: #8959a8;">"""Base class for transports."""</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__init__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, extra=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">if</span> extra <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>:
+            <span style="color: #eab700;">extra</span> = <span style="color: #4d4d4c;">{}</span>
+        <span style="color: #718c00;">self</span>._extra = extra
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_extra_info</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, name, default=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Get optional transport information."""</span>
+        <span style="color: #718c00;">return</span> <span style="color: #718c00;">self</span>._extra.get<span style="color: #4d4d4c;">(</span>name, default<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">is_closing</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Return True if the transport is closing or closed."""</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">close</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Close the transport.</span>
+
+<span style="color: #8959a8;">        Buffered data will be flushed asynchronously.  No more data</span>
+<span style="color: #8959a8;">        will be received.  After all buffered data is flushed, the</span>
+<span style="color: #8959a8;">        protocol's connection_lost() method will (eventually) called</span>
+<span style="color: #8959a8;">        with None as its argument.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">set_protocol</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, protocol<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Set a new protocol."""</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_protocol</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Return the current protocol."""</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">ReadTransport</span><span style="color: #4d4d4c;">(</span>BaseTransport<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">"""Interface for read-only transports."""</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">is_reading</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Return True if the transport is receiving."""</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">pause_reading</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Pause the receiving end.</span>
+
+<span style="color: #8959a8;">        No data will be passed to the protocol's data_received()</span>
+<span style="color: #8959a8;">        method until resume_reading() is called.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">resume_reading</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Resume the receiving end.</span>
+
+<span style="color: #8959a8;">        Data received will once again be passed to the protocol's</span>
+<span style="color: #8959a8;">        data_received() method.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">WriteTransport</span><span style="color: #4d4d4c;">(</span>BaseTransport<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">"""Interface for write-only transports."""</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">set_write_buffer_limits</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, high=<span style="color: #4271ae;">None</span>, low=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Set the high- and low-water limits for write flow control.</span>
+
+<span style="color: #8959a8;">        These two values control when to call the protocol's</span>
+<span style="color: #8959a8;">        pause_writing() and resume_writing() methods.  If specified,</span>
+<span style="color: #8959a8;">        the low-water limit must be less than or equal to the</span>
+<span style="color: #8959a8;">        high-water limit.  Neither value can be negative.</span>
+
+<span style="color: #8959a8;">        The defaults are implementation-specific.  If only the</span>
+<span style="color: #8959a8;">        high-water limit is given, the low-water limit defaults to an</span>
+<span style="color: #8959a8;">        implementation-specific value less than or equal to the</span>
+<span style="color: #8959a8;">        high-water limit.  Setting high to zero forces low to zero as</span>
+<span style="color: #8959a8;">        well, and causes pause_writing() to be called whenever the</span>
+<span style="color: #8959a8;">        buffer becomes non-empty.  Setting low to zero causes</span>
+<span style="color: #8959a8;">        resume_writing() to be called only once the buffer is empty.</span>
+<span style="color: #8959a8;">        Use of zero for either limit is generally sub-optimal as it</span>
+<span style="color: #8959a8;">        reduces opportunities for doing I/O and computation</span>
+<span style="color: #8959a8;">        concurrently.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">get_write_buffer_size</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Return the current size of the write buffer."""</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">write</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, data<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Write some data bytes to the transport.</span>
+
+<span style="color: #8959a8;">        This does not block; it buffers the data and arranges for it</span>
+<span style="color: #8959a8;">        to be sent out asynchronously.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">writelines</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, list_of_data<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Write a list (or any iterable) of data bytes to the transport.</span>
+
+<span style="color: #8959a8;">        The default implementation concatenates the arguments and</span>
+<span style="color: #8959a8;">        calls write() on the result.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #eab700;">data</span> = b<span style="color: #3e999f;">''</span>.join<span style="color: #4d4d4c;">(</span>list_of_data<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">self</span>.write<span style="color: #4d4d4c;">(</span>data<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">write_eof</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Close the write end after flushing buffered data.</span>
+
+<span style="color: #8959a8;">        (This is like typing ^D into a UNIX program reading from stdin.)</span>
+
+<span style="color: #8959a8;">        Data may still be received.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">can_write_eof</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Return True if this transport supports write_eof(), False if not."""</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">abort</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""Close the transport immediately.</span>
+
+<span style="color: #8959a8;">        Buffered data will be lost.  No more data will be received.</span>
+<span style="color: #8959a8;">        The protocol's connection_lost() method will (eventually) be</span>
+<span style="color: #8959a8;">        called with None as its argument.</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">raise</span> <span style="color: #4271ae;">NotImplementedError</span>
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">Transport</span><span style="color: #4d4d4c;">(</span>ReadTransport, WriteTransport<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8959a8;">"""Interface representing a bidirectional transport.</span>
+
+<span style="color: #8959a8;">    There may be several implementations, but typically, the user does</span>
+<span style="color: #8959a8;">    not implement new transports; rather, the platform provides some</span>
+<span style="color: #8959a8;">    useful transports that are implemented using the platform's best</span>
+<span style="color: #8959a8;">    practices.</span>
+
+<span style="color: #8959a8;">    The user never instantiates a transport directly; they call a</span>
+<span style="color: #8959a8;">    utility function, passing it a protocol factory and other</span>
+<span style="color: #8959a8;">    information necessary to create the transport and protocol.  (E.g.</span>
+<span style="color: #8959a8;">    EventLoop.create_connection() or EventLoop.create_server().)</span>
+
+<span style="color: #8959a8;">    The utility function will asynchronously create a transport and a</span>
+<span style="color: #8959a8;">    protocol and hook them up by calling the protocol's</span>
+<span style="color: #8959a8;">    connection_made() method, passing it the transport.</span>
+
+<span style="color: #8959a8;">    The implementation here raises NotImplemented for every method</span>
+<span style="color: #8959a8;">    except writelines(), which calls write() in a loop.</span>
+<span style="color: #8959a8;">    """</span>
+
+</pre>
+</div>
+
+<p>
+asyncio的Transport类继承自"ReadTransport",和"WriteTransport"，在文档中有说是不需要自己直接实例化transport的，通过 <code>EventLoop.create_connection() or EventLoop.create_server().</code> 来传入protocol factory创建时，会异步创建一个transport和protocol, 并且将transport绑定到protocol的 <code>connection_made()</code> 方法。
+</p>
+
+<p>
+BaseTransport的 <code>get_extra_info</code> 方法可以返回 socket 等对象。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0f86a3b" class="outline-3">
+<h3 id="org0f86a3b"><span class="section-number-3">3.2</span> cl-async</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+cl-async在创建tcp-server时直接指定read-cb, connect-cb, event-cb等。
+</p>
+
+<p>
+cl-async tcp-server 相关代码如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">tcp-server</span> <span style="color: #3e999f;">(</span>bind-address port read-cb <span style="color: #4271ae;">&amp;rest</span> args<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"Open a TCP connection asynchronously. Optionally send data out once connected</span>
+<span style="color: #8959a8;">   via the :data keyword (can be a string or byte array)."</span>
+  <span style="color: #3e999f;">(</span><span style="color: #718c00;">let</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>event-cb-dep <span style="color: #4271ae;">(</span>car args<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span><span style="color: #718c00;">unless</span> <span style="color: #718c00;">(</span>or <span style="color: #4271ae;">(</span>keywordp event-cb-dep<span style="color: #4271ae;">)</span>
+                <span style="color: #4271ae;">(</span>null event-cb-dep<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+      <span style="color: #718c00;">(</span>push <span style="color: #8959a8;">:event-cb</span> args<span style="color: #718c00;">)</span>
+      <span style="color: #718c00;">(</span><span style="color: #c82829; font-weight: bold;">warn</span> <span style="color: #3e999f;">"Passing event-cb as the fourth argument to tcp-server is now deprecated. Please use the :event-cb keyword instead."</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span>apply 'tcp-server-new
+           bind-address port read-cb
+           args<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">tcp-server-new</span> <span style="color: #3e999f;">(</span>bind-address port read-cb <span style="color: #4271ae;">&amp;key</span> event-cb connect-cb backlog stream fd<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"Start a TCP listener on the current event loop. Returns a tcp-server class</span>
+<span style="color: #8959a8;">   which can be closed with close-tcp-server"</span>
+  <span style="color: #3e999f;">(</span>socket-server 'tcp-server
+                 <span style="color: #eab700;">(</span>list bind-address port<span style="color: #eab700;">)</span> read-cb
+                 <span style="color: #8959a8;">:event-cb</span> event-cb
+                 <span style="color: #8959a8;">:connect-cb</span> connect-cb
+                 <span style="color: #8959a8;">:backlog</span> backlog
+                 <span style="color: #8959a8;">:stream</span> stream
+                 <span style="color: #8959a8;">:fd</span> fd<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">socket-server</span> <span style="color: #3e999f;">(</span>server-class address read-cb <span style="color: #4271ae;">&amp;key</span> event-cb connect-cb backlog stream fd<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"Start a socket listener on the current event loop. Returns a socket-server instance</span>
+<span style="color: #8959a8;">   which can be closed with close-socket-server"</span>
+  <span style="color: #3e999f;">(</span><span style="color: #c82829; font-weight: bold;">check-event-loop-running</span><span style="color: #3e999f;">)</span>
+  <span style="color: #3e999f;">(</span><span style="color: #718c00;">let*</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>server-instance <span style="color: #4271ae;">(</span>make-instance server-class <span style="color: #8959a8;">:stream</span> stream<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>server-c <span style="color: #4271ae;">(</span>socket-server-c server-instance<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>r-bind <span style="color: #4271ae;">(</span>socket-server-bind server-instance address fd<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>backlog <span style="color: #4271ae;">(</span><span style="color: #718c00;">if</span> <span style="color: #4d4d4c;">(</span>or <span style="color: #3e999f;">(</span>null backlog<span style="color: #3e999f;">)</span>
+                          <span style="color: #3e999f;">(</span>&lt; backlog 0<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+                      128
+                      backlog<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>r-listen <span style="color: #4271ae;">(</span><span style="color: #718c00;">when</span> <span style="color: #4d4d4c;">(</span>zerop r-bind<span style="color: #4d4d4c;">)</span>
+                     <span style="color: #4d4d4c;">(</span>uv:uv-listen server-c backlog <span style="color: #3e999f;">(</span>cffi:callback socket-accept-cb<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">check that our listener instantiated properly</span>
+    <span style="color: #eab700;">(</span><span style="color: #718c00;">when</span> <span style="color: #718c00;">(</span>or <span style="color: #4271ae;">(</span>&lt; r-bind 0<span style="color: #4271ae;">)</span>
+              <span style="color: #4271ae;">(</span>&lt; r-listen 0<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+      <span style="color: #718c00;">(</span><span style="color: #718c00;">unwind-protect</span>
+           <span style="color: #4271ae;">(</span>event-handler <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>zerop r-bind<span style="color: #3e999f;">)</span> r-listen r-bind<span style="color: #4d4d4c;">)</span> event-cb <span style="color: #8959a8;">:throw</span> t <span style="color: #8959a8;">:streamish</span> server-instance<span style="color: #4271ae;">)</span>
+        <span style="color: #4271ae;">(</span>close-socket-server server-instance<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+      <span style="color: #718c00;">(</span><span style="color: #718c00;">return-from</span> socket-server<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">make sure the server is closed/freed on exit</span>
+    <span style="color: #eab700;">(</span>add-event-loop-exit-callback <span style="color: #718c00;">(</span><span style="color: #718c00;">lambda</span> <span style="color: #4271ae;">()</span>
+                                    <span style="color: #4271ae;">(</span>close-socket-server server-instance<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span>attach-data-to-pointer server-c server-instance<span style="color: #eab700;">)</span>
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">setup an accept error cb</span>
+    <span style="color: #eab700;">(</span>save-callbacks server-c <span style="color: #718c00;">(</span>list <span style="color: #8959a8;">:read-cb</span> read-cb <span style="color: #8959a8;">:event-cb</span> event-cb <span style="color: #8959a8;">:connect-cb</span> connect-cb<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">return the listener, which can be closed by the app if needed</span>
+    server-instance<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defclass</span> <span style="color: #4271ae;">tcp-server</span> <span style="color: #3e999f;">(</span>tcp-mixin socket-server<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">()</span><span style="color: #4d4d4c;">)</span>
+
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defclass</span> <span style="color: #4271ae;">socket-server</span> <span style="color: #3e999f;">()</span>
+  <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>c <span style="color: #8959a8;">:accessor</span> socket-server-c <span style="color: #8959a8;">:initarg</span> <span style="color: #8959a8;">:c</span> <span style="color: #8959a8;">:initform</span> <span style="color: #718c00;">(</span>cffi:null-pointer<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+   <span style="color: #eab700;">(</span>closed <span style="color: #8959a8;">:accessor</span> socket-server-closed <span style="color: #8959a8;">:initarg</span> <span style="color: #8959a8;">:closed</span> <span style="color: #8959a8;">:initform</span> nil<span style="color: #eab700;">)</span>
+   <span style="color: #eab700;">(</span>stream <span style="color: #8959a8;">:accessor</span> socket-server-stream <span style="color: #8959a8;">:initarg</span> <span style="color: #8959a8;">:stream</span> <span style="color: #8959a8;">:initform</span> nil<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+  <span style="color: #3e999f;">(</span><span style="color: #8959a8;">:documentation</span> <span style="color: #8959a8;">"Wraps around a connection listener."</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+</pre>
+</div>
+
+
+<p>
+cl-async的 <code>tcp-server</code> 方法调用 <code>tcp-server-new</code> 方法，然后调用 <code>socket-server</code> 方法创建一个 <code>tcp-server</code> 实例， <code>tcp-server</code> 类是继承自 <code>socket-server</code> .
+函数 <code>socker-server</code> 的处理callback的地方在 <code>(save-callbacks server-c (list :read-cb read-cb :event-cb event-cb :connect-cb connect-cb))</code>, 继续追踪下去不是看得太懂，而且涉及到C bindings, 留待以后考究(TODO)。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org810f3be" class="outline-2">
+<h2 id="org810f3be"><span class="section-number-2">4</span> 调用对比</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+这里参考Python和common lisp 的异步web server <a href="https://github.com/channelcat/sanic">sanic</a> 和  <a href="https://github.com/orthecreedence/wookie">wookie</a> 里创建 tcp server的代码
+</p>
+</div>
+
+<div id="outline-container-org73edbc1" class="outline-3">
+<h3 id="org73edbc1"><span class="section-number-3">4.1</span> Sanic</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+sanic 里通过自定义 <code>HttpProtocol</code> , 定义了一些callback, 比如 <code>data_received</code> 时，用 <code>httptools</code> 这个http parser来解析内容等，一些方法 <code>on_url</code>, <code>on_message_complete</code> 等是为 <code>httptools</code> 定义的parse callback.
+</p>
+
+<p>
+Sanic 通过调用asyncio的创建TCPserver代码如下
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">sanic/sanic/server.py</span>
+
+<span style="color: #718c00;">class</span> <span style="color: #4271ae;">HttpProtocol</span><span style="color: #4d4d4c;">(</span>asyncio.Protocol<span style="color: #4d4d4c;">)</span>:
+    <span style="color: #eab700;">__slots__</span> = <span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">'loop'</span>, <span style="color: #3e999f;">'transport'</span>, <span style="color: #3e999f;">'connections'</span>, <span style="color: #3e999f;">'signal'</span>,  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">event loop, connection</span>
+                 <span style="color: #3e999f;">'parser'</span>, <span style="color: #3e999f;">'request'</span>, <span style="color: #3e999f;">'url'</span>, <span style="color: #3e999f;">'headers'</span>,  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">request params</span>
+                 <span style="color: #3e999f;">'request_handler'</span>, <span style="color: #3e999f;">'request_timeout'</span>, <span style="color: #3e999f;">'request_max_size'</span>,  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">request config</span>
+                 <span style="color: #3e999f;">'_total_request_size'</span>, <span style="color: #3e999f;">'_timeout_handler'</span><span style="color: #4d4d4c;">)</span>  <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">connection management</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">__init__</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, *, loop, request_handler, signal=Signal<span style="color: #3e999f;">()</span>, connections=<span style="color: #3e999f;">{}</span>, request_timeout=60,
+                 request_max_size=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.loop = loop
+        <span style="color: #718c00;">self</span>.transport = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.request = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.parser = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.url = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.headers = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.signal = signal
+        <span style="color: #718c00;">self</span>.connections = connections
+        <span style="color: #718c00;">self</span>.request_handler = request_handler
+        <span style="color: #718c00;">self</span>.request_timeout = request_timeout
+        <span style="color: #718c00;">self</span>.request_max_size = request_max_size
+        <span style="color: #718c00;">self</span>._total_request_size = 0
+        <span style="color: #718c00;">self</span>._timeout_handler = <span style="color: #4271ae;">None</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">-------------------------------------------- #</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Connection</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">-------------------------------------------- #</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">connection_made</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, transport<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.connections<span style="color: #4d4d4c;">[</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">]</span> = <span style="color: #4271ae;">True</span>
+        <span style="color: #718c00;">self</span>._timeout_handler = <span style="color: #718c00;">self</span>.loop.call_later<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>.request_timeout, <span style="color: #718c00;">self</span>.connection_timeout<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">self</span>.transport = transport
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">connection_lost</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, exc<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">del</span> <span style="color: #718c00;">self</span>.connections<span style="color: #4d4d4c;">[</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">]</span>
+        <span style="color: #718c00;">self</span>._timeout_handler.cancel<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">self</span>.cleanup<span style="color: #4d4d4c;">()</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">connection_timeout</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.bail_out<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Request timed out, connection closed"</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">-------------------------------------------- #</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Parsing</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">-------------------------------------------- #</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">data_received</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, data<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Check for the request itself getting too large and exceeding memory limits</span>
+        <span style="color: #718c00;">self</span>._total_request_size += <span style="color: #8959a8;">len</span><span style="color: #4d4d4c;">(</span>data<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">self</span>._total_request_size &gt; <span style="color: #718c00;">self</span>.request_max_size:
+            <span style="color: #718c00;">return</span> <span style="color: #718c00;">self</span>.bail_out<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Request too large ({}), connection closed"</span>.<span style="color: #8959a8;">format</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">self</span>._total_request_size<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Create parser if this is the first time we're receiving data</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">self</span>.parser <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>:
+            <span style="color: #718c00;">assert</span> <span style="color: #718c00;">self</span>.request <span style="color: #718c00;">is</span> <span style="color: #4271ae;">None</span>
+            <span style="color: #718c00;">self</span>.headers = <span style="color: #4d4d4c;">[]</span>
+            <span style="color: #718c00;">self</span>.parser = httptools.HttpRequestParser<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Parse request chunk or close connection</span>
+        <span style="color: #718c00;">try</span>:
+            <span style="color: #718c00;">self</span>.parser.feed_data<span style="color: #4d4d4c;">(</span>data<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">except</span> httptools.parser.errors.HttpParserError <span style="color: #718c00;">as</span> e:
+            <span style="color: #718c00;">self</span>.bail_out<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Invalid request data, connection closed ({})"</span>.<span style="color: #8959a8;">format</span><span style="color: #3e999f;">(</span>e<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">on_url</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, url<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.url = url
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">on_header</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, name, value<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">if</span> name == b<span style="color: #3e999f;">'Content-Length'</span> <span style="color: #718c00;">and</span> <span style="color: #8959a8;">int</span><span style="color: #4d4d4c;">(</span>value<span style="color: #4d4d4c;">)</span> &gt; <span style="color: #718c00;">self</span>.request_max_size:
+            <span style="color: #718c00;">return</span> <span style="color: #718c00;">self</span>.bail_out<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Request body too large ({}), connection closed"</span>.<span style="color: #8959a8;">format</span><span style="color: #3e999f;">(</span>value<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #718c00;">self</span>.headers.append<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">(</span>name.decode<span style="color: #eab700;">()</span>, value.decode<span style="color: #eab700;">(</span><span style="color: #3e999f;">'utf-8'</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">on_headers_complete</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.request = Request<span style="color: #4d4d4c;">(</span>
+            url_bytes=<span style="color: #718c00;">self</span>.url,
+            headers=<span style="color: #8959a8;">dict</span><span style="color: #3e999f;">(</span><span style="color: #718c00;">self</span>.headers<span style="color: #3e999f;">)</span>,
+            version=<span style="color: #718c00;">self</span>.parser.get_http_version<span style="color: #3e999f;">()</span>,
+            method=<span style="color: #718c00;">self</span>.parser.get_method<span style="color: #3e999f;">()</span>.decode<span style="color: #3e999f;">()</span>
+        <span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">on_body</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, body<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.request.body = body
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">on_message_complete</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.loop.create_task<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>.request_handler<span style="color: #3e999f;">(</span><span style="color: #718c00;">self</span>.request, <span style="color: #718c00;">self</span>.write_response<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">-------------------------------------------- #</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Responding</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">-------------------------------------------- #</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">write_response</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, response<span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">try</span>:
+            <span style="color: #eab700;">keep_alive</span> = <span style="color: #718c00;">self</span>.parser.should_keep_alive<span style="color: #4d4d4c;">()</span> <span style="color: #718c00;">and</span> <span style="color: #718c00;">not</span> <span style="color: #718c00;">self</span>.signal.stopped
+            <span style="color: #718c00;">self</span>.transport.write<span style="color: #4d4d4c;">(</span>response.output<span style="color: #3e999f;">(</span><span style="color: #718c00;">self</span>.request.version, keep_alive, <span style="color: #718c00;">self</span>.request_timeout<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+            <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> keep_alive:
+                <span style="color: #718c00;">self</span>.transport.close<span style="color: #4d4d4c;">()</span>
+            <span style="color: #718c00;">else</span>:
+                <span style="color: #718c00;">self</span>.cleanup<span style="color: #4d4d4c;">()</span>
+        <span style="color: #718c00;">except</span> <span style="color: #4271ae;">Exception</span> <span style="color: #718c00;">as</span> e:
+            <span style="color: #718c00;">self</span>.bail_out<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Writing request failed, connection closed {}"</span>.<span style="color: #8959a8;">format</span><span style="color: #3e999f;">(</span>e<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">bail_out</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span>, message<span style="color: #4d4d4c;">)</span>:
+        log.error<span style="color: #4d4d4c;">(</span>message<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">self</span>.transport.close<span style="color: #4d4d4c;">()</span>
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">cleanup</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #718c00;">self</span>.parser = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.request = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.url = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>.headers = <span style="color: #4271ae;">None</span>
+        <span style="color: #718c00;">self</span>._total_request_size = 0
+
+    <span style="color: #718c00;">def</span> <span style="color: #f5871f;">close_if_idle</span><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">self</span><span style="color: #4d4d4c;">)</span>:
+        <span style="color: #8959a8;">"""</span>
+<span style="color: #8959a8;">        Close the connection if a request is not being sent or received</span>
+<span style="color: #8959a8;">        :return: boolean - True if closed, false if staying open</span>
+<span style="color: #8959a8;">        """</span>
+        <span style="color: #718c00;">if</span> <span style="color: #718c00;">not</span> <span style="color: #718c00;">self</span>.parser:
+            <span style="color: #718c00;">self</span>.transport.close<span style="color: #4d4d4c;">()</span>
+            <span style="color: #718c00;">return</span> <span style="color: #4271ae;">True</span>
+        <span style="color: #718c00;">return</span> <span style="color: #4271ae;">False</span>
+
+
+<span style="color: #718c00;">def</span> <span style="color: #f5871f;">serve</span><span style="color: #4d4d4c;">(</span>host, port, request_handler, after_start=<span style="color: #4271ae;">None</span>, before_stop=<span style="color: #4271ae;">None</span>, debug=<span style="color: #4271ae;">False</span>, request_timeout=60,
+          request_max_size=<span style="color: #4271ae;">None</span><span style="color: #4d4d4c;">)</span>:
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Create Event Loop</span>
+    <span style="color: #eab700;">loop</span> = async_loop.new_event_loop<span style="color: #4d4d4c;">()</span>
+    asyncio.set_event_loop<span style="color: #4d4d4c;">(</span>loop<span style="color: #4d4d4c;">)</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">I don't think we take advantage of this</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">And it slows everything waaayyy down</span>
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">loop.set_debug(debug)</span>
+
+    <span style="color: #eab700;">connections</span> = <span style="color: #4d4d4c;">{}</span>
+    <span style="color: #eab700;">signal</span> = Signal<span style="color: #4d4d4c;">()</span>
+    <span style="color: #eab700;">server_coroutine</span> = loop.create_server<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">lambda</span>: HttpProtocol<span style="color: #3e999f;">(</span>
+        loop=loop,
+        connections=connections,
+        signal=signal,
+        request_handler=request_handler,
+        request_timeout=request_timeout,
+        request_max_size=request_max_size,
+    <span style="color: #3e999f;">)</span>, host, port<span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">try</span>:
+        <span style="color: #eab700;">http_server</span> = loop.run_until_complete<span style="color: #4d4d4c;">(</span>server_coroutine<span style="color: #4d4d4c;">)</span>
+    <span style="color: #718c00;">except</span> <span style="color: #4271ae;">OSError</span> <span style="color: #718c00;">as</span> e:
+        log.error<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Unable to start server: {}"</span>.<span style="color: #8959a8;">format</span><span style="color: #3e999f;">(</span>e<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">return</span>
+    <span style="color: #718c00;">except</span>:
+        log.exception<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Unable to start server"</span><span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">return</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Run the on_start function if provided</span>
+    <span style="color: #718c00;">if</span> after_start:
+        <span style="color: #eab700;">result</span> = after_start<span style="color: #4d4d4c;">(</span>loop<span style="color: #4d4d4c;">)</span>
+        <span style="color: #718c00;">if</span> isawaitable<span style="color: #4d4d4c;">(</span>result<span style="color: #4d4d4c;">)</span>:
+            loop.run_until_complete<span style="color: #4d4d4c;">(</span>result<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Register signals for graceful termination</span>
+    <span style="color: #718c00;">for</span> _signal <span style="color: #718c00;">in</span> <span style="color: #4d4d4c;">(</span>SIGINT, SIGTERM<span style="color: #4d4d4c;">)</span>:
+        loop.add_signal_handler<span style="color: #4d4d4c;">(</span>_signal, loop.stop<span style="color: #4d4d4c;">)</span>
+
+    <span style="color: #718c00;">try</span>:
+        loop.run_forever<span style="color: #4d4d4c;">()</span>
+    <span style="color: #718c00;">finally</span>:
+        log.info<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Stop requested, draining connections..."</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Run the on_stop function if provided</span>
+        <span style="color: #718c00;">if</span> before_stop:
+            <span style="color: #eab700;">result</span> = before_stop<span style="color: #4d4d4c;">(</span>loop<span style="color: #4d4d4c;">)</span>
+            <span style="color: #718c00;">if</span> isawaitable<span style="color: #4d4d4c;">(</span>result<span style="color: #4d4d4c;">)</span>:
+                loop.run_until_complete<span style="color: #4d4d4c;">(</span>result<span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Wait for event loop to finish and all connections to drain</span>
+        http_server.close<span style="color: #4d4d4c;">()</span>
+        loop.run_until_complete<span style="color: #4d4d4c;">(</span>http_server.wait_closed<span style="color: #3e999f;">()</span><span style="color: #4d4d4c;">)</span>
+
+        <span style="color: #8e908c; font-style: italic;"># </span><span style="color: #8e908c; font-style: italic;">Complete all tasks on the loop</span>
+        <span style="color: #eab700;">signal.stopped</span> = <span style="color: #4271ae;">True</span>
+        <span style="color: #718c00;">for</span> connection <span style="color: #718c00;">in</span> connections.keys<span style="color: #4d4d4c;">()</span>:
+            connection.close_if_idle<span style="color: #4d4d4c;">()</span>
+
+        <span style="color: #718c00;">while</span> connections:
+            loop.run_until_complete<span style="color: #4d4d4c;">(</span>asyncio.sleep<span style="color: #3e999f;">(</span>0.1<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+        loop.close<span style="color: #4d4d4c;">()</span>
+        log.info<span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">"Server Stopped"</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org260d7c1" class="outline-3">
+<h3 id="org260d7c1"><span class="section-number-3">4.2</span> Wookie</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+wookie 里是自己定义了 <code>read-data handle-connection, listener-event-handler</code> 等方法，
+read-data 方法 对应于 asyncio 里的 <code>data_received</code> 方法，不同的是它直接接受socket和 data作为参数
+handle-connection 回调方法里，定义了header-callback，body-callback，finish-callback 回调给 httpparser "http-parse", 用来定制解析过程.
+</p>
+
+<p>
+wookie 通过调用cl-async的创建TCPserver代码如下
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #4d4d4c;">(</span><span style="color: #718c00;">in-package</span> <span style="color: #8959a8;">:wookie</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defclass</span> <span style="color: #4271ae;">listener</span> <span style="color: #3e999f;">()</span>
+  <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>bind <span style="color: #8959a8;">:accessor</span> listener-bind <span style="color: #8959a8;">:initarg</span> <span style="color: #8959a8;">:bind</span> <span style="color: #8959a8;">:initform</span> nil<span style="color: #eab700;">)</span>
+   <span style="color: #eab700;">(</span>port <span style="color: #8959a8;">:accessor</span> listener-port <span style="color: #8959a8;">:initarg</span> <span style="color: #8959a8;">:port</span> <span style="color: #8959a8;">:initform</span> 80<span style="color: #eab700;">)</span>
+   <span style="color: #eab700;">(</span>backlog <span style="color: #8959a8;">:accessor</span> listener-backlog <span style="color: #8959a8;">:initarg</span> <span style="color: #8959a8;">:backlog</span> <span style="color: #8959a8;">:initform</span> -1<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+  <span style="color: #3e999f;">(</span><span style="color: #8959a8;">:documentation</span> <span style="color: #8959a8;">"Describes an HTTP listener."</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">main-event-handler</span> <span style="color: #3e999f;">(</span>event socket<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"Handle socket events/conditions that crop up during processing."</span>
+  <span style="color: #3e999f;">(</span><span style="color: #718c00;">let*</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>socket-data <span style="color: #4271ae;">(</span>as:socket-data socket<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>request <span style="color: #4271ae;">(</span>getf socket-data <span style="color: #8959a8;">:request</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>response <span style="color: #4271ae;">(</span>getf socket-data <span style="color: #8959a8;">:response</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>handled nil<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">dispatch global errors</span>
+    <span style="color: #eab700;">(</span>setf handled <span style="color: #718c00;">(</span>dispatch-event event
+                                  *wookie-error-handlers*
+                                  *wookie-error-handler-class-precedence*
+                                  event socket request response<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">dispatch request errors</span>
+    <span style="color: #eab700;">(</span><span style="color: #718c00;">when</span> <span style="color: #718c00;">(</span>and request <span style="color: #4271ae;">(</span>request-error-handlers request<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+      <span style="color: #718c00;">(</span>setf handled <span style="color: #4271ae;">(</span>dispatch-event event
+                                    <span style="color: #4d4d4c;">(</span>request-error-handlers request<span style="color: #4d4d4c;">)</span>
+                                    <span style="color: #4d4d4c;">(</span>request-error-precedence request<span style="color: #4d4d4c;">)</span>
+                                    event socket request response<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+
+    <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">if the event wasn't handled, try some default handling here</span>
+    <span style="color: #eab700;">(</span><span style="color: #718c00;">unless</span> handled
+      <span style="color: #718c00;">(</span><span style="color: #718c00;">handler-case</span> <span style="color: #4271ae;">(</span><span style="color: #c82829; font-weight: bold;">error</span> event<span style="color: #4271ae;">)</span>
+        <span style="color: #4271ae;">(</span>route-not-found <span style="color: #4d4d4c;">()</span>
+          <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">when</span> response
+            <span style="color: #3e999f;">(</span>send-response response <span style="color: #8959a8;">:status</span> 404 <span style="color: #8959a8;">:body</span> <span style="color: #3e999f;">"Route for that resource not found =[."</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+        <span style="color: #4271ae;">(</span>wookie-error <span style="color: #4d4d4c;">()</span>
+          <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">when</span> response
+            <span style="color: #3e999f;">(</span>send-response response
+                           <span style="color: #8959a8;">:status</span> 500
+                           <span style="color: #8959a8;">:body</span> <span style="color: #eab700;">(</span>format nil <span style="color: #3e999f;">"There was an error processing your request: ~a"</span> event<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+        <span style="color: #4271ae;">(</span>t <span style="color: #4d4d4c;">()</span>
+          <span style="color: #4d4d4c;">(</span>format t <span style="color: #3e999f;">"(ev) ~a~%"</span> event<span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">listener-event-handler</span> <span style="color: #3e999f;">(</span>ev<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"A wrapper around main-event-handler, useful for listeners to tie into."</span>
+  <span style="color: #3e999f;">(</span><span style="color: #718c00;">let*</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>event-type <span style="color: #4271ae;">(</span>type-of ev<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>sock <span style="color: #4271ae;">(</span><span style="color: #718c00;">cond</span> <span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">(</span>subtypep event-type 'response-error<span style="color: #3e999f;">)</span>
+                      <span style="color: #3e999f;">(</span>request-socket <span style="color: #eab700;">(</span>response-request <span style="color: #718c00;">(</span>response-error-response ev<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+                     <span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">(</span>subtypep event-type 'wookie-error<span style="color: #3e999f;">)</span>
+                      <span style="color: #3e999f;">(</span>wookie-error-socket ev<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+                     <span style="color: #4d4d4c;">(</span><span style="color: #3e999f;">(</span>subtypep event-type 'as:tcp-info<span style="color: #3e999f;">)</span>
+                      <span style="color: #3e999f;">(</span>as:tcp-socket ev<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span>funcall 'main-event-handler ev sock<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">handle-connection</span> <span style="color: #3e999f;">(</span>sock<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"Handles a new connection. Creates a bunch of closures that are passed into an</span>
+<span style="color: #8959a8;">   http-parse parser which decide amongst themselves, during different points in</span>
+<span style="color: #8959a8;">   the parsing, when to dispatch to the found router, when to send chunked</span>
+<span style="color: #8959a8;">   content to the route, etc."</span>
+  <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">TODO pass client address info into :connect hook</span>
+  <span style="color: #3e999f;">(</span>run-hooks <span style="color: #8959a8;">:connect</span><span style="color: #3e999f;">)</span>
+  <span style="color: #3e999f;">(</span><span style="color: #718c00;">let*</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>http <span style="color: #4271ae;">(</span>make-instance 'http-parse:http-request<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>route-path nil<span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>route nil<span style="color: #718c00;">)</span>  <span style="color: #8e908c; font-style: italic;">; holds the current route, filled in below once we get headers</span>
+         <span style="color: #718c00;">(</span>route-dispatched nil<span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>request <span style="color: #4271ae;">(</span>make-instance 'request <span style="color: #8959a8;">:socket</span> sock <span style="color: #8959a8;">:http</span> http<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+         <span style="color: #718c00;">(</span>response <span style="color: #4271ae;">(</span>make-instance 'response <span style="color: #8959a8;">:request</span> request<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span>setf <span style="color: #718c00;">(</span>as:socket-data sock<span style="color: #718c00;">)</span> <span style="color: #718c00;">(</span>list <span style="color: #8959a8;">:request</span> request <span style="color: #8959a8;">:response</span> response<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span><span style="color: #718c00;">labels</span> <span style="color: #718c00;">(</span><span style="color: #4271ae;">(</span>dispatch-route <span style="color: #4d4d4c;">()</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">dispatch the current route, but only if we haven't already done so</span>
+               <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">when</span> route-dispatched
+                 <span style="color: #3e999f;">(</span><span style="color: #718c00;">return-from</span> dispatch-route<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+               <span style="color: #4d4d4c;">(</span>setf route-dispatched t<span style="color: #4d4d4c;">)</span>
+               <span style="color: #4d4d4c;">(</span>run-hooks <span style="color: #8959a8;">:pre-route</span> request response<span style="color: #4d4d4c;">)</span>
+               <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">if</span> route
+                   <span style="color: #3e999f;">(</span><span style="color: #718c00;">let</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>route-fn <span style="color: #4d4d4c;">(</span>getf route <span style="color: #8959a8;">:curried-route</span><span style="color: #4d4d4c;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+                     <span style="color: #eab700;">(</span>funcall route-fn request response<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+                   <span style="color: #3e999f;">(</span><span style="color: #718c00;">progn</span>
+                     <span style="color: #eab700;">(</span>funcall 'main-event-handler <span style="color: #718c00;">(</span>make-instance 'route-not-found <span style="color: #8959a8;">:resource</span> route-path <span style="color: #8959a8;">:socket</span> sock<span style="color: #718c00;">)</span>
+                                                  sock<span style="color: #eab700;">)</span>
+                     <span style="color: #eab700;">(</span><span style="color: #718c00;">return-from</span> dispatch-route<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+               <span style="color: #4d4d4c;">(</span>run-hooks <span style="color: #8959a8;">:post-route</span> request response<span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+             <span style="color: #4271ae;">(</span>header-callback <span style="color: #4d4d4c;">(</span>headers<span style="color: #4d4d4c;">)</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">if we got the headers, it means we can find the route we're</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">destined to use. if the route accepts chunks and the body is</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">chunked, run the router now so it can set up chunk listening.</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">otherwise, save the route for later and let the rest of the</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">request come in.</span>
+               <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">let*</span> <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>method <span style="color: #718c00;">(</span>http-parse:http-method http<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+                      <span style="color: #eab700;">(</span>resource <span style="color: #718c00;">(</span>http-parse:http-resource http<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+                      <span style="color: #eab700;">(</span>parsed-uri <span style="color: #718c00;">(</span>puri:parse-uri resource<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+                      <span style="color: #eab700;">(</span>path <span style="color: #718c00;">(</span>puri:uri-path parsed-uri<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+                      <span style="color: #eab700;">(</span>found-route <span style="color: #718c00;">(</span>find-route method path<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+                 <span style="color: #3e999f;">(</span>setf route-path path<span style="color: #3e999f;">)</span>
+                 <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">save the parsed uri for plugins/later code</span>
+                 <span style="color: #3e999f;">(</span>setf <span style="color: #eab700;">(</span>request-uri request<span style="color: #eab700;">)</span> parsed-uri
+                       <span style="color: #eab700;">(</span>request-headers request<span style="color: #eab700;">)</span> headers<span style="color: #3e999f;">)</span>
+                 <span style="color: #3e999f;">(</span>run-hooks <span style="color: #8959a8;">:parsed-headers</span> request<span style="color: #3e999f;">)</span>
+                 <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">set up some tracking/state values now that we have headers</span>
+                 <span style="color: #3e999f;">(</span>setf route found-route
+                       <span style="color: #eab700;">(</span>request-method request<span style="color: #eab700;">)</span> method
+                       <span style="color: #eab700;">(</span>request-resource request<span style="color: #eab700;">)</span> resource<span style="color: #3e999f;">)</span>
+                 <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">handle "Expect: 100-continue" properly</span>
+                 <span style="color: #3e999f;">(</span><span style="color: #718c00;">when</span> <span style="color: #eab700;">(</span>string= <span style="color: #718c00;">(</span>getf headers <span style="color: #8959a8;">:expect</span><span style="color: #718c00;">)</span> <span style="color: #3e999f;">"100-continue"</span><span style="color: #eab700;">)</span>
+                   <span style="color: #eab700;">(</span><span style="color: #718c00;">if</span> found-route
+                       <span style="color: #718c00;">(</span>as:write-socket-data sock <span style="color: #4d4d4c;">(</span>format nil <span style="color: #3e999f;">"HTTP/1.1 100 Continue~c~c~c~c"</span>
+                                                          #\return #\newline #\return #\newline<span style="color: #4d4d4c;">)</span><span style="color: #718c00;">)</span>
+
+                       <span style="color: #718c00;">(</span><span style="color: #718c00;">progn</span>
+                         <span style="color: #4d4d4c;">(</span>funcall 'main-event-handler <span style="color: #3e999f;">(</span>make-instance 'route-not-found <span style="color: #8959a8;">:resource</span> route-path <span style="color: #8959a8;">:socket</span> sock<span style="color: #3e999f;">)</span>
+                                                      sock<span style="color: #4d4d4c;">)</span>
+                         <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">return-from</span> header-callback<span style="color: #4d4d4c;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+                 <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">if we found a route, the route allows chunking, and we have</span>
+                 <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">chunked data, call the route now so it can set up its chunk</span>
+                 <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">handler before we start streaming the body chunks to it</span>
+                 <span style="color: #3e999f;">(</span><span style="color: #718c00;">when</span> <span style="color: #eab700;">(</span>and found-route
+                            <span style="color: #718c00;">(</span>string= <span style="color: #4d4d4c;">(</span>getf headers <span style="color: #8959a8;">:transfer-encoding</span><span style="color: #4d4d4c;">)</span> <span style="color: #3e999f;">"chunked"</span><span style="color: #718c00;">)</span>
+                            <span style="color: #718c00;">(</span>getf found-route <span style="color: #8959a8;">:allow-chunking</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+                   <span style="color: #eab700;">(</span>dispatch-route<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+             <span style="color: #4271ae;">(</span>body-callback <span style="color: #4d4d4c;">(</span>chunk finishedp<span style="color: #4d4d4c;">)</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">forward the chunk to the callback provided in the chunk-enabled</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">router</span>
+               <span style="color: #4d4d4c;">(</span>run-hooks <span style="color: #8959a8;">:body-chunk</span> request chunk finishedp<span style="color: #4d4d4c;">)</span>
+               <span style="color: #4d4d4c;">(</span><span style="color: #718c00;">let</span> <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>request-body-cb <span style="color: #718c00;">(</span>request-body-callback request<span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+                 <span style="color: #3e999f;">(</span><span style="color: #718c00;">when</span> request-body-cb
+                   <span style="color: #eab700;">(</span>funcall request-body-cb chunk finishedp<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+             <span style="color: #4271ae;">(</span>finish-callback <span style="color: #4d4d4c;">()</span>
+               <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">make sure we always dispatch at the end.</span>
+               <span style="color: #4d4d4c;">(</span>run-hooks <span style="color: #8959a8;">:body-complete</span> request<span style="color: #4d4d4c;">)</span>
+               <span style="color: #4d4d4c;">(</span>dispatch-route<span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span>
+      <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">make an HTTP parser. will be attached to the socket and will be</span>
+      <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">responsible for running all of the above callbacks directly as data</span>
+      <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">filters in from the read callback.</span>
+      <span style="color: #718c00;">(</span><span style="color: #718c00;">let</span> <span style="color: #4271ae;">(</span><span style="color: #4d4d4c;">(</span>parser <span style="color: #3e999f;">(</span>http-parse:make-parser
+                      http
+                      <span style="color: #8959a8;">:header-callback</span> #'header-callback
+                      <span style="color: #8959a8;">:body-callback</span> #'body-callback
+                      <span style="color: #8959a8;">:finish-callback</span> #'finish-callback
+                      <span style="color: #8959a8;">:store-body</span> t<span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span><span style="color: #4271ae;">)</span>
+        <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">attach parser to socket-data so we can deref it in the read callback</span>
+        <span style="color: #4271ae;">(</span>setf <span style="color: #4d4d4c;">(</span>getf <span style="color: #3e999f;">(</span>as:socket-data sock<span style="color: #3e999f;">)</span> <span style="color: #8959a8;">:parser</span><span style="color: #4d4d4c;">)</span> parser<span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defun</span> <span style="color: #f5871f;">read-data</span> <span style="color: #3e999f;">(</span>sock data<span style="color: #3e999f;">)</span>
+  <span style="color: #8959a8;">"A simple read-cb handler that passed data to the HTTP parser attached to the</span>
+<span style="color: #8959a8;">   socket the data is coming in on. The parser runs all necessary callbacks</span>
+<span style="color: #8959a8;">   directly, so this function just blindly feeds the data in."</span>
+  <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">grab the parser stored in the socket and pipe the data into it</span>
+  <span style="color: #3e999f;">(</span><span style="color: #718c00;">let</span> <span style="color: #eab700;">(</span><span style="color: #718c00;">(</span>parser <span style="color: #4271ae;">(</span>getf <span style="color: #4d4d4c;">(</span>as:socket-data sock<span style="color: #4d4d4c;">)</span> <span style="color: #8959a8;">:parser</span><span style="color: #4271ae;">)</span><span style="color: #718c00;">)</span><span style="color: #eab700;">)</span>
+    <span style="color: #eab700;">(</span>funcall parser data<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defgeneric</span> <span style="color: #f5871f;">start-server</span> <span style="color: #3e999f;">(</span>listener<span style="color: #3e999f;">)</span>
+  <span style="color: #3e999f;">(</span><span style="color: #8959a8;">:documentation</span>
+    <span style="color: #8959a8;">"Start Wookie with the given listener."</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+<span style="color: #4d4d4c;">(</span><span style="color: #718c00;">defmethod</span> <span style="color: #f5871f;">start-server</span> <span style="color: #3e999f;">(</span><span style="color: #eab700;">(</span>listener listener<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span>
+  <span style="color: #8e908c; font-style: italic;">;; </span><span style="color: #8e908c; font-style: italic;">start the async server</span>
+  <span style="color: #3e999f;">(</span>as:tcp-server <span style="color: #eab700;">(</span>listener-bind listener<span style="color: #eab700;">)</span> <span style="color: #eab700;">(</span>listener-port listener<span style="color: #eab700;">)</span>
+    'read-data
+    'listener-event-handler
+    <span style="color: #8959a8;">:connect-cb</span> 'handle-connection
+    <span style="color: #8959a8;">:backlog</span> <span style="color: #eab700;">(</span>listener-backlog listener<span style="color: #eab700;">)</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+
+</pre>
+</div>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Using Odoo(about Model)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2015-10-09</p>
+</div>
+<div id="content">
+<h1 class="title">Using Odoo(about Model)</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5ac0638">1. Summary</a></li>
+<li><a href="#orgddfc264">2. Config</a></li>
+<li><a href="#org20b5f00">3. Module</a>
+<ul>
+<li><a href="#org8920747">3.1. Model</a>
+<ul>
+<li><a href="#orgdbe8177">3.1.1. Methods: create, search, read, browse, write, unlink</a></li>
+<li><a href="#org0fd7ea9">3.1.2. Methods: default<sub>get</sub>, default<sub>set</sub></a></li>
+<li><a href="#org6f663db">3.1.3. Error Info for User</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org5ac0638" class="outline-2">
+<h2 id="org5ac0638"><span class="section-number-2">1</span> Summary</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This article is about tips, skills, mistakes I have met in the past
+working time. Odoo is a suite of web based open source business apps.(I
+copy from the README.md file). It is M-V-C strcture. The old name is
+<i>Openerp</i>. I use the old API, haven't transer to new API after Odoo 8.0
+, developing on pyharm, which is a excellent IDE for python development.
+This is first article, about "Model".
+</p>
+
+<p>
+<b>Enviroment</b> : odoo 8.0, python 2.7.6, postgresql 9.3.9, ubuntu 14.04
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgddfc264" class="outline-2">
+<h2 id="orgddfc264"><span class="section-number-2">2</span> Config</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+I download odoo at <a href="https://github.com/odoo/odoo">odoo from github</a>,
+let's call it directory <code>odoo-8.0</code>. Because I use ubuntu, you can find
+config file in <code>odoo-8.0/debain/openerp-server.conf</code>, so I copy this
+file to the root dir <code>odoo8.0/</code>, to configure it on my needs.Such as
+follows:
+</p>
+
+<pre class="example">
+db_host = localhost
+db_port = 5432
+db_user = YourUserName
+db_password = YourPassword
+addons_path = addons,YourAddonsPathIfExist
+</pre>
+
+<p>
+Each time I need to to run server, add script parameters as follows:
+</p>
+
+<pre class="example">
+Your/Path/To/odoo-8.0/odoo.py --config=Your/Path/To/odoo-8.0/openerp-server.conf
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org20b5f00" class="outline-2">
+<h2 id="org20b5f00"><span class="section-number-2">3</span> Module</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+ododd use Module to extend its funtion. when you need to ceate a module,
+you can create a folder in your addon directory, let's call it
+<code>coolmodule</code>. It needs two initial files : <code>__init__.py</code> and
+<code>__openerp__.py</code>. As the same for python pakages, you need to include
+files or direcotories in <code>__init__.py</code>. The <code>__openerp__.py</code> is use to
+config the module, as follows:
+</p>
+
+<pre class="example">
+:::python
+
+{
+    'name': 'YourNameOfModule',
+    'version': '0.0.1',
+    'category': 'YourCategory',
+    'sequence': '19',
+    'description': """YourDescription""",
+    'summary': u'YourSummary',
+
+    'author': 'YourName',
+    'website': 'YourWebsite',
+    'depends': ['base','OtherDependsModules'],
+    'data': [
+            'coolmodule.xml',
+            'security/ir.model.access.csv',
+            'security/security.xml',
+            'wizard/wizard_coolmodule.xml'
+    ],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+}
+</pre>
+
+<p>
+Notice: above
+<code>'data: ['coolmodule.xml','security/ir.model.access.csv','security/security.xml','wizard/wizard_coolmodule.xml']</code>
+is some view and security files that you want to include in this module.
+</p>
+</div>
+
+<div id="outline-container-org8920747" class="outline-3">
+<h3 id="org8920747"><span class="section-number-3">3.1</span> Model</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Generally, the model file can be named as <code>coolmodule.py</code> (depends on
+you), the view file can be named as <code>coolmodule.xml</code>. In
+<code>coolmodule.py</code>, you can define model in this way(old api):
+</p>
+
+<pre class="example">
+:::python
+
+from openerp.osv import fields, osv
+
+class cool_customer(osv.osv):
+    _name = "cool.customer"
+    _description = "YourDescriptions"
+
+    def _default_title_id(self, cr, uid, context=None):
+        #some code
+        return title_id
+
+    _columns = {
+        'name' : fields.char('Name',required=True),
+        'datetime': fields.datetime('DateTime'),
+        'title': fields.many2one('cool.customer.title', 'Title'),
+        'bank_ids': fields.one2many('cool.customer.bank', 'customer_id', 'Banks'),
+        'comment': fields.text('Notes'),
+        'active': fields.boolean('Active'),
+        'type': fields.selection([('default', 'Default'), ('invoice', 'Invoice'),('delivery', 'Shipping'), ('contact', 'Contact'),('other', 'Other')], 'Address Type',help="SomeHelpText."),
+        'category_id': fields.many2many('cool.costomer.category','coo_customer_category_rel', 'costomer_id', 'category_id', string='Tags'),
+        #'display_name': fields.function(_display_name, type='char', string='Name', store=_display_name_store_triggers, select=True)
+    }
+    _defaults = {
+        'datetime':fields.datetime.now,
+        'active': True,
+        'type': 'contact',
+        'title': _default_title_id
+    }
+
+
+class cool_customer_title(osv.osv):
+    _name = 'cool.custmoer.title'
+    _order = 'name'
+    _columns = {
+        'name': fields.char('Title', required=True, translate=True),
+        'shortcut': fields.char('Abbreviation', translate=True)
+    }
+
+
+class cool_customer_bank(osv.osv):
+    _name = 'cool.customer.bank'
+    _columns = {
+        'name': fields.char('Title', required=True, translate=True),
+        'code': fields.char('Code', size=64, required=True),
+        'customer_id': fields.many2one('cool.customer', 'Account Owner', ondelete='cascade', select=True)
+    }
+
+
+class cool_customer_category(osv.osv):
+    _name = 'cool.customer.category'
+    _columns = {
+    'name': fields.char('Category Name', required=True, translate=True),
+    'customer_ids':fields.many2many('cool.costomer','coo_customer_category_rel', 'category_id', 'customer_id', string='Customers'),
+    }
+
+
+</pre>
+
+<ul class="org-ul">
+<li><code>_name = 'cool.customer'</code>  This defines the name of this model, and
+the name(cool\<sub>customer</sub>) of table in database.</li>
+
+<li><code>_columns = {...}</code> This defines the columns of the table
+<code>cool_customer</code>, different types as above. Notes the funtion field is
+a little complicated, I decide to talk it after this article.</li>
+
+<li><code>_defaults = {...}</code> This defines the default value of columns or
+fields</li>
+
+<li>colums <code>'datetime': fields.datetime('DateTime')</code>  This defines the
+date type, and there is an other tpye called <code>fileds.date('Datet')</code>,
+and you can use <code>'date': fields.date.today</code> to set the default date
+to today</li>
+
+<li>columns
+<code>'type': fields.selection([('default', 'Default'), ('invoice', 'Invoice'),('delivery', 'Shipping'), ('contact', 'Contact'),('other', 'Other')], 'Address Type',help</code>"SomeHelpText."),=
+This defines a select coloums, when you have serverl certain options
+to pick, you can use this kind of field</li>
+
+<li>many2one relation Just like
+<code>'title': fields.many2one('cool.customer.title', 'Title')</code> to define
+a many2one relation</li>
+
+<li>many2one relation The one side:
+<code>'bank_ids': fields.one2many('cool.customer.bank', 'customer_id', 'Banks')</code> 
+The many side:
+<code>'customer_id': fields.many2one('cool.customer', 'Account Owner', ondelete='cascade', select=True)</code>
+<code>ondelete='cascade'</code>: means if the record in one side is delete,what
+will do to the related many side? Other options are: 'null', default
+value is 'null'</li>
+
+<li>many2many relation
+<code>'category_id': fields.many2many('cool.costomer.category','coo_customer_category_rel', 'costomer_id', 'category_id', string</code>'Tags'),=
+The <code>cool.costomer.category</code> defines the relation model, the
+<code>coo_customer_category_rel</code> defines the third relation table name
+between the two models, <code>'category_id', 'customer_id'</code> definds the
+columns in <code>coo_customer_category_rel</code>,notice the order to point
+right model. You can also not write
+<code>coo_customer_category_rel, category_id', 'customer_id</code> to let odoo
+name for you, but if you have lots many2many relations, remember to
+point clearly.</li>
+
+<li>defaults : <code>'title': _default_title_id</code>  The default value of a field
+can also be a vale of funtion. Notice the definition of the function
+(such as <code>_default_title_id</code>  here) should be above the place using
+it.</li>
+</ul>
+</div>
+
+<div id="outline-container-orgdbe8177" class="outline-4">
+<h4 id="orgdbe8177"><span class="section-number-4">3.1.1</span> Methods: create, search, read, browse, write, unlink</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<ul class="org-ul">
+<li>create : when you need create a record, call this method, in this
+format: <code>obj.create(cr, uid, vals, context=context)</code>
+
+<ul class="org-ul">
+<li><code>vals</code> is a python dictionary format such as
+<code>{'name': YourName,'title':2,...}</code></li>
+<li>obj is object or the model you want to create the record in. You
+can get obj like this: <code>obj = self.pool.get('cool.customer')</code>.</li>
+<li>The method returns the id of new record. If create unsucessfully,
+odoo will report error message.</li>
+</ul></li>
+
+<li>search : this method is use to search the id(s) of given condition,
+like <code>obj.search(cr, uid, domain,context=context)</code>
+
+<ul class="org-ul">
+<li><code>domain</code> is a list of tuple, which is some like
+`[('FieldName1','<code>',Value1),('FieldName2','!</code>',Value2)]``</li>
+<li>This method returns a list of ids it finds, or a emppty list if no
+record finds.</li>
+</ul></li>
+
+<li>read: this method is use to get a list of records of given fields.For</li>
+</ul>
+<p>
+example,
+<code>obj.read(cr,uid,ids,['fields1','fields2',...],context=context)</code> - <code>ids</code>
+is a list of ids of records that you want to operate -
+<code>'fields1','fields2',...</code> is fields or columns that you want to read,
+According to my previous project, it also add column <code>id</code> in the return
+fields. If you don't specific any field, it will read all the fields. -
+This method return something like this:
+<code>[{'id':1,fields1': value1,'fields2': value2,...}, {...}, ...]</code>
+</p>
+
+<ul class="org-ul">
+<li>browse: It is use to get a specific instance of object. For example,
+you can use <code>obj = self.pool.get('cool.customer')</code> to get a object(or
+in java terms,a class) of 'cool.customer', and use
+<code>instance_obj = obj.browse(cr,uid,ids,context=context)</code> to get
+specific ids of objs. It just like 'class' and 'instance' relations
+(in java terms). Or maybe, call the value of
+<code>self.pool.get('cool.customer')'</code>  'class' is more accurate. The advantage is you can use such as <code>instance_obj.name</code>
+to get the name of this specific object.</li>
+
+<li>write: This method is use to change values of specific records.
+Format: <code>obj.write(cr,uid,ids,vals,context)</code>
+
+<ul class="org-ul">
+<li><code>ids</code> is a list of ids you want to change</li>
+<li><p>
+<code>vals</code> is a python dictionary, like
+<code>{'FieldName1':vale1,'FieldName2':value2,...}</code>, Notice,if your
+Filed is one2many type, just like example field above: <code>bank_ids</code>,
+the value is a list of tuple, depends on different change ways,
+tuple format is different. And if this field is many2many type,the
+tuple is also different,like follows:
+</p>
+
+<pre class="example">
+:::python
+##one2many
+#Add new record
+(0, 0,{ values })
+
+#update the record which id equals ID
+(1,ID,{values})
+
+#Delete the record which id equals ID
+(2,ID)
+
+##many2many
+#Add new record
+(0, 0,{ values })
+
+#update the record which id equals ID
+(1,ID,{values})
+
+#Delete the record which id equals ID (call unlink method)
+(2,ID)
+
+#Cut off relationship, but leave the data
+(3,ID)
+
+#Link the relation of record which id equals ID
+(4,ID)
+
+#Cut off all relations
+(5)
+
+#Cut off all relations and Use records in IDs to replace  
+#This is confusing :(, I will add examples in the following articles
+(6,0,[IDs])
+</pre></li>
+
+<li>This method returns True or raise exception</li>
+</ul></li>
+
+<li>unlink : This method is use to delete record(s), format:
+<code>obj.unlink(cr,uid,ids,context)</code>
+
+<ul class="org-ul">
+<li><code>ids</code> is a list of ids of records you want to delete</li>
+<li>This method returns True or raise exception</li>
+</ul></li>
+</ul>
+
+<p>
+Notice:
+</p>
+
+<ul class="org-ul">
+<li>if you use instance<sub>of</sub><sub>object</sub>, in other words, you use the</li>
+</ul>
+<p>
+obj getting from methods <code>browse</code>, no need to write "cr, uid" or "ids"
+due to conditions.
+</p>
+
+<ul class="org-ul">
+<li>We can also rewrite the model's "write", "create"</li>
+</ul>
+<p>
+or other function. This will be talk about later
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0fd7ea9" class="outline-4">
+<h4 id="org0fd7ea9"><span class="section-number-4">3.1.2</span> Methods: default<sub>get</sub>, default<sub>set</sub></h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+To be continue here:)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6f663db" class="outline-4">
+<h4 id="org6f663db"><span class="section-number-4">3.1.3</span> Error Info for User</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+<code>raise osv.except_osv(_('Error!'), _('Error Message.'))</code>
+</p>
+
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

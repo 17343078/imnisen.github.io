@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python3和golang中bytes与string的转换</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-09-09</p>
+</div>
+<div id="content">
+<h1 class="title">Python3和golang中bytes与string的转换</h1>
+<div class="abstract">
+<p>
+本文是最近对于python和golang中的bytes与string互相转换的总结与记录。
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org49f34f4">1. Bytes 创建</a></li>
+<li><a href="#org9a910e5">2. Bytes -&gt; String</a></li>
+<li><a href="#org57cc472">3. String -&gt; Bytes</a></li>
+<li><a href="#org27f2ff6">4. Bytes -&gt; Hex string</a></li>
+<li><a href="#org6b5302b">5. Hex string -&gt; Bytes</a></li>
+<li><a href="#org2de96b8">6. Other</a>
+<ul>
+<li><a href="#orgba3d71b">6.1. 小心字符串长度</a></li>
+</ul>
+</li>
+<li><a href="#org6adec77">7. END</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org49f34f4" class="outline-2">
+<h2 id="org49f34f4"><span class="section-number-2">1</span> Bytes 创建</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-example"># Python
+my_bytes = bytes([0x06, 0xe5, 0x33, 0xfd, 0x1a, 0xda, 0x86, 0x39,
+                  0x1f, 0x3f, 0x6c, 0x34, 0x32, 0x04, 0xb0, 0xd2,
+                  0x78, 0xd4, 0xaa, 0xec, 0x1c, 0x0b, 0x20, 0xaa,
+                  0x27, 0xba, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00])
+
+
+// Golang:(忽略变量命名规范)
+my_bytes := []byte{0x79, 0xa6, 0x1a, 0xdb, 0xc6, 0xe5, 0xa2, 0xe1,
+                   0x39, 0xd2, 0x71, 0x3a, 0x54, 0x6e, 0xc7, 0xc8,
+                   0x75, 0x63, 0x2e, 0x75, 0xf1, 0xdf, 0x9c, 0x3f,
+                   0xa6, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9a910e5" class="outline-2">
+<h2 id="org9a910e5"><span class="section-number-2">2</span> Bytes -&gt; String</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-example"># Pyython:
+my_bytes = bytes([104, 101, 108, 108, 111])
+my_bytes.decode()  # 默认utf-8
+
+
+// Golang
+my_bytes := []byte{104, 101, 108, 108, 111}
+my_string := string(my_bytes[:])
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org57cc472" class="outline-2">
+<h2 id="org57cc472"><span class="section-number-2">3</span> String -&gt; Bytes</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-example"># Python
+# 方法1
+my_string = "hello"
+my_string.encode()
+
+# 方法2
+my_string = "hello"
+bytes(my_string, encoding='utf8')
+
+
+# 方法3
+b'hello'  # 字面量创建
+
+
+
+// Golang
+my_string = "hello"
+my_bytes = []byte(my_string)  // golang 字符串字面量是utf8的
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org27f2ff6" class="outline-2">
+<h2 id="org27f2ff6"><span class="section-number-2">4</span> Bytes -&gt; Hex string</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-example"># Python
+my_bytes = bytes([0x06, 0xe5, 0x33, 0xfd, 0x1a, 0xda, 0x86, 0x39,
+                  0x1f, 0x3f, 0x6c, 0x34, 0x32, 0x04, 0xb0, 0xd2,
+                  0x78, 0xd4, 0xaa, 0xec, 0x1c, 0x0b, 0x20, 0xaa,
+                  0x27, 0xba, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00])
+
+
+
+# 返回一个字符串，两个十六进制的字符表示一个byte(Return a string object containing two hexadecimal digits for each byte in the instance)
+my_hex = my_bytes.hex()
+
+
+// Golang
+
+my_bytes := []byte{0x79, 0xa6, 0x1a, 0xdb, 0xc6, 0xe5, 0xa2, 0xe1,
+                   0x39, 0xd2, 0x71, 0x3a, 0x54, 0x6e, 0xc7, 0xc8,
+                   0x75, 0x63, 0x2e, 0x75, 0xf1, 0xdf, 0x9c, 0x3f,
+                   0xa6, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+my_hex = hex.EncodeToString(my_bytes)  // 返回十六进制编码字符串
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6b5302b" class="outline-2">
+<h2 id="org6b5302b"><span class="section-number-2">5</span> Hex string -&gt; Bytes</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-example"># Python:
+my_bytes = bytes.fromhex(my_hex)
+
+//  Golang:
+my_bytes = hex.DecodeString(my_hex)
+
+
+
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+<div id="outline-container-org2de96b8" class="outline-2">
+<h2 id="org2de96b8"><span class="section-number-2">6</span> Other</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgba3d71b" class="outline-3">
+<h3 id="orgba3d71b"><span class="section-number-3">6.1</span> 小心字符串长度</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+对于字符串 "Hello, 世界" 它的长度是多少呢？
+</p>
+
+<p>
+这取决于什么算是一个长度。
+</p>
+
+<p>
+Golang的len文档如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-example">func len(v Type) int
+
+The len built-in function returns the length of v, according to its type:
+
+Array: the number of elements in v.
+Pointer to array: the number of elements in *v (even if v is nil).
+Slice, or map: the number of elements in v; if v is nil, len(v) is zero.
+String: the number of bytes in v.                                -&gt; 注意，如果是字符串，那么值是bytes的数量
+Channel: the number of elements queued (unread) in the channel buffer;
+if v is nil, len(v) is zero.
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-golang">package main
+
+import (
+        "fmt"
+)
+
+func main() {
+        fmt.Println(len("Hello, 世界"))
+        fmt.Println(len([]byte("Hello, 世界")))
+        fmt.Println([]byte("Hello, 世界"))
+}
+
+输出:
+13
+13
+[72 101 108 108 111 44 32 228 184 150 231 149 140]
+
+</pre>
+</div>
+
+
+<p>
+而Python中的len文档是这样描述的：
+</p>
+<blockquote>
+<p>
+Return the length (the number of items) of an object.
+The argument may be a sequence (such as a string, bytes, tuple, list, or range) or a collection (such as a dictionary, set, or frozen set).
+</p>
+</blockquote>
+
+<p>
+它返回的是number of items
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">In <span style="color: #4d4d4c;">[</span>1<span style="color: #4d4d4c;">]</span>: <span style="color: #718c00;">print</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Hello, &#19990;&#30028;"</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+9
+
+In <span style="color: #4d4d4c;">[</span>2<span style="color: #4d4d4c;">]</span>: <span style="color: #718c00;">print</span><span style="color: #4d4d4c;">(</span><span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Hello, &#19990;&#30028;"</span>.encode<span style="color: #eab700;">()</span><span style="color: #3e999f;">)</span><span style="color: #4d4d4c;">)</span>
+13
+
+In <span style="color: #4d4d4c;">[</span>4<span style="color: #4d4d4c;">]</span>: <span style="color: #718c00;">for</span> x <span style="color: #718c00;">in</span> <span style="color: #3e999f;">"Hello, &#19990;&#30028;"</span>.encode<span style="color: #4d4d4c;">()</span>:
+   ...:     <span style="color: #718c00;">print</span><span style="color: #4d4d4c;">(</span>x, end=<span style="color: #3e999f;">" "</span><span style="color: #4d4d4c;">)</span>
+   ...:
+72 101 108 108 111 44 32 228 184 150 231 149 140
+
+In <span style="color: #4d4d4c;">[</span>5<span style="color: #4d4d4c;">]</span>: <span style="color: #eab700;">result</span> = <span style="color: #4d4d4c;">[]</span>
+
+In <span style="color: #4d4d4c;">[</span>6<span style="color: #4d4d4c;">]</span>: <span style="color: #718c00;">for</span> x <span style="color: #718c00;">in</span> <span style="color: #3e999f;">"Hello, &#19990;&#30028;"</span>.encode<span style="color: #4d4d4c;">()</span>:
+   ...:     result.append<span style="color: #4d4d4c;">(</span>x<span style="color: #4d4d4c;">)</span>
+
+In <span style="color: #4d4d4c;">[</span>7<span style="color: #4d4d4c;">]</span>: x
+Out<span style="color: #4d4d4c;">[</span>7<span style="color: #4d4d4c;">]</span>: 140
+
+In <span style="color: #4d4d4c;">[</span>8<span style="color: #4d4d4c;">]</span>: result
+Out<span style="color: #4d4d4c;">[</span>8<span style="color: #4d4d4c;">]</span>: <span style="color: #4d4d4c;">[</span>72, 101, 108, 108, 111, 44, 32, 228, 184, 150, 231, 149, 140<span style="color: #4d4d4c;">]</span>
+
+In <span style="color: #4d4d4c;">[</span>9<span style="color: #4d4d4c;">]</span>: <span style="color: #8959a8;">bytes</span><span style="color: #4d4d4c;">(</span>result<span style="color: #4d4d4c;">)</span>
+Out<span style="color: #4d4d4c;">[</span>9<span style="color: #4d4d4c;">]</span>: b<span style="color: #3e999f;">'Hello, \xe4\xb8\x96\xe7\x95\x8c'</span>
+
+</pre>
+</div>
+
+<p>
+在golang里，对于字符串，如果要像python一样返回"item"的数量（go里叫runes），可以像下面这样：
+</p>
+
+<ol class="org-ol">
+<li>用 <code>utf8.RuneCountInString</code></li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-golang">package main
+
+import (
+        "fmt"
+        "unicode/utf8"
+)
+
+func main() {
+        fmt.Println(len("Hello, 世界"))
+        fmt.Println(utf8.RuneCountInString(("Hello, 世界")))  // -&gt; 这里
+        fmt.Println(len([]byte("Hello, 世界")))
+        fmt.Println([]byte("Hello, 世界"))
+}
+
+输出:
+13
+9  -&gt; 这里变成了9
+13
+[72 101 108 108 111 44 32 228 184 150 231 149 140]
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>用rune</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-golang">package main
+
+import (
+        "fmt"
+)
+
+func main() {
+        fmt.Println(len("Hello, 世界"))
+        fmt.Println(len([]byte("Hello, 世界")))
+        fmt.Println([]byte("Hello, 世界"))
+        fmt.Println("--seprator--")
+        fmt.Println([]rune("Hello, 世界"))
+        fmt.Println(len([]rune("Hello, 世界")))    // -&gt; 这里
+}
+
+输出:
+13
+13
+[72 101 108 108 111 44 32 228 184 150 231 149 140]
+--seprator--
+[72 101 108 108 111 44 32 19990 30028]
+9  -&gt; 这里
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6adec77" class="outline-2">
+<h2 id="org6adec77"><span class="section-number-2">7</span> END</h2>
+<div class="outline-text-2" id="text-7">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

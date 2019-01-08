@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>读EOPL3第一章(可归纳的数据集)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2015-12-19</p>
+</div>
+<div id="content">
+<h1 class="title">读EOPL3第一章(可归纳的数据集)</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org268448f">1. Summary</a></li>
+<li><a href="#org83c959d">2. 可递归的数据集</a></li>
+<li><a href="#orgb061154">3. 归纳递归的程序</a></li>
+<li><a href="#orgbab0bb6">4. 辅助的程序和环境参数</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org268448f" class="outline-2">
+<h2 id="org268448f"><span class="section-number-2">1</span> Summary</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+最近在看《Essentials of Programming
+Language》第三版，做些总结。看的是英文版，翻译如有不足还请指出。
+正如在前言里提到：第一章重点阐述了可归纳的数据和递归的程序之间的关系，还介绍了一些变量作用域的概念。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org83c959d" class="outline-2">
+<h2 id="org83c959d"><span class="section-number-2">2</span> 可递归的数据集</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+第一章先介绍了一些方法来定义“可递归的数据集”，比如，如果想定义自然数N={0,1,2,&#x2026;}的一个特定子集S,可以用下面的三种形式：
+</p>
+
+<pre class="example">
+;自上而下的方式(top-down)
+自然数n属于S当且仅当：
+1. n = 0, or
+2. n − 3 ∈ S.
+
+;自下而上的方式(bottom-up)
+定义集合S是包含于N的最小的集合，并且满足如下两个条件：
+1. 0 ∈ S, and
+2. if n ∈ S, then n + 3 ∈ S.
+
+
+;推理的方式(rules of inference)
+------
+0 ∈ S
+
+
+n ∈ S
+---------
+(n + 3) ∈ 
+</pre>
+
+<p>
+同理，如果要定义scheme里的一个整数集列表List-of-Int，可以这样定义：
+</p>
+
+<pre class="example">
+;top-down
+一个列表是一个整数列表当且仅当：
+1. 它是一个空列表, 或者
+2. 它由两部分组成，第一部分是整数，第二部分是一个整数列表
+
+；bottom-up
+这个整数列表是最小的scheme列表，满足如下两个条件
+1. () ∈ List-of-Int, and
+2. if n ∈ Int and l ∈ List-of-Int, then (n . l) ∈ List-of-Int.
+
+;rules of inference
+
+() ∈ List-of-Int
+
+
+n ∈ Int  l ∈ List-of-Int
+--------------------------
+(n . l) ∈ List-of-Int
+
+
+(注：当我学会如何正确输入数学符号再来改写这边的格式吧;))
+</pre>
+
+<p>
+上面的这种定义的方式很直接，为了简化书写，引入了定义数据集的语法，比如定义Scheme里的一个整数集的列表list-of-Int，可以用如下的语法：
+</p>
+
+<pre class="example">
+List-of-Int ::= ()
+List-of-Int ::= (Int . List-of-Int)
+
+;或者简化成
+List-of-Int ::= ()
+            ::= (Int . List-of-Int)
+
+
+;或者再简化成
+List-of-Int ::= () | (Int . List-of-Int)
+
+
+;另一种写法
+List-of-Int ::= ({Int}∗ )
+</pre>
+
+<p>
+定义的其它类型的数据集：
+</p>
+
+<pre class="example">
+;(s-list, s-exp)
+S-list ::= ({S-exp}∗ )
+S-exp  ::= Symbol | S-list
+;或者也可以这么定义
+S-list ::= ()
+       ::= (S-exp . S-list)
+S-exp ::= Symbol | S-list
+
+
+
+;(binary tree)
+Bintree ::= Int | (Symbol Bintree Bintree)
+
+
+;(lambda expression)
+LcExp ::= Identifier
+      ::= (lambda (Identifier) LcExp)
+      ::= (LcExp LcExp)
+
+</pre>
+
+<p>
+看这部分的时候让我想起了高中时候学递归证明的思想：当要证明一个定理或推论时，可以分成两步，先证明在一些简单的或者极端的或者说边缘的条件下成立（比如当n=0时成立），再证明，如果n=x时成立的话n=x+1也成立。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb061154" class="outline-2">
+<h2 id="orgb061154"><span class="section-number-2">3</span> 归纳递归的程序</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+写递归的程序思路和递归证明命题的思路相似：将问题缩小成更小的相同的问题，然后可以调用程序来递归处理。
+比如要求一个列表的长度，可以转化为“求列表除去第一个元素的长度＋1”：
+</p>
+
+<pre class="example">
+list-length : List → Int
+usage: (list-length l) = the length of l
+(define list-length
+  (lambda (lst)
+    (if (null? lst)
+        0
+    (+ 1 (list-length (cdr lst))))))
+</pre>
+
+<p>
+比如要求一个列表第n个元素是什么，可以转化为“求除去第一个元素后余下的列表第n-1个元素是什么”
+</p>
+
+<pre class="example">
+nth-element : List × Int → SchemeVal
+usage: (nth-element lst n) = the n-th element of lst
+(define nth-element
+  (lambda (lst n)
+    (if (null? lst)
+        (report-list-too-short n)
+    (if (zero? n)
+        (car lst)
+        (nth-element (cdr lst) (- n 1))))))
+
+(define report-list-too-short
+  (lambda (n)
+    (eopl:error ’nth-element
+      "List too short by ~s elements.~%" (+ n 1))))
+</pre>
+
+<p>
+有时候对于互相依赖的递归的数据结构，比如s-list，可能要写两个对应的递归的程序来处理会比较容易理解（一个可以）
+比如要替换一个s-list中的b为a，
+</p>
+
+<pre class="example">
+;采用这个定义：
+S-list ::= ()
+       ::= (S-exp . S-list)
+S-exp ::= Symbol | S-list
+
+
+subst : Sym × Sym × S-list → S-list
+(define subst
+  (lambda (new old slist)
+    (if (null? slist)
+        ’()
+    (cons
+      (subst-in-s-exp new old (car slist))
+      (subst new old (cdr slist))))))
+
+
+
+subst-in-s-exp : Sym × Sym × S-exp → S-exp
+(define subst-in-s-exp
+  (lambda (new old sexp)
+    (if (symbol? sexp)
+        (if (eqv? sexp old) new sexp)
+    (subst new old sexp))))
+
+</pre>
+
+<p>
+你可能已经注意到了，递归的程序结构是依赖定义的语法的机构的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbab0bb6" class="outline-2">
+<h2 id="orgbab0bb6"><span class="section-number-2">4</span> 辅助的程序和环境参数</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+有时候，想将问题简化为小些的问题时，会发现不是那么容易，可能需要用到所谓的“环境参数”，比如将list:
+(a b c d &#x2026;) 转化为((0 a) (1 b) (2 c)
+&#x2026;)，需要借助环境参数比如“0"会更方便。这时候可以写一个辅助程序接受一个list和n生成((n
+a) (n+1 b) (n+2 c)
+&#x2026;)，然后写我们需要的程序时调用这个辅助程序并给上环境参数n=0就可以了：
+</p>
+
+<pre class="example">
+;辅助程序
+number-elements-from : Listof(SchemeVal) × Int → Listof(List(Int, SchemeVal))
+usage: (number-elements-from ’(v0 v1 v2 ...) n) = ((n v0 ) (n + 1 v1 ) (n + 2 v2 ) ...)
+(define number-elements-from
+  (lambda (lst n)
+    (if (null? lst) ’()
+        (cons
+      (list n (car lst))
+      (number-elements-from (cdr lst) (+ n 1))))))
+
+;我们想写的程序
+number-elements : List → Listof(List(Int, SchemeVal))
+(define number-elements
+  (lambda (lst)
+    (number-elements-from lst 0)))
+</pre>
+
+<p>
+从第一章中可以看到递归处理问题能力的强大，以及数据结构的描述和写出来的程序间的联系。然而第一章比较核心的还是它的习题部分，无奈等我学一下科学的输入符号再附上有意思的习题吧:)
+EOF
+</p>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

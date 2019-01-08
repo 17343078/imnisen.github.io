@@ -1,0 +1,1270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>go-ethereum源码阅读笔记</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-08-26</p>
+</div>
+<div id="content">
+<h1 class="title">go-ethereum源码阅读笔记</h1>
+<div class="abstract">
+<p>
+近期在学习<a href="https://github.com/ethereum/go-ethereum">go-ethereum</a>源码，以便更加清楚地了解其实现，知其所以然。
+</p>
+
+<p>
+本文类似于一个学习笔记，可能会有些潦草，会随着学习的进度而更新。
+</p>
+
+<p>
+基于git代码版本: release/1.8
+</p>
+
+</div>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2cb77e9">1. core</a>
+<ul>
+<li><a href="#orgabc1a0b">1.1. <code>tx_pool</code></a>
+<ul>
+<li><a href="#org80a75ac">1.1.1. 交易池配置</a></li>
+<li><a href="#org19ec0ec">1.1.2. 交易池执行逻辑</a></li>
+</ul>
+</li>
+<li><a href="#org45386c5">1.2. <code>tx_journal</code></a></li>
+<li><a href="#org9193007">1.3. <code>state</code> 状态管理</a>
+<ul>
+<li><a href="#org20abe95">1.3.1. <span class="todo TODO">TODO</span> {struct}cachingDB {struct}cachedTire</a></li>
+</ul>
+</li>
+<li><a href="#org1671f37">1.4. <code>asm</code></a></li>
+<li><a href="#org2a84656">1.5. <code>vm</code></a>
+<ul>
+<li><a href="#orgbd10377">1.5.1. 结构</a></li>
+<li><a href="#org8d96dc4">1.5.2. <span class="todo TODO">TODO</span> 方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgdda2b65">2. <span class="todo TODO">TODO</span> trie</a>
+<ul>
+<li>
+<ul>
+<li><a href="#org1776f11">2.0.1. 结构</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org63daebb">3. accounts</a>
+<ul>
+<li><a href="#org74da475">3.1. accounts包</a>
+<ul>
+<li><a href="#orgcb58fe8">3.1.1. 结构</a></li>
+<li><a href="#org90a24d4">3.1.2. <span class="todo TODO">TODO</span> 方法实现</a></li>
+</ul>
+</li>
+<li><a href="#org9f23f15">3.2. keystore包</a>
+<ul>
+<li><a href="#orgf26be06">3.2.1. 结构</a></li>
+<li><a href="#org6c9c2ba">3.2.2. <span class="todo TODO">TODO</span> 方法实现</a></li>
+</ul>
+</li>
+<li><a href="#orgbaf999f">3.3. 结构关系图</a></li>
+</ul>
+</li>
+<li><a href="#org747dcdf">4. p2p</a>
+<ul>
+<li><a href="#org49283a0">4.1. discover包</a></li>
+</ul>
+</li>
+<li><a href="#org25c24b4">5. End</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2cb77e9" class="outline-2">
+<h2 id="org2cb77e9"><span class="section-number-2">1</span> core</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgabc1a0b" class="outline-3">
+<h3 id="orgabc1a0b"><span class="section-number-3">1.1</span> <code>tx_pool</code></h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+交易池接受的交易根据来源不同，逻辑上区分local交易和remote交易，local交易在某种程度上会优先处理。
+</p>
+
+
+<p>
+交易池处理交易时，会将交易分成可执行交易和非可执行交易。
+</p>
+
+<p>
+可执行交易是指从交易池中择优选出的一部分交易可以被执行，打包到区块中。
+</p>
+
+<p>
+非可执行交易则相反，任何刚进入交易池的交易均属于非可执行状态，在某一个时刻才会提升为可执行状态。
+</p>
+</div>
+
+<div id="outline-container-org80a75ac" class="outline-4">
+<h4 id="org80a75ac"><span class="section-number-4">1.1.1</span> 交易池配置</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+交易池配置 {struct} TxPoolConfig, 可以在geth启动时通过参数配置。
+</p>
+
+<p>
+可配置:
+</p>
+
+<p>
+第一部分local交易相关：local交易来源地址、是否开启local交易特性。
+</p>
+
+<p>
+第二部分日志相关，日志位置和保存的时间间隔
+</p>
+
+<p>
+第三部分是交易price限制：remote交易进入交易池的最低price和替换交易时要求的价格涨幅
+</p>
+
+<p>
+第四部分是交易池处理可执行交易和非可执行交易的数量限制以及生命周期限制。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org19ec0ec" class="outline-4">
+<h4 id="org19ec0ec"><span class="section-number-4">1.1.2</span> 交易池执行逻辑</h4>
+<div class="outline-text-4" id="text-1-1-2">
+</div>
+<ol class="org-ol">
+<li><a id="org0f392c5"></a><span class="todo TODO">TODO</span> 交易池结构<br /></li>
+
+<li><a id="orgbb8ac7c"></a>新建交易池和启动交易池<br />
+<div class="outline-text-5" id="text-1-1-2-2">
+<pre class="example">
+
+1. 初始化TxPool结构
+2. 判断是否开启本地交易存储，如果开启了则加载之前存储在文件中的交易池交易
+3. 订阅区块头事件
+4. 开启事件循环loop
+   4.1. 接收到新交易(ChainHeadEvent): 将交易池中已经不符合要求的交易删除并更新整理交易
+   4.2. 由于系统停止导致的取消事件：直接返回
+   4.3. 每8s一次的交易池状况log
+   4.4. 每1分钟一次的移除不活跃地址的交易
+   4.5. 定时存储交易池内容到文件(如果开启的话)
+</pre>
+</div>
+</li>
+
+
+<li><a id="orgbe0e5c9"></a>接受新的交易时的处理<br />
+<div class="outline-text-5" id="text-1-1-2-3">
+<p>
+当交易池主要当loop接收到新的区块header后，调用reset方法处理，大体逻辑如下:
+</p>
+
+<p>
+如果接收到的新header的父区块不是目前状态的区块，那么需要进行reorg:
+</p>
+<pre class="example">
+
+根据新的header高度和旧的（也就是目前的）区块高度，找到要移除的交易discarded和要添加的交易included
+
+这样一直追溯到新的区块和旧的区块能够追溯到同一祖先。
+
+最后求的difference(discarded,included)的差集得到reinject。这个reinject里包含的交易是，因为区块reorg导致的之前有效的交易被取消了，这些交易之后要把它们加到交易池里
+</pre>
+
+<p>
+然后将交易池状态设置为新的区块对应的状态，
+</p>
+
+<p>
+再将由于reorg产生的取消的交易（保存在reinject切片里），添加到内存池里，
+</p>
+
+<p>
+之后整理交易池，移除无效的交易，调整交易所在queue还是pending队列，修改本地manageState里账户对应的Nonce等。
+</p>
+</div>
+</li>
+
+
+<li><a id="orga9642d1"></a>如何验证交易<br />
+<div class="outline-text-5" id="text-1-1-2-4">
+<pre class="example">
+
+validateTx检查一个交易是否合法(从size和price两方面)
+1. size &lt;= 32M
+2. value &gt;= 0
+3. tx.Gas &lt;= pool的最大Gas
+4. tx正确签名
+5. remote交易的gasPrice 大于等于 pool设置的最低gasPrice
+6. 交易的Nonce大于pool目前保存的Nonce
+7. 交易的Cost(value + GasPrice * GasLimit) 小于等于 发送者账户余额
+8. 交易设置的GasLimit要大于其数据需要的Gas
+
+</pre>
+</div>
+</li>
+
+
+<li><a id="org4a4a097"></a>交易池如何添加交易<br />
+<div class="outline-text-5" id="text-1-1-2-5">
+<pre class="example">
+
+1. 排除已有的交易和无效的交易
+2. 如果交易池交易数量超过配置的数量，那么比较GasPrice，移除低的。如果加入的这个交易是最低的，则遗弃该交易
+3. 如果pending交易中存在同一个发送者而且nonce相同的交易，根据GasPrice上调比例判断包里哪一个
+4. 其它情况将交易添加到non-executable队列
+5. 如果是local交易，则对发送者添加标记
+6. journal里记录该交易
+
+</pre>
+</div>
+</li>
+
+
+
+<li><a id="org8d17de8"></a>交易池如何调整交易所处对队列<br />
+<div class="outline-text-5" id="text-1-1-2-6">
+<p>
+逻辑在promoteExecutables方法里，这部分逻辑比较复杂，建议配合代码阅读
+</p>
+
+<pre class="example">
+方法:promoteExcutables(accounts)
+
+1.对于每个accounts里的addr, 首先遍历non-executable队列，移除不合要求的：
+  1.小于 该地址目前nonce 的交易
+  2.cost大于地址余额，或者gasLimit大于pool的最大gaslimit
+
+2. 然后从addr的目前的nonce开始，依次取出递增的tx，然后执行promoteTx操作，放到executable 队列
+
+3. 对于每个地址而言，如果non-executable队列里交易数量超过配置的，那么移除它们
+
+
+之后检查总的pending和queued的tx数量是否达到配置的要求
+
+pending数量【总体逻辑是，每个超标的addr依次减一个再看合不合标准】
+// spamers :  []  （有序队列，收集了所有账户的txlist超过配置的addr，按照txlist数量排序）
+// offenders: []
+// 当pending不达标 而且 spammers有元素: 【根据offenders里最后一个txlist长度删减offenders里之前的txlist，每一轮减一个，直到达到要求或者最后一个txlist不是最少的】
+// 每次从spammers里pop一个，然后添加到offenders里。当offenders里元素至少两个时候的时候:
+// 以offenders里最后一个addr的txlist数量为threshold,
+// 第offenders的第0个到倒数第二个，每个的txlist移除一个tx,再看pending是否达到要求，或者倒数第二个的txlist数量不超过threshold
+//
+//
+// 当pending不达标, spammers没元素里，但offenders里还有元素的时候：
+// 当offenders里最后一个txlist长度还超过配置的accountSlots长度时（这代表着，offenders里所有的addr的txlist都超过配置的accountSlots）
+// 每个offender的txlist移除一个tx
+// 再检查pending看看还要不要再来一轮删除
+
+
+queued数量
+按照heartbeat数量排序，从最近的交易开始移除多余的tx数量
+</pre>
+
+
+
+
+<p>
+demoteUnexecutables将pending/executable队列里不合要求的交易移除
+</p>
+
+<p>
+1.nonce太老的移除
+</p>
+
+<p>
+2.费用不够从pending移除，添加到queued里
+</p>
+
+
+
+<p>
+在网上看到一张图，比较明晰，链接<a href="https://www.jianshu.com/p/1b0ffb58f565">这里</a>。
+</p>
+
+
+
+<div class="figure">
+<p><img src="static/images/read-go-ethereum-03.png" alt="read-go-ethereum-03.png" />
+</p>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+
+
+<div id="outline-container-org45386c5" class="outline-3">
+<h3 id="org45386c5"><span class="section-number-3">1.2</span> <code>tx_journal</code></h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+journal功能在内存池启动时从文件加载，之后每隔一段时间，保存当前交易池中的存在的本地交易。
+</p>
+
+<p>
+相关逻辑在tx<sub>journal.go里</sub>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org9193007" class="outline-3">
+<h3 id="org9193007"><span class="section-number-3">1.3</span> <code>state</code> 状态管理</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+{struct}Account 表示了一个以太坊账户（外部账户和合约账户）
+An account is a mapping between address and account state.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Account is the Ethereum consensus representation of accounts.</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">These objects are stored in the main account trie.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">Account</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        Nonce    uint64
+        Balance  *big.Int
+        Root     common.Hash <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">merkle root of the storage trie  stateRootHash</span>
+        CodeHash <span style="color: #93a8c6;">[]</span><span style="color: #98f5ff;">byte</span>   <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">CodeHash</span>
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+<p>
+{struct}stateObject 是对 {struct}Account 的封装，底层指向{struct}Account，
+添加了对账户操作时，添加操作日志（便于回退状态），
+添加了数据持久存储的支持（引入trie结构，trie结构通过{struct}Database与其交互），而且添加了操作缓存支持，
+</p>
+
+
+<p>
+{struct}StateDB管理所有的账户（通过stateObject），一般是根据账户地址来对账户进行操作，
+比如获取、修改余额、Nonce、Code、storage，创建或者删除账户，对整个statedb的快照以及回退等等。
+</p>
+
+
+<p>
+{struct}ManagedState 则是对{struct}StateDB的封装，添加并发控制等
+</p>
+
+<p>
+{struct}journal 记录了对账户的操作。
+包括如下操作：
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #00bfff;">type</span> <span style="color: #8c8c8c;">(</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Changes to the account trie.</span>
+        createObjectChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account *common.Address
+        <span style="color: #93a8c6;">}</span>
+        resetObjectChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                prev *stateObject
+        <span style="color: #93a8c6;">}</span>
+        suicideChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account     *common.Address
+                prev        bool <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">whether account had already suicided</span>
+                prevbalance *big.Int
+        <span style="color: #93a8c6;">}</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Changes to individual accounts.</span>
+        balanceChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account *common.Address
+                prev    *big.Int
+        <span style="color: #93a8c6;">}</span>
+        nonceChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account *common.Address
+                prev    uint64
+        <span style="color: #93a8c6;">}</span>
+        storageChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account       *common.Address
+                key, prevalue common.Hash
+        <span style="color: #93a8c6;">}</span>
+        codeChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account            *common.Address
+                prevcode, prevhash <span style="color: #b0b1a3;">[]</span><span style="color: #98f5ff;">byte</span>
+        <span style="color: #93a8c6;">}</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Changes to other state values.</span>
+        refundChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                prev uint64
+        <span style="color: #93a8c6;">}</span>
+        addLogChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                txhash common.Hash
+        <span style="color: #93a8c6;">}</span>
+        addPreimageChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                hash common.Hash
+        <span style="color: #93a8c6;">}</span>
+        touchChange <span style="color: #00bfff;">struct</span> <span style="color: #93a8c6;">{</span>
+                account   *common.Address
+                prev      bool
+                prevDirty bool
+        <span style="color: #93a8c6;">}</span>
+<span style="color: #8c8c8c;">)</span>
+
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org20abe95" class="outline-4">
+<h4 id="org20abe95"><span class="section-number-4">1.3.1</span> <span class="todo TODO">TODO</span> {struct}cachingDB {struct}cachedTire</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<blockquote>
+<p>
+
+</p>
+
+<p>
+当前有两种类型的 DB 实现了 Database 接口，
+轻节点使用的 odrDatabase ，和正常节点端使用的带有缓存的 cachingDB 。
+</p>
+
+<p>
+因为轻节点并不存储数据，需要通过向其他节点查询来获得数据，而 odrDatabase 就是这种数据读取方式的封装。
+</p>
+
+<p>
+一个普通节点已内置 levelDB，为了提高读写性能，使用 cachingDB 对其进行一次封装。
+</p>
+</blockquote>
+
+
+
+<p>
+<code>core/state/database.go</code> 下面定义了 Trie的接口。
+</p>
+
+<p>
+而在 <code>trie/trie.go</code> 里面定义了 Trie的实现。 <a href="#orgdda2b65">trie</a>
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div id="outline-container-org1671f37" class="outline-3">
+<h3 id="org1671f37"><span class="section-number-3">1.4</span> <code>asm</code></h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+asm包里主要包含：
+</p>
+
+<p>
+1.词法解析{struct}lexer
+2.词法单元{struct}token
+</p>
+<ol class="org-ol">
+<li>编译器{struct}compiler</li>
+<li>此外还有个不断迭代指令的{struct}instructionIterator.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2a84656" class="outline-3">
+<h3 id="org2a84656"><span class="section-number-3">1.5</span> <code>vm</code></h3>
+<div class="outline-text-3" id="text-1-5">
+</div>
+<div id="outline-container-orgbd10377" class="outline-4">
+<h4 id="orgbd10377"><span class="section-number-4">1.5.1</span> 结构</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<p>
+vm包里有如下主要的组成部分:
+</p>
+
+<ol class="org-ol">
+<li>evm的基础对象 {struct}EVM 和 对应的环境 {struct}Context</li>
+<li>{interface}Interpreter 和 对应实现 {struct}EVMInterpreter</li>
+<li>表示合约和调用参数的 {struct}Contract</li>
+<li>vm里的操作码 {type}OpCode</li>
+<li>内存 {struct}Memory</li>
+<li>{struct}Stack</li>
+<li>Opcode绑定具体的执行函数，gas消耗函数，stack验证函数，需要的内存数量，执行的结果状态等等 便成了 {struct}operation</li>
+<li>以太坊不同阶段的op消耗的gas表 {struct}GasTable</li>
+<li>{interface}StateDB 是对于evm执行所需要的存储的封装，实际上会采用core/state/ 里的{struct}StateDB来具体化。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org8d96dc4" class="outline-4">
+<h4 id="org8d96dc4"><span class="section-number-4">1.5.2</span> <span class="todo TODO">TODO</span> 方法</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+主要方法:
+</p>
+
+<p>
+{struct}EVM的 Call, CallCode, DelegateCall, StaticCall，这几个方法的实现类似，功能也类似：
+</p>
+
+<p>
+文档中是这么描述的[TODO，具体差异后续补充]:
+</p>
+<pre class="example">
+// CallCode differs from Call in the sense that it executes the given address'
+// code with the caller as context.
+
+
+// DelegateCall differs from CallCode in the sense that it executes the given address'
+// code with the caller as context and the caller is set to the caller of the caller.
+
+// StaticCall executes the contract associated with the addr with the given input
+// as parameters while disallowing any modifications to the state during the call.
+// Opcodes that attempt to perform such modifications will result in exceptions
+// instead of performing the modifications.
+
+</pre>
+
+<p>
+上面这些方法都调用了 run方法来执行，run方法的核心是调用EVM绑定的解释器的Run方法。
+</p>
+
+
+
+<p>
+{struct}EVMInterpreter 的run方法，定义了执行合约调用的逻辑。
+除去一些正确性检查大体逻辑如下:
+</p>
+
+<p>
+从合约获取下一个opcode，转化成operation，新建memory, stack。
+检查stack,检查readonly,计算所需memory-size，计算所需gas，执行operation，
+根据执行结果判断是否继续获取下一个opcode
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div id="outline-container-orgdda2b65" class="outline-2">
+<h2 id="orgdda2b65"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> trie</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org1776f11" class="outline-4">
+<h4 id="org1776f11"><span class="section-number-4">2.0.1</span> 结构</h4>
+<div class="outline-text-4" id="text-2-0-1">
+<p>
+{struct}Trie: Merkle Patricia Trie
+</p>
+
+<p>
+{struct}Database: trie结构和磁盘存储的中间层，来将对trie的修改隔一段时间收集起来再写到磁盘上。
+</p>
+
+<p>
+{interface}node: trie上的节点
+</p>
+
+<p>
+{struct}fullNode, {struct}shortNode, {struct}hashNode, {struct}valueNode:
+这些是MPT上的不同类型的节点，实现了{interface}node.
+</p>
+
+<p>
+{struct}SecureTrie: 对{struct}Trie的封装，将所有访问的操作的key进行了hash(keccak256)再访问，目的是防止创建过长的node链导致访问时间变长。
+</p>
+
+<p>
+{struct}Sync:
+</p>
+<pre class="example">
+// Sync is the main state trie synchronisation scheduler, which provides yet
+// unknown trie hashes to retrieve, accepts node data associated with said hashes
+// and reconstructs the trie step by step until all is done.
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org63daebb" class="outline-2">
+<h2 id="org63daebb"><span class="section-number-2">3</span> accounts</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org74da475" class="outline-3">
+<h3 id="org74da475"><span class="section-number-3">3.1</span> accounts包</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+accounts包定义了以太坊账户相关概念和实现。
+</p>
+</div>
+
+<div id="outline-container-orgcb58fe8" class="outline-4">
+<h4 id="orgcb58fe8"><span class="section-number-4">3.1.1</span> 结构</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+{struct}Account表示一个以太坊账户
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Account represents an Ethereum account located at a specific location defined</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">by the optional URL field.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">Account</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        Address common.Address <span style="color: #deb887;">`json:"address"`</span> <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Ethereum account address derived from the key</span>
+        URL     URL            <span style="color: #deb887;">`json:"url"`</span>     <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Optional resource locator within a backend</span>
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+其中{struct}URL是表示一个可选的表示账户的地址
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">URL represents the canonical identification URL of a wallet or account.</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">It is a simplified version of url.URL, with the important limitations (which</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">are considered features here) that it contains value-copyable components only,</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">as well as that it doesn't do any URL encoding/decoding of special characters.</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The former is important to allow an account to be copied without leaving live</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">references to the original version, whereas the latter is important to ensure</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">one single canonical form opposed to many allowed ones by the RFC 3986 spec.</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">As such, these URLs should not be used outside of the scope of an Ethereum</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">wallet or account.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">URL</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        Scheme string <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Protocol scheme to identify a capable account backend</span>
+        Path   string <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Path for the backend to identify a unique entity</span>
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+{interface}Wallet表示一个软件或者硬件钱包，用来管理一个或者一组从同一种子衍生的账户({interface}Account).
+接口定义了了一个钱包应该有的方法，比如打开、关闭、查询状态、返回包含的账户、交易签名等
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Wallet represents a software or hardware wallet that might contain one or more</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">accounts (derived from the same seed).</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">Wallet</span> <span style="color: #00bfff;">interface</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">URL retrieves the canonical path under which this wallet is reachable. It is</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">user by upper layers to define a sorting order over all wallets from multiple</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">backends.</span>
+        <span style="color: #daa520;">URL</span><span style="color: #93a8c6;">()</span> URL
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Status returns a textual status to aid the user in the current state of the</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">wallet. It also returns an error indicating any failure the wallet might have</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">encountered.</span>
+        <span style="color: #daa520;">Status</span><span style="color: #93a8c6;">()</span> <span style="color: #93a8c6;">(</span>string, error<span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Open initializes access to a wallet instance. It is not meant to unlock or</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">decrypt account keys, rather simply to establish a connection to hardware</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">wallets and/or to access derivation seeds.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The passphrase parameter may or may not be used by the implementation of a</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">particular wallet instance. The reason there is no passwordless open method</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">is to strive towards a uniform wallet handling, oblivious to the different</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">backend providers.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Please note, if you open a wallet, you must close it to release any allocated</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">resources (especially important when working with hardware wallets).</span>
+        <span style="color: #daa520;">Open</span><span style="color: #93a8c6;">(</span>passphrase string<span style="color: #93a8c6;">)</span> error
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Close releases any resources held by an open wallet instance.</span>
+        <span style="color: #daa520;">Close</span><span style="color: #93a8c6;">()</span> error
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Accounts retrieves the list of signing accounts the wallet is currently aware</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">of. For hierarchical deterministic wallets, the list will not be exhaustive,</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">rather only contain the accounts explicitly pinned during account derivation.</span>
+        <span style="color: #daa520;">Accounts</span><span style="color: #93a8c6;">()</span> <span style="color: #93a8c6;">[]</span><span style="color: #98f5ff;">Account</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Contains returns whether an account is part of this particular wallet or not.</span>
+        <span style="color: #daa520;">Contains</span><span style="color: #93a8c6;">(</span>account Account<span style="color: #93a8c6;">)</span> bool
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Derive attempts to explicitly derive a hierarchical deterministic account at</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">the specified derivation path. If requested, the derived account will be added</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">to the wallet's tracked account list.</span>
+        <span style="color: #daa520;">Derive</span><span style="color: #93a8c6;">(</span>path DerivationPath, pin bool<span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">(</span>Account, error<span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">SelfDerive sets a base account derivation path from which the wallet attempts</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">to discover non zero accounts and automatically add them to list of tracked</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">accounts.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Note, self derivaton will increment the last component of the specified path</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">opposed to decending into a child path to allow discovering accounts starting</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">from non zero components.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">You can disable automatic account discovery by calling SelfDerive with a nil</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">chain state reader.</span>
+        <span style="color: #daa520;">SelfDerive</span><span style="color: #93a8c6;">(</span>base DerivationPath, chain ethereum.ChainStateReader<span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">SignHash requests the wallet to sign the given hash.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">It looks up the account specified either solely via its address contained within,</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">or optionally with the aid of any location metadata from the embedded URL field.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">If the wallet requires additional authentication to sign the request (e.g.</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">a password to decrypt the account, or a PIN code o verify the transaction),</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">an AuthNeededError instance will be returned, containing infos for the user</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">about which fields or actions are needed. The user may retry by providing</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">the needed details via SignHashWithPassphrase, or by other means (e.g. unlock</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">the account in a keystore).</span>
+        <span style="color: #daa520;">SignHash</span><span style="color: #93a8c6;">(</span>account Account, hash <span style="color: #b0b1a3;">[]</span><span style="color: #98f5ff;">byte</span><span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">(</span><span style="color: #b0b1a3;">[]</span><span style="color: #98f5ff;">byte</span>, error<span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">SignTx requests the wallet to sign the given transaction.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">It looks up the account specified either solely via its address contained within,</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">or optionally with the aid of any location metadata from the embedded URL field.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">If the wallet requires additional authentication to sign the request (e.g.</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">a password to decrypt the account, or a PIN code to verify the transaction),</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">an AuthNeededError instance will be returned, containing infos for the user</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">about which fields or actions are needed. The user may retry by providing</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">the needed details via SignTxWithPassphrase, or by other means (e.g. unlock</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">the account in a keystore).</span>
+        <span style="color: #daa520;">SignTx</span><span style="color: #93a8c6;">(</span>account Account, tx *types.Transaction, chainID *big.Int<span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">(</span>*types.Transaction, error<span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">SignHashWithPassphrase requests the wallet to sign the given hash with the</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">given passphrase as extra authentication information.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">It looks up the account specified either solely via its address contained within,</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">or optionally with the aid of any location metadata from the embedded URL field.</span>
+        <span style="color: #daa520;">SignHashWithPassphrase</span><span style="color: #93a8c6;">(</span>account Account, passphrase string, hash <span style="color: #b0b1a3;">[]</span><span style="color: #98f5ff;">byte</span><span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">(</span><span style="color: #b0b1a3;">[]</span><span style="color: #98f5ff;">byte</span>, error<span style="color: #93a8c6;">)</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">SignTxWithPassphrase requests the wallet to sign the given transaction, with the</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">given passphrase as extra authentication information.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">It looks up the account specified either solely via its address contained within,</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">or optionally with the aid of any location metadata from the embedded URL field.</span>
+        <span style="color: #daa520;">SignTxWithPassphrase</span><span style="color: #93a8c6;">(</span>account Account, passphrase string, tx *types.Transaction, chainID *big.Int<span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">(</span>*types.Transaction, error<span style="color: #93a8c6;">)</span>
+<span style="color: #8c8c8c;">}</span>
+
+
+</pre>
+</div>
+
+
+
+<p>
+{interface}Backend用来管理一组{interface}Wallet
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Backend is a "wallet provider" that may contain a batch of accounts they can</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">sign transactions with and upon request, do so.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">Backend</span> <span style="color: #00bfff;">interface</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Wallets retrieves the list of wallets the backend is currently aware of.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The returned wallets are not opened by default. For software HD wallets this</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">means that no base seeds are decrypted, and for hardware wallets that no actual</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">connection is established.</span>
+        <span style="color: #7f7f7f;">//</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The resulting wallet list will be sorted alphabetically based on its internal</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">URL assigned by the backend. Since wallets (especially hardware) may come and</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">go, the same wallet might appear at a different positions in the list during</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">subsequent retrievals.</span>
+        <span style="color: #daa520;">Wallets</span><span style="color: #93a8c6;">()</span> <span style="color: #93a8c6;">[]</span><span style="color: #98f5ff;">Wallet</span>
+
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Subscribe creates an async subscription to receive notifications when the</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">backend detects the arrival or departure of a wallet.</span>
+        <span style="color: #daa520;">Subscribe</span><span style="color: #93a8c6;">(</span>sink <span style="color: #00bfff;">chan</span>&lt;- <span style="color: #98f5ff;">WalletEvent</span><span style="color: #93a8c6;">)</span> event.Subscription
+<span style="color: #8c8c8c;">}</span>
+
+
+</pre>
+</div>
+
+
+
+<p>
+{[]uint32}DerivationPath
+定义了BIP-32和BIP-44规定的分层确定性钱包地址路径
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">DerivationPath represents the computer friendly version of a hierarchical</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">deterministic wallet account derivaion path.</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The BIP-32 spec https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">defines derivation paths to be of the form:</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">//   </span><span style="color: #7f7f7f;">m / purpose' / coin_type' / account' / change / address_index</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The BIP-44 spec https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">defines that the `purpose` be 44' (or 0x8000002C) for crypto currencies, and</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">SLIP-44 https://github.com/satoshilabs/slips/blob/master/slip-0044.md assigns</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">the `coin_type` 60' (or 0x8000003C) to Ethereum.</span>
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">The root path for Ethereum is m/44'/60'/0'/0 according to the specification</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">from https://github.com/ethereum/EIPs/issues/84, albeit it's not set in stone</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">yet whether accounts should increment the last component or the children of</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">that. We will go with the simpler approach of incrementing the last component.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">DerivationPath</span> <span style="color: #8c8c8c;">[]</span><span style="color: #98f5ff;">uint32</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org90a24d4" class="outline-4">
+<h4 id="org90a24d4"><span class="section-number-4">3.1.2</span> <span class="todo TODO">TODO</span> 方法实现</h4>
+</div>
+</div>
+<div id="outline-container-org9f23f15" class="outline-3">
+<h3 id="org9f23f15"><span class="section-number-3">3.2</span> keystore包</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+keystore包里定义了以“keystore”文件方式存储以太坊账户信息的相关结构和实现。
+</p>
+</div>
+
+<div id="outline-container-orgf26be06" class="outline-4">
+<h4 id="orgf26be06"><span class="section-number-4">3.2.1</span> 结构</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+{interface}keyStore定义了一个“keystore”实现应该有的方法，包括获取/存储{struct}Key,获取文件完整目录等。
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">keyStore</span> <span style="color: #00bfff;">interface</span> <span style="color: #8c8c8c;">{</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Loads and decrypts the key from disk.</span>
+        <span style="color: #daa520;">GetKey</span><span style="color: #93a8c6;">(</span>addr common.Address, filename string, auth string<span style="color: #93a8c6;">)</span> <span style="color: #93a8c6;">(</span>*Key, error<span style="color: #93a8c6;">)</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Writes and encrypts the key.</span>
+        <span style="color: #daa520;">StoreKey</span><span style="color: #93a8c6;">(</span>filename string, k *Key, auth string<span style="color: #93a8c6;">)</span> error
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Joins filename with the key directory unless it is already absolute.</span>
+        <span style="color: #daa520;">JoinPath</span><span style="color: #93a8c6;">(</span>filename string<span style="color: #93a8c6;">)</span> string
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+这里面的{struct}Key表示一个账户最本质的内容——私钥，以及根据私钥计算的地址等。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">Key</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        Id uuid.UUID <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Version 4 "random" for unique id not derived from key data</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">to simplify lookups we also store the address</span>
+        Address common.Address
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">we only store privkey as pubkey/address can be derived from it</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">privkey in this struct is always in plaintext</span>
+        PrivateKey *ecdsa.PrivateKey
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+{struct}keyStorePassphrase和{struct}keyStorePlain是对{interface}keyStore的两个实现。
+</p>
+
+<p>
+其中，{struct}keyStorePassphrase是以密码passphrase的方式来存储私钥成文件，而{struct}keyStorePlain是直接不加密存储成文件。
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">keyStorePassphrase</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        keysDirPath string
+        scryptN     int
+        scryptP     int
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">skipKeyFileVerification disables the security-feature which does</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">reads and decrypts any newly created keyfiles. This should be 'false' in all</span>
+        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">cases except tests -- setting this to 'true' is not recommended.</span>
+        skipKeyFileVerification bool
+<span style="color: #8c8c8c;">}</span>
+
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">keyStorePlain</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        keysDirPath string
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+{struct}keystoreWallet实现了{interface}accounts.Wallet接口。
+一个keystore钱包实际上只包含了一个账户
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">keystoreWallet implements the accounts.Wallet interface for the original</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">keystore.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">keystoreWallet</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        account  accounts.Account <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Single account contained in this wallet</span>
+        keystore *KeyStore        <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Keystore where the account originates from</span>
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+
+
+<p>
+{struct}KeyStore是整个keystore包的主要逻辑实现：
+</p>
+<ol class="org-ol">
+<li>管理一个私钥如何存储在硬盘文件上(通过绑定的{interface}keyStore)</li>
+<li>管理缓存来避免总是读写文件(通过绑定的{struct}accountCache)</li>
+<li>管理一个ketstore目录下的所有的account</li>
+<li>管理账户的新建导入导出删除等</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">KeyStore manages a key storage directory on disk.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">KeyStore</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        storage  keyStore                     <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Storage backend, might be cleartext or encrypted</span>
+        cache    *accountCache                <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">In-memory account cache over the filesystem storage</span>
+        changes  <span style="color: #00bfff;">chan</span> <span style="color: #00bfff;">struct</span><span style="color: #93a8c6;">{}</span>                <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Channel receiving change notifications from the cache</span>
+        unlocked <span style="color: #00bfff;">map</span><span style="color: #93a8c6;">[</span><span style="color: #98f5ff;">common.Address</span><span style="color: #93a8c6;">]</span>*<span style="color: #98f5ff;">unlocked</span> <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Currently unlocked account (decrypted private keys)</span>
+
+        wallets     <span style="color: #93a8c6;">[]</span><span style="color: #98f5ff;">accounts.Wallet</span>       <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Wallet wrappers around the individual key files</span>
+        updateFeed  event.Feed              <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Event feed to notify wallet additions/removals</span>
+        updateScope event.SubscriptionScope <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Subscription scope tracking current live listeners</span>
+        updating    bool                    <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Whether the event notification loop is running</span>
+
+        mu sync.RWMutex
+<span style="color: #8c8c8c;">}</span>
+
+
+</pre>
+</div>
+
+
+
+<p>
+{struct}accountCache是keystore目录下所有账户的一个索引和管理方式
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">accountCache is a live index of all accounts in the keystore.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">accountCache</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        keydir   string
+        watcher  *watcher
+        mu       sync.Mutex
+        all      accountsByURL
+        byAddr   <span style="color: #00bfff;">map</span><span style="color: #93a8c6;">[</span><span style="color: #98f5ff;">common.Address</span><span style="color: #93a8c6;">][]</span><span style="color: #98f5ff;">accounts.Account</span>
+        throttle *time.Timer
+        notify   <span style="color: #00bfff;">chan</span> <span style="color: #00bfff;">struct</span><span style="color: #93a8c6;">{}</span>
+        fileC    fileCache
+<span style="color: #8c8c8c;">}</span>
+
+
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">fileCache&#26159;&#25991;&#20214;&#21464;&#21160;&#26102;&#38388;&#30340;&#19968;&#20010;&#35760;&#24405;</span>
+<span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">fileCache is a cache of files seen during scan of keystore.</span>
+<span style="color: #00bfff;">type</span> <span style="color: #98f5ff;">fileCache</span> <span style="color: #00bfff;">struct</span> <span style="color: #8c8c8c;">{</span>
+        all     mapset.Set <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Set of all files from the keystore folder</span>
+        lastMod time.Time  <span style="color: #7f7f7f;">// </span><span style="color: #7f7f7f;">Last time instance when a file was modified</span>
+        mu      sync.RWMutex
+<span style="color: #8c8c8c;">}</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+<div id="outline-container-org6c9c2ba" class="outline-4">
+<h4 id="org6c9c2ba"><span class="section-number-4">3.2.2</span> <span class="todo TODO">TODO</span> 方法实现</h4>
+</div>
+</div>
+
+<div id="outline-container-orgbaf999f" class="outline-3">
+<h3 id="orgbaf999f"><span class="section-number-3">3.3</span> 结构关系图</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+下面这张图展示来accounts包和keystore包结构体和接口之间的关系:
+<img src="static/images/read-go-ethereum-02.png" alt="read-go-ethereum-02.png" />
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org747dcdf" class="outline-2">
+<h2 id="org747dcdf"><span class="section-number-2">4</span> p2p</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org49283a0" class="outline-3">
+<h3 id="org49283a0"><span class="section-number-3">4.1</span> discover包</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+table.go文件里对主要实现了一个Table结构，该结构用来管理连接的节点的信息。
+</p>
+
+<p>
+table.go所属的是discover包，discover包实现了一种类似kad协议的节点发现协议。
+</p>
+
+<p>
+当实例化一个Table的时候，会创建一个 <code>loop()</code> 的goroutine, loop用来管理节点的刷新、验证等工作，下面我整理了下loop的大体逻辑图:
+</p>
+
+
+<div class="figure">
+<p><img src="static/images/read-go-ethereum-01.png" alt="read-go-ethereum-01.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25c24b4" class="outline-2">
+<h2 id="org25c24b4"><span class="section-number-2">5</span> End</h2>
+<div class="outline-text-2" id="text-5">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

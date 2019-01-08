@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BIP16(P2SH)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2018-12-01</p>
+</div>
+<div id="content">
+<h1 class="title">BIP16(P2SH)</h1>
+
+
+<div id="outline-container-org5d88828" class="outline-2">
+<h2 id="org5d88828"><span class="section-number-2">1</span> BIP地址</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki">BIP16</a>
+</p>
+
+<pre class="example">
+BIP: 16
+Layer: Consensus (soft fork)
+Title: Pay to Script Hash
+Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+Comments-Summary: No comments yet.
+Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0016
+Status: Final
+Type: Standards Track
+Created: 2012-01-03
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org83b5e13" class="outline-2">
+<h2 id="org83b5e13"><span class="section-number-2">2</span> 原因和目的</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+BIP16定义了新的标准交易类型，将提供花费UTXO所需的条件的责任，由发送者转移到了接受者。
+</p>
+
+<p>
+好处是现在发送者不管需要生成多复杂的条件，都可以使用固定长度的hash值替代（具体的条件由使用者提供）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb8c042e" class="outline-2">
+<h2 id="orgb8c042e"><span class="section-number-2">3</span> 细节</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+PubScript格式： <code>OP_HASH160 [20-byte-hash-value] OP_EQUAL</code>
+</p>
+
+<p>
+<code>[20-byte-hash-value]</code> 是 opcode(0x14) 后跟20bytes。
+</p>
+
+<p>
+ScriptSig格式: <code>...signatures... {serialized script}</code>
+</p>
+
+<p>
+"serialized script" 又称"redeem script"
+</p>
+
+
+<p>
+新的验证脚本有效性的规则在block的timestamps &gt;= 1333238400(Apr 1 2012)后实行。(TODO 和下面的部署冲突吗)
+</p>
+
+
+<p>
+为了防止节点发起拒绝服务攻击（比如恶意节点广播一个区块，需要验证redeem script里的成千上外个ecdsa签名计算，那么其他旷工可能就在验证计算而自己又可能抢险挖到区块），所以redeem script里的签名运算符需要被限制（一个Block最大20000个运算符）。计算多少个运算符的规则是：
+</p>
+<ol class="org-ol">
+<li><code>OP_CHECKSIG</code> 和 <code>OP_CHECKSIGVERIFY</code> 算作一个运算符</li>
+<li><code>OP_CHECKMULTISIG</code> 和 <code>OP_CHECKMULTISIGVERIFY</code> 如果前面跟有 <code>OP_1</code> 到 <code>OP_16</code> 等，那么就算作 1到16的运算符</li>
+<li>其他的 <code>OP_CHECKMULTISIG</code> 和 <code>OP_CHECKMULTISIGVERIFY</code> 算作20个运算符</li>
+</ol>
+
+
+<p>
+例子：
+</p>
+
+<p>
+<code>{2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG}</code> : 3个运算符
+</p>
+
+<p>
+<code>{OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF}</code> : 22个运算符
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgdb61b30" class="outline-2">
+<h2 id="orgdb61b30"><span class="section-number-2">4</span> 相关实现</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+以btcd的实现为例
+</p>
+</div>
+
+
+<div id="outline-container-orgde29ecb" class="outline-3">
+<h3 id="orgde29ecb"><span class="section-number-3">4.1</span> SigOpCost</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<ol class="org-ol">
+<li><a id="org16547d6"></a>如何计算多少个运算符<br />
+<div class="outline-text-5" id="text-4-1-0-1">
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">GetSigOpCost</span><span style="color: #4d4d4c;">(</span>tx *<span style="color: #4271ae;">btcutil.Tx</span>, isCoinBaseTx <span style="color: #4271ae;">bool</span>, utxoView *<span style="color: #4271ae;">UtxoViewpoint</span>, bip16, segWit <span style="color: #4271ae;">bool</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">int</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+        numSigOps := <span style="color: #f5871f;">CountSigOps</span><span style="color: #3e999f;">(</span>tx<span style="color: #3e999f;">)</span> * WitnessScaleFactor <span style="color: #8e908c; font-style: italic;">//</span><span style="color: #8e908c; font-style: italic;">&#38169;&#30053;&#20272;&#31639;&#65288;p2sh&#37027;&#37096;&#20998;&#27809;&#31639;&#65292;&#32780;&#26159;&#22312;&#19979;&#38754;&#21333;&#29420;&#22788;&#29702;&#65289;</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#22914;&#26524;&#21551;&#29992;&#20102;BIP16</span>
+        <span style="color: #718c00;">if</span> bip16 <span style="color: #3e999f;">{</span>
+                numP2SHSigOps, err := <span style="color: #f5871f;">CountP2SHSigOps</span><span style="color: #eab700;">(</span>tx, isCoinBaseTx, utxoView<span style="color: #eab700;">)</span>
+                <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+                        <span style="color: #718c00;">return</span> 0, <span style="color: #4271ae;">nil</span>
+                <span style="color: #eab700;">}</span>
+                numSigOps += <span style="color: #eab700;">(</span>numP2SHSigOps * WitnessScaleFactor<span style="color: #eab700;">)</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;segwit&#23545;SigOpCost&#30340;&#24433;&#21709;&#37096;&#20998;&#65292;&#26242;&#26102;&#30053;&#21435; */</span>
+
+        <span style="color: #718c00;">return</span> numSigOps, <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">CountP2SHSigOps</span><span style="color: #4d4d4c;">(</span>tx *<span style="color: #4271ae;">btcutil.Tx</span>, isCoinBaseTx <span style="color: #4271ae;">bool</span>, utxoView *<span style="color: #4271ae;">UtxoViewpoint</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">int</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Coinbase transactions have no interesting inputs.</span>
+        <span style="color: #718c00;">if</span> isCoinBaseTx <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> 0, <span style="color: #4271ae;">nil</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Accumulate the number of signature operations in all transaction</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">inputs.</span>
+        msgTx := tx.<span style="color: #f5871f;">MsgTx</span><span style="color: #3e999f;">()</span>
+        totalSigOps := 0
+        <span style="color: #718c00;">for</span> txInIndex, txIn := <span style="color: #718c00;">range</span> msgTx.TxIn <span style="color: #3e999f;">{</span>
+
+                <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#26377;&#25928;&#24615;&#39564;&#35777;&#37096;&#20998; */</span>
+
+                sigScript := txIn.SignatureScript
+
+                <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">pkScript &#20026;txIn.PreviousOutPoint&#25351;&#21521;&#30340;utxo&#30340;PkScript</span>
+                numSigOps := txscript.<span style="color: #f5871f;">GetPreciseSigOpCount</span><span style="color: #eab700;">(</span>sigScript, pkScript,
+                        <span style="color: #4271ae;">true</span><span style="color: #eab700;">)</span>
+
+                <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;overflow&#20215;&#24046;&#37096;&#20998;*/</span> 
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> totalSigOps, <span style="color: #4271ae;">nil</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">GetPreciseSigOpCount</span><span style="color: #4d4d4c;">(</span>scriptSig, scriptPubKey <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span>, bip16 <span style="color: #4271ae;">bool</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">int</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#39564;&#35777;&#21644;&#21028;&#26029;&#37096;&#20998; */</span>
+        shPops, _ := <span style="color: #f5871f;">parseScript</span><span style="color: #3e999f;">(</span>shScript<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">return</span> <span style="color: #f5871f;">getSigOpCount</span><span style="color: #3e999f;">(</span>shPops, <span style="color: #4271ae;">true</span><span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">getSigOpCount</span><span style="color: #4d4d4c;">(</span>pops <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">parsedOpcode</span>, precise <span style="color: #4271ae;">bool</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">int</span> <span style="color: #4d4d4c;">{</span>
+        nSigs := 0
+        <span style="color: #718c00;">for</span> i, pop := <span style="color: #718c00;">range</span> pops <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">switch</span> pop.opcode.value <span style="color: #eab700;">{</span>
+                <span style="color: #718c00;">case</span> OP_CHECKSIG:
+                        <span style="color: #718c00;">fallthrough</span>
+                <span style="color: #718c00;">case</span> OP_CHECKSIGVERIFY:
+                        nSigs++  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">SigOp +1</span>
+                <span style="color: #718c00;">case</span> OP_CHECKMULTISIG:
+                        <span style="color: #718c00;">fallthrough</span>
+                <span style="color: #718c00;">case</span> OP_CHECKMULTISIGVERIFY:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">If we are being precise then look for familiar</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">patterns for multisig, for now all we recognize is</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">OP_1 - OP_16 to signify the number of pubkeys.</span>
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Otherwise, we use the max of 20.</span>
+                        <span style="color: #718c00;">if</span> precise &amp;&amp; i &gt; 0 &amp;&amp;
+                                pops<span style="color: #718c00;">[</span>i-1<span style="color: #718c00;">]</span>.opcode.value &gt;= OP_1 &amp;&amp;
+                                pops<span style="color: #718c00;">[</span>i-1<span style="color: #718c00;">]</span>.opcode.value &lt;= OP_16 <span style="color: #718c00;">{</span>
+                                nSigs += <span style="color: #f5871f;">asSmallInt</span><span style="color: #4271ae;">(</span>pops<span style="color: #4d4d4c;">[</span>i-1<span style="color: #4d4d4c;">]</span>.opcode<span style="color: #4271ae;">)</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21069;&#19968;&#20010;&#25805;&#20316;&#31526;&#22312;OP_1~OP_16&#38388;,  SigOPs +1~16</span>
+                        <span style="color: #718c00;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">{</span>
+                                nSigs += MaxPubKeysPerMultiSig  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#20854;&#23427;&#24773;&#20917; +20</span>
+                        <span style="color: #718c00;">}</span>
+                <span style="color: #718c00;">default</span>:
+                        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">Not a sigop.</span>
+                <span style="color: #eab700;">}</span>
+        <span style="color: #3e999f;">}</span>
+
+        <span style="color: #718c00;">return</span> nSigs
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</li>
+
+
+<li><a id="org7060c42"></a>挖矿时的验证<br />
+<div class="outline-text-5" id="text-4-1-0-2">
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#36825;&#26159;2000*4, &#26159;segwit&#30340;&#24433;&#21709;&#65292;&#23558;&#19968;&#33324;&#25805;&#20316;&#31526;&#37117;&#25193;&#22823;4&#20493;</span>
+MaxBlockSigOpsCost = 80000
+
+<span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>g *<span style="color: #4271ae;">BlkTmplGenerator</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">NewBlockTemplate</span><span style="color: #4d4d4c;">(</span>payToAddress <span style="color: #4271ae;">btcutil.Address</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">(</span>*<span style="color: #4271ae;">BlockTemplate</span>, <span style="color: #4271ae;">error</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#20854;&#23427;&#37096;&#20998; */</span>
+
+    <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#25366;&#30719;&#26102;&#35745;&#31639;&#20132;&#26131;&#37324;&#26377;&#22810;&#23569;SigOpCost</span>
+    sigOpCost, err := blockchain.<span style="color: #f5871f;">GetSigOpCost</span><span style="color: #3e999f;">(</span>tx, <span style="color: #4271ae;">false</span>,
+            blockUtxos, <span style="color: #4271ae;">true</span>, segwitActive<span style="color: #3e999f;">)</span>
+    <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+            log.<span style="color: #f5871f;">Tracef</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Skipping tx %s due to error in "</span>+
+                    <span style="color: #3e999f;">"GetSigOpCost: %v"</span>, tx.<span style="color: #f5871f;">Hash</span><span style="color: #718c00;">()</span>, err<span style="color: #eab700;">)</span>
+            <span style="color: #f5871f;">logSkippedDeps</span><span style="color: #eab700;">(</span>tx, deps<span style="color: #eab700;">)</span>
+            <span style="color: #718c00;">continue</span>
+    <span style="color: #3e999f;">}</span>
+
+    <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21028;&#26029;&#24635;&#30340;SigOpCost&#26159;&#21542;&#36229;&#36807;&#19968;&#20010;&#21306;&#22359;&#30340;&#19978;&#38480;</span>
+    <span style="color: #718c00;">if</span> blockSigOpCost+<span style="color: #f5871f;">int64</span><span style="color: #3e999f;">(</span>sigOpCost<span style="color: #3e999f;">)</span> &lt; blockSigOpCost ||
+            blockSigOpCost+<span style="color: #f5871f;">int64</span><span style="color: #3e999f;">(</span>sigOpCost<span style="color: #3e999f;">)</span> &gt; blockchain.MaxBlockSigOpsCost <span style="color: #3e999f;">{</span>
+            log.<span style="color: #f5871f;">Tracef</span><span style="color: #eab700;">(</span><span style="color: #3e999f;">"Skipping tx %s because it would "</span>+
+                    <span style="color: #3e999f;">"exceed the maximum sigops per block"</span>, tx.<span style="color: #f5871f;">Hash</span><span style="color: #718c00;">()</span><span style="color: #eab700;">)</span>
+            <span style="color: #f5871f;">logSkippedDeps</span><span style="color: #eab700;">(</span>tx, deps<span style="color: #eab700;">)</span>
+            <span style="color: #718c00;">continue</span>
+    <span style="color: #3e999f;">}</span>
+
+    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#20854;&#23427;&#37096;&#20998; */</span>
+
+
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org8ac50f1"></a>节点接受block时的验证<br />
+<div class="outline-text-5" id="text-4-1-0-3">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #718c00;">func</span> <span style="color: #4d4d4c;">(</span>b *<span style="color: #4271ae;">BlockChain</span><span style="color: #4d4d4c;">)</span> <span style="color: #f5871f;">checkConnectBlock</span><span style="color: #4d4d4c;">(</span>node *<span style="color: #4271ae;">blockNode</span>, block *<span style="color: #4271ae;">btcutil.Block</span>, view *<span style="color: #4271ae;">UtxoViewpoint</span>, stxos *<span style="color: #3e999f;">[]</span><span style="color: #4271ae;">SpentTxOut</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">error</span> <span style="color: #4d4d4c;">{</span>
+
+    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#20854;&#23427;&#37096;&#20998; */</span>
+
+    totalSigOpCost := 0
+    <span style="color: #718c00;">for</span> i, tx := <span style="color: #718c00;">range</span> transactions <span style="color: #3e999f;">{</span>
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#33719;&#21462;sigOpCost</span>
+        sigOpCost, err := <span style="color: #f5871f;">GetSigOpCost</span><span style="color: #eab700;">(</span>tx, i == 0, view, enforceBIP0016,
+                enforceSegWit<span style="color: #eab700;">)</span>
+        <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #eab700;">{</span>
+            <span style="color: #718c00;">return</span> err
+        <span style="color: #eab700;">}</span>
+
+        <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21028;&#26029;&#26159;&#21542;overflow&#21644;&#36229;&#36807;MaxBlockSigOpsCost</span>
+        lastSigOpCost := totalSigOpCost
+        totalSigOpCost += sigOpCost
+        <span style="color: #718c00;">if</span> totalSigOpCost &lt; lastSigOpCost || totalSigOpCost &gt; MaxBlockSigOpsCost <span style="color: #eab700;">{</span>
+                str := fmt.<span style="color: #f5871f;">Sprintf</span><span style="color: #718c00;">(</span><span style="color: #3e999f;">"block contains too many "</span>+
+                        <span style="color: #3e999f;">"signature operations - got %v, max %v"</span>,
+                        totalSigOpCost, MaxBlockSigOpsCost<span style="color: #718c00;">)</span>
+                <span style="color: #718c00;">return</span> <span style="color: #f5871f;">ruleError</span><span style="color: #718c00;">(</span>ErrTooManySigOps, str<span style="color: #718c00;">)</span>
+        <span style="color: #eab700;">}</span>
+    <span style="color: #3e999f;">}</span>
+
+    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#30465;&#30053;&#20854;&#23427;&#37096;&#20998; */</span>
+
+
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+
+
+
+<div id="outline-container-orga58469b" class="outline-3">
+<h3 id="orga58469b"><span class="section-number-3">4.2</span> txscript相关</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+<ol class="org-ol">
+<li><a id="org7b72ad2"></a>判断脚本类型<br />
+<div class="outline-text-5" id="text-4-2-0-1">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">scriptType returns the type of the script being inspected from the known</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">standard types.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">typeOfScript</span><span style="color: #4d4d4c;">(</span>pops <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">parsedOpcode</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">ScriptClass</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isPubkey</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> PubKeyTy
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isPubkeyHash</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> PubKeyHashTy
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isWitnessPubKeyHash</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> WitnessV0PubKeyHashTy
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isScriptHash</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>  <span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">&#21028;&#26029;&#26159;&#21542;&#26159;p2sh</span>
+                <span style="color: #718c00;">return</span> ScriptHashTy
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isWitnessScriptHash</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> WitnessV0ScriptHashTy
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isMultiSig</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> MultiSigTy
+        <span style="color: #3e999f;">}</span> <span style="color: #718c00;">else</span> <span style="color: #718c00;">if</span> <span style="color: #f5871f;">isNullData</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> NullDataTy
+        <span style="color: #3e999f;">}</span>
+        <span style="color: #718c00;">return</span> NonStandardTy
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</li>
+
+
+<li><a id="orgd355b8a"></a>判断是否是p2sh<br />
+<div class="outline-text-5" id="text-4-2-0-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">IsPayToScriptHash returns true if the script is in the standard</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">pay-to-script-hash (P2SH) format, false otherwise.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">IsPayToScriptHash</span><span style="color: #4d4d4c;">(</span>script <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">byte</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">bool</span> <span style="color: #4d4d4c;">{</span>
+        pops, err := <span style="color: #f5871f;">parseScript</span><span style="color: #3e999f;">(</span>script<span style="color: #3e999f;">)</span>
+        <span style="color: #718c00;">if</span> err != <span style="color: #4271ae;">nil</span> <span style="color: #3e999f;">{</span>
+                <span style="color: #718c00;">return</span> <span style="color: #4271ae;">false</span>
+        <span style="color: #3e999f;">}</span>
+        <span style="color: #718c00;">return</span> <span style="color: #f5871f;">isScriptHash</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span>
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">isScriptHash returns true if the script passed is a pay-to-script-hash</span>
+<span style="color: #8e908c; font-style: italic;">// </span><span style="color: #8e908c; font-style: italic;">transaction, false otherwise.</span>
+<span style="color: #718c00;">func</span> <span style="color: #f5871f;">isScriptHash</span><span style="color: #4d4d4c;">(</span>pops <span style="color: #3e999f;">[]</span><span style="color: #4271ae;">parsedOpcode</span><span style="color: #4d4d4c;">)</span> <span style="color: #4271ae;">bool</span> <span style="color: #4d4d4c;">{</span>
+        <span style="color: #718c00;">return</span> <span style="color: #8959a8;">len</span><span style="color: #3e999f;">(</span>pops<span style="color: #3e999f;">)</span> == 3 &amp;&amp;
+                pops<span style="color: #3e999f;">[</span>0<span style="color: #3e999f;">]</span>.opcode.value == OP_HASH160 &amp;&amp;
+                pops<span style="color: #3e999f;">[</span>1<span style="color: #3e999f;">]</span>.opcode.value == OP_DATA_20 &amp;&amp;
+                pops<span style="color: #3e999f;">[</span>2<span style="color: #3e999f;">]</span>.opcode.value == OP_EQUAL
+<span style="color: #4d4d4c;">}</span>
+
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org1123c3d" class="outline-2">
+<h2 id="org1123c3d"><span class="section-number-2">5</span> 兼容性和部署</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+P2SH对于旧的实现来说被认为是非标准的脚本，不会被传播或包含到区块。
+</p>
+
+<p>
+为了防止恶意的p2sh交易导致的区块链分叉，在新的节点上无效而在旧的节点上有效的p2sh交易需要小心处理。
+</p>
+
+<p>
+为了能够很好地升级并且确保不会有长时间存在的分叉，多余50%的矿工需要在同一时间切换到对新验证规则的支持。
+</p>
+
+<p>
+为了判断是否有50%以上哈希算力支持BIP16,矿工需要在挖到的区块里将 <code>/P2SH/</code> 写进coinbase交易的Input里。
+</p>
+
+<p>
+2012年2月1号，会检查过去7天(大约1000个区块)里是否有550个区块包含了 <code>/P2SH/</code> 在coinbase里，
+如果有， 2012年2月15号之后的区块需要提供该BIP要求的验证。
+如果没有，那再看情况（what？）
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3261f50" class="outline-2">
+<h2 id="org3261f50"><span class="section-number-2">6</span> END</h2>
+<div class="outline-text-2" id="text-6">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

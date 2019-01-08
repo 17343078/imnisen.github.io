@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>理解线程2 线程同步之信号量互斥量</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2016-11-19</p>
+</div>
+<div id="content">
+<h1 class="title">理解线程2 线程同步之信号量互斥量</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org181cc9c">1. 线程同步</a>
+<ul>
+<li><a href="#org28546f7">1.1. 用信号量进行同步</a></li>
+<li><a href="#orgdf69295">1.2. 用互斥量进行同步</a></li>
+</ul>
+</li>
+<li><a href="#org16ddd9c">2. 参考资料</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org181cc9c" class="outline-2">
+<h2 id="org181cc9c"><span class="section-number-2">1</span> 线程同步</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+了解线程信号量的基础知识，对深入理解python的线程会大有帮助。
+</p>
+
+<p>
+当两个线程同时执行时，不可避免同时操作同一个变量或者文件等，所以需要有一组机制来确保他们能正确的运行：信号量和互斥量。信号量可以分为最简单的“二进制信号量”和更通用的“计数信号量”。信号量通常用来保护一段代码，使其每次只能被一个执行线程运行，这种情况下需要用到二进制信号量。有时候希望可以允许有限数目的线程执行一段指定代码，这就需要用到计数信号量。实际上，技术信号量是一种二进制信号量的逻辑扩展，实际两者调用的函数一样。
+</p>
+
+<p>
+互斥量和信号量很相似，事实上他们可以互相通过对方来实现。但在实际应用中，对于一些情况使用其中一种更符合语义而且效果更好。
+</p>
+</div>
+
+<div id="outline-container-org28546f7" class="outline-3">
+<h3 id="org28546f7"><span class="section-number-3">1.1</span> 用信号量进行同步</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">stdio.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">unistd.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">stdlib.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">string.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">pthread.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">semaphore.h</span><span style="color: #4d4d4c;">&gt;</span>
+
+<span style="color: #4271ae;">void</span> *<span style="color: #f5871f;">thread_function</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">void</span> *<span style="color: #eab700;">arg</span><span style="color: #4d4d4c;">)</span>;
+<span style="color: #4271ae;">sem_t</span> <span style="color: #eab700;">bin_sem</span>;
+
+<span style="color: #8959a8;">#define</span> <span style="color: #eab700;">WORK_SIZE</span> 1024
+<span style="color: #4271ae;">char</span> <span style="color: #eab700;">work_area</span><span style="color: #4d4d4c;">[</span>WORK_SIZE<span style="color: #4d4d4c;">]</span>;      <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#29992;&#26469;&#23384;&#25918;&#36755;&#20837;&#20869;&#23481; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+
+<span style="color: #4271ae;">int</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+  <span style="color: #4271ae;">int</span> <span style="color: #eab700;">res</span>;                    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#26242;&#23384;&#19968;&#20123;&#21629;&#20196;&#30340;&#36820;&#22238;&#32467;&#26524; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #4271ae;">pthread_t</span> <span style="color: #eab700;">a_thread</span>;         <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#32455;&#24102;&#26032;&#24314;&#30340;&#32447;&#31243; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #4271ae;">void</span> *<span style="color: #eab700;">thread_result</span>;       <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#23384;&#25918;&#32447;&#31243;&#22788;&#29702;&#32467;&#26524; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+
+  res = sem_init<span style="color: #3e999f;">(</span>&amp;bin_sem, 0, 0<span style="color: #3e999f;">)</span>;   <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#21021;&#22987;&#21270;&#20449;&#21495;&#37327;&#65292;&#24182;&#19988;&#35774;&#32622;&#21021;&#22987;&#20540;&#20026;0</span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>res != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    perror<span style="color: #eab700;">(</span><span style="color: #3e999f;">"Semaphore initialization failed"</span><span style="color: #eab700;">)</span>;
+    exit<span style="color: #eab700;">(</span>EXIT_FAILURE<span style="color: #eab700;">)</span>;
+  <span style="color: #3e999f;">}</span>
+  res = pthread_create<span style="color: #3e999f;">(</span>&amp;a_thread, <span style="color: #4271ae;">NULL</span>, thread_function, <span style="color: #4271ae;">NULL</span><span style="color: #3e999f;">)</span>;   <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#21019;&#24314;&#26032;&#32447;&#31243; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>res != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    perror<span style="color: #eab700;">(</span><span style="color: #3e999f;">"Thread creation failed"</span><span style="color: #eab700;">)</span>;
+    exit<span style="color: #eab700;">(</span>EXIT_FAILURE<span style="color: #eab700;">)</span>;
+  <span style="color: #3e999f;">}</span>
+  printf<span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Inout some text, Enter 'end' to finish</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span><span style="color: #3e999f;">)</span>;
+  <span style="color: #718c00;">while</span><span style="color: #3e999f;">(</span>strncmp<span style="color: #eab700;">(</span><span style="color: #3e999f;">"end"</span>, work_area, 3<span style="color: #eab700;">)</span> != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>             <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#24403;&#24037;&#20316;&#21306;&#20869;&#19981;&#26159;&#20197;end&#24320;&#22836;&#30340;&#23383;&#31526;&#20018;&#26102;...</span><span style="color: #8e908c; font-style: italic;">*/</span>
+    fgets<span style="color: #eab700;">(</span>work_area, WORK_SIZE, stdin<span style="color: #eab700;">)</span>;                  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#20174;&#26631;&#20934;&#36755;&#20837;&#33719;&#21462;&#36755;&#20837;&#21040;worl_area </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    sem_post<span style="color: #eab700;">(</span>&amp;bin_sem<span style="color: #eab700;">)</span>;                                  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#20449;&#21495;&#37327;+1 </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #3e999f;">}</span>
+  printf<span style="color: #3e999f;">(</span><span style="color: #3e999f;">"</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">Waiting for thread to finish...</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span><span style="color: #3e999f;">)</span>;
+  res = pthread_join<span style="color: #3e999f;">(</span>a_thread, &amp;thread_result<span style="color: #3e999f;">)</span>;         <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#32447;&#31243;&#32467;&#26463; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>res != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    perror<span style="color: #eab700;">(</span><span style="color: #3e999f;">"Thread join failed"</span><span style="color: #eab700;">)</span>;
+    exit<span style="color: #eab700;">(</span>EXIT_FAILURE<span style="color: #eab700;">)</span>;
+  <span style="color: #3e999f;">}</span>
+  printf<span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Thread joined</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span><span style="color: #3e999f;">)</span>;
+  sem_destroy<span style="color: #3e999f;">(</span>&amp;bin_sem<span style="color: #3e999f;">)</span>;                               <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#38144;&#27585;&#20449;&#21495;&#37327; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  exit<span style="color: #3e999f;">(</span>EXIT_SUCCESS<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #4271ae;">void</span> *<span style="color: #f5871f;">thread_function</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">void</span> *<span style="color: #eab700;">arg</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+  sem_wait<span style="color: #3e999f;">(</span>&amp;bin_sem<span style="color: #3e999f;">)</span>;                                 <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#20449;&#21495;&#37327;&#26377;&#22823;&#20110;0&#30340;&#20540;&#28982;&#21518;-1 </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">while</span><span style="color: #3e999f;">(</span>strncmp<span style="color: #eab700;">(</span><span style="color: #3e999f;">"end"</span>, work_area, 3<span style="color: #eab700;">)</span> != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    printf<span style="color: #eab700;">(</span><span style="color: #3e999f;">"You input %ld characters</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, strlen<span style="color: #718c00;">(</span>work_area<span style="color: #718c00;">)</span>-1<span style="color: #eab700;">)</span>;   <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#33719;&#21462;&#36755;&#20837;&#23383;&#31526;&#20018;&#38271;&#24230; 8</span><span style="color: #8e908c; font-style: italic;">*/</span>
+    sem_wait<span style="color: #eab700;">(</span>&amp;bin_sem<span style="color: #eab700;">)</span>;                               <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#31561;&#24453;&#20449;&#21495;&#37327;&#26377;&#22823;&#20110;0&#30340;&#20540;&#28982;&#21518;-1 </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #3e999f;">}</span>
+  pthread_exit<span style="color: #3e999f;">(</span><span style="color: #4271ae;">NULL</span><span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdf69295" class="outline-3">
+<h3 id="orgdf69295"><span class="section-number-3">1.2</span> 用互斥量进行同步</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">stdio.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">unistd.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">stdlib.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">string.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">pthread.h</span><span style="color: #4d4d4c;">&gt;</span>
+<span style="color: #8959a8;">#include</span> <span style="color: #4d4d4c;">&lt;</span><span style="color: #3e999f;">semaphore.h</span><span style="color: #4d4d4c;">&gt;</span>
+
+<span style="color: #4271ae;">void</span> *<span style="color: #f5871f;">thread_function</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">void</span> *<span style="color: #eab700;">arg</span><span style="color: #4d4d4c;">)</span>;
+<span style="color: #4271ae;">pthread_mutex_t</span> <span style="color: #eab700;">work_mutex</span>;
+
+<span style="color: #8959a8;">#define</span> <span style="color: #eab700;">WORK_SIZE</span> 1024
+<span style="color: #4271ae;">char</span> <span style="color: #eab700;">work_area</span><span style="color: #4d4d4c;">[</span>WORK_SIZE<span style="color: #4d4d4c;">]</span>;
+<span style="color: #4271ae;">int</span> <span style="color: #eab700;">time_to_exit</span> = 0;                           <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#29992;&#26469;&#25511;&#21046;&#26159;&#21542;&#36864;&#20986;</span><span style="color: #8e908c; font-style: italic;">*/</span>
+
+<span style="color: #4271ae;">int</span> <span style="color: #f5871f;">main</span><span style="color: #4d4d4c;">()</span> <span style="color: #4d4d4c;">{</span>
+  <span style="color: #4271ae;">int</span> <span style="color: #eab700;">res</span>;
+  <span style="color: #4271ae;">pthread_t</span> <span style="color: #eab700;">a_thread</span>;
+  <span style="color: #4271ae;">void</span> *<span style="color: #eab700;">thread_result</span>;
+
+  res = pthread_mutex_init<span style="color: #3e999f;">(</span>&amp;work_mutex,<span style="color: #4271ae;">NULL</span><span style="color: #3e999f;">)</span>;    <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#21021;&#22987;&#21270;&#19968;&#20010;&#20114;&#26021;&#38145; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>res != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    perror<span style="color: #eab700;">(</span><span style="color: #3e999f;">"Mutex initialization failed"</span><span style="color: #eab700;">)</span>;
+    exit<span style="color: #eab700;">(</span>EXIT_FAILURE<span style="color: #eab700;">)</span>;
+  <span style="color: #3e999f;">}</span>
+  res = pthread_create<span style="color: #3e999f;">(</span>&amp;a_thread, <span style="color: #4271ae;">NULL</span>, thread_function, <span style="color: #4271ae;">NULL</span><span style="color: #3e999f;">)</span>;  <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#21019;&#24314;&#19968;&#20010;&#26032;&#32447;&#31243; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>res != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    perror<span style="color: #eab700;">(</span><span style="color: #3e999f;">"Thread creation failed"</span><span style="color: #eab700;">)</span>;
+    exit<span style="color: #eab700;">(</span>EXIT_FAILURE<span style="color: #eab700;">)</span>;
+  <span style="color: #3e999f;">}</span>
+  pthread_mutex_lock<span style="color: #3e999f;">(</span>&amp;work_mutex<span style="color: #3e999f;">)</span>;                       <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#23581;&#35797;&#23545;&#20114;&#26021;&#37327;&#21152;&#38145; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  printf<span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Input some text, Enter 'end' to finish</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span><span style="color: #3e999f;">)</span>;
+  <span style="color: #718c00;">while</span><span style="color: #3e999f;">(</span><span style="color: #4271ae;">!</span>time_to_exit<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>                                   <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#26816;&#26597;&#26159;&#19981;&#26159;&#35813;&#36864;&#20986;</span><span style="color: #8e908c; font-style: italic;">*/</span>
+    fgets<span style="color: #eab700;">(</span>work_area, WORK_SIZE, stdin<span style="color: #eab700;">)</span>;                   <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#20174;&#26631;&#20934;&#36755;&#20837;&#33719;&#21462;&#36755;&#20837;&#21040;work_area </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    pthread_mutex_unlock<span style="color: #eab700;">(</span>&amp;work_mutex<span style="color: #eab700;">)</span>;                   <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#35299;&#38145;&#20114;&#26021;&#37327; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    <span style="color: #718c00;">while</span><span style="color: #eab700;">(</span>1<span style="color: #eab700;">)</span> <span style="color: #eab700;">{</span>
+      pthread_mutex_lock<span style="color: #718c00;">(</span>&amp;work_mutex<span style="color: #718c00;">)</span>;
+      <span style="color: #718c00;">if</span> <span style="color: #718c00;">(</span>work_area<span style="color: #4271ae;">[</span>0<span style="color: #4271ae;">]</span> != <span style="color: #3e999f;">'</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">0</span><span style="color: #3e999f;">'</span><span style="color: #718c00;">)</span> <span style="color: #718c00;">{</span>                      <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#25345;&#32493;&#26816;&#26597;work_area &#26159;&#21542;&#20026;&#31354;, &#22914;&#26524;&#19981;&#20026;&#31354;&#32487;&#32493;&#31561;&#24453;&#65292;&#22914;&#26524;&#20026;&#31354;&#65292;&#21017;&#37325;&#26032;&#35835;&#21462;&#36755;&#20837;&#21040;work_area</span><span style="color: #8e908c; font-style: italic;">*/</span>
+        pthread_mutex_unlock<span style="color: #4271ae;">(</span>&amp;work_mutex<span style="color: #4271ae;">)</span>;
+        sleep<span style="color: #4271ae;">(</span>1<span style="color: #4271ae;">)</span>;
+      <span style="color: #718c00;">}</span>
+      <span style="color: #718c00;">else</span> <span style="color: #718c00;">{</span>
+        <span style="color: #718c00;">break</span>;
+      <span style="color: #718c00;">}</span>
+    <span style="color: #eab700;">}</span>
+  <span style="color: #3e999f;">}</span>
+  pthread_mutex_unlock<span style="color: #3e999f;">(</span>&amp;work_mutex<span style="color: #3e999f;">)</span>;
+  printf<span style="color: #3e999f;">(</span><span style="color: #3e999f;">"</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">Waiting for thread to finish...</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span><span style="color: #3e999f;">)</span>;
+  res = pthread_join<span style="color: #3e999f;">(</span>a_thread, &amp;thread_result<span style="color: #3e999f;">)</span>;
+  <span style="color: #718c00;">if</span> <span style="color: #3e999f;">(</span>res != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>
+    perror<span style="color: #eab700;">(</span><span style="color: #3e999f;">"Thread join failed"</span><span style="color: #eab700;">)</span>;
+    exit<span style="color: #eab700;">(</span>EXIT_FAILURE<span style="color: #eab700;">)</span>;
+  <span style="color: #3e999f;">}</span>
+  printf<span style="color: #3e999f;">(</span><span style="color: #3e999f;">"Thread joined</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span><span style="color: #3e999f;">)</span>;
+  pthread_mutex_destroy<span style="color: #3e999f;">(</span>&amp;work_mutex<span style="color: #3e999f;">)</span>;
+  exit<span style="color: #3e999f;">(</span>EXIT_SUCCESS<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+<span style="color: #4271ae;">void</span> *<span style="color: #f5871f;">thread_function</span><span style="color: #4d4d4c;">(</span><span style="color: #4271ae;">void</span> *<span style="color: #eab700;">arg</span><span style="color: #4d4d4c;">)</span> <span style="color: #4d4d4c;">{</span>
+  sleep<span style="color: #3e999f;">(</span>1<span style="color: #3e999f;">)</span>;
+  pthread_mutex_lock<span style="color: #3e999f;">(</span>&amp;work_mutex<span style="color: #3e999f;">)</span>;                     <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#23581;&#35797;&#21152;&#38145;&#20114;&#26021;&#37327; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  <span style="color: #718c00;">while</span><span style="color: #3e999f;">(</span>strncmp<span style="color: #eab700;">(</span><span style="color: #3e999f;">"end"</span>, work_area, 3<span style="color: #eab700;">)</span> != 0<span style="color: #3e999f;">)</span> <span style="color: #3e999f;">{</span>           <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#24403;work_area&#37324;&#30340;&#20540;&#19981;&#26159;&#20197;end&#24320;&#22836;&#26102;</span><span style="color: #8e908c; font-style: italic;">*/</span>
+    printf<span style="color: #eab700;">(</span><span style="color: #3e999f;">"You input %ld characters</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">n</span><span style="color: #3e999f;">"</span>, strlen<span style="color: #718c00;">(</span>work_area<span style="color: #718c00;">)</span> -1<span style="color: #eab700;">)</span>;     <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#36755;&#20986;&#36755;&#20837;&#30340;&#23383;&#31526;&#38271;&#24230; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    work_area<span style="color: #eab700;">[</span>0<span style="color: #eab700;">]</span> = <span style="color: #3e999f;">'</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">0</span><span style="color: #3e999f;">'</span>;                                      <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">work_area&#35774;&#32622;&#20026;&#31354; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+    pthread_mutex_unlock<span style="color: #eab700;">(</span>&amp;work_mutex<span style="color: #eab700;">)</span>;
+    sleep<span style="color: #eab700;">(</span>1<span style="color: #eab700;">)</span>;
+    pthread_mutex_lock<span style="color: #eab700;">(</span>&amp;work_mutex<span style="color: #eab700;">)</span>;
+    <span style="color: #718c00;">while</span> <span style="color: #eab700;">(</span>work_area<span style="color: #718c00;">[</span>0<span style="color: #718c00;">]</span> == <span style="color: #3e999f;">'</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">0</span><span style="color: #3e999f;">'</span><span style="color: #eab700;">)</span> <span style="color: #eab700;">{</span>              <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#25345;&#32493;&#26816;&#26597;work_area &#30452;&#21040;&#23427;&#37324;&#38754;&#26377;&#36755;&#20837;&#20540;</span><span style="color: #8e908c; font-style: italic;">*/</span>
+      pthread_mutex_unlock<span style="color: #718c00;">(</span>&amp;work_mutex<span style="color: #718c00;">)</span>;
+      sleep<span style="color: #718c00;">(</span>1<span style="color: #718c00;">)</span>;
+      pthread_mutex_lock<span style="color: #718c00;">(</span>&amp;work_mutex<span style="color: #718c00;">)</span>;
+    <span style="color: #eab700;">}</span>
+  <span style="color: #3e999f;">}</span>
+  time_to_exit = 1;                        <span style="color: #8e908c; font-style: italic;">/* </span><span style="color: #8e908c; font-style: italic;">&#24403;&#36755;&#20837;end&#21518;&#65292;&#35774;&#32622;&#36864;&#20986;&#26631;&#24535; </span><span style="color: #8e908c; font-style: italic;">*/</span>
+  work_area<span style="color: #3e999f;">[</span>0<span style="color: #3e999f;">]</span> = <span style="color: #3e999f;">'</span><span style="color: #eab700;">\</span><span style="color: #8959a8;">0</span><span style="color: #3e999f;">'</span>;
+  pthread_mutex_unlock<span style="color: #3e999f;">(</span>&amp;work_mutex<span style="color: #3e999f;">)</span>;
+  pthread_exit<span style="color: #3e999f;">(</span>0<span style="color: #3e999f;">)</span>;
+<span style="color: #4d4d4c;">}</span>
+
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org16ddd9c" class="outline-2">
+<h2 id="org16ddd9c"><span class="section-number-2">2</span> 参考资料</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>《Beginning Linux Programming》</li>
+</ul>
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

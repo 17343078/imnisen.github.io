@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>理解闪电网络1——支付通道(payment channel)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nisen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<p class="date">Published: 2019-01-16</p>
+</div>
+<div id="content">
+<h1 class="title">理解闪电网络1——支付通道(payment channel)</h1>
+
+
+
+<div id="outline-container-org3c292d7" class="outline-2">
+<h2 id="org3c292d7"><span class="section-number-2">1</span> Lightning Network概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+闪电网络是一个基于像比特币这类加密货币之上的"layer 2"支付协议。
+</p>
+
+<p>
+可以用来解决像比特币网络的扩展问题。它有实时支付、可扩展、低成本和跨链等特性。
+</p>
+
+<p>
+Note: 本文的图片来自<a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-building-a-bidirectional-payment-channel-1464710791/">bitcoinmagine</a>, 它上面有对lighting network的详细介绍，非常值得一读，而且示意图非常清晰明了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org532869c" class="outline-2">
+<h2 id="org532869c"><span class="section-number-2">2</span> 支付通道Payment Channel</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+闪电网络通过构建链下的双向支付通道，来支持双方转账，同时只将最终状态记录到区块链系统，兼顾了效率和可行性。
+</p>
+
+<p>
+下面的图片较大，建议新建窗口打开浏览。
+</p>
+
+<p>
+<a href="static/images/lightning-network-1.jpg">图1：支付通道建立和转账1</a>
+</p>
+
+<p>
+<a href="static/images/lightning-network-2.jpg">图2：转账2和支付通道状态更新</a>
+</p>
+
+<p>
+<a href="static/images/lightning-network-3.jpg">图3：通道关闭</a>
+</p>
+
+
+<p>
+解读：
+</p>
+
+<ol class="org-ol">
+<li>图中黑色框表示比特币网络确认的Tx，蓝色的框表示Alice可以广播的交易，红色的框表示Bob可以广播的交易</li>
+
+<li>钥匙表示一个密钥(数字串)，锁是其hash值。Alice和Bob分别生成自己密钥(蓝色的是Alice的，红色的是Bob的)</li>
+
+<li>假设Alice想要通过支付通道转账给Bob 1BTC，Alice先要和Bob之间建立通道</li>
+
+<li>支付通道的建立需要Alice和Bob先存放一定的钱，图1中Alice和Bob从自己的Utxo中各存放了5BTC，并建立了一个2-of-2 multisig交易，表示这笔钱需要两人都同意（两人的签名）才能花费。该交易被广播和记录到区块链上。这一步生成的Tx称为opening transaction</li>
+
+<li>Alice和Bob各自随机生成密钥1，并将其hash值发送给对方</li>
+
+<li>之后Alice和Bob各自建立Commitment Tx，建立完后发送给对方，建立Commitment Tx的过程见下一步</li>
+
+<li>以Alice为例，Alice以第3步的opening tx的输出为输入， 输出是：4BTC给Alice， 6BTC分情况（通过比特币脚本实现）： 1.如果Alice拥有Bob的密钥1(通过hash值等于bob的密钥1的hash值证明)，那么Alice可以花费该6BTC; 或者2. Bob在1000Blocks后可以花费该6BTC(通过CSV实现)。之后，Alice将该commitment Tx签名(授权)，然后发送给Bob</li>
+
+<li>Bob做了类似的事情。Bob简历的commitment tx是：以opening tx 的10BTC为输入，输出是6BTC给Bob, 4BTC分情况: 1. 如果Bob拥有Alice的密钥1，那么Bob可以花费该4BTC， 或者2. Alice在1000Blocks后可以花费该4BTC。 之后Bob将该commitment tx签名，发送给Alice</li>
+
+<li>这时候如果Alice将Bob给的commitment tx签名（Bob已经签名，Alice再签名表示可以花费了），然后广播到比特币网络，Bob会立即得到6BTC, Alice在等待1000Blocks后也可以得到4BTC。如果是Bob签名Alice给的Commit Tx并且广播后，ALice立即获得4BTC，Bob自己在1000bloks后可以获得6BTC。</li>
+
+<li>Commitment Tx意义分析：现在Alice和Bob拥有对方签过名（授权）的交易，但各自拥有的交易都是对对方有利的。比如Alice签名广播Bob给她的tx后后，Bob能立即获得该得的，而Alice自己该得到的要过一点时间才行获得，这段时间内，如果Bob对方发现Alice自己作弊（广播的是旧的，对Alice有利），那么Bob有办法获得Alice该得的，这样防止Alice作弊</li>
+
+<li>假设他们没有做第9步，由于是双向通道，假设Bob又给Alice转了1BTC, 这时候，Alice和Bob应该各有5BTC了，来看看支付通道的变化</li>
+
+<li>这时候参见图2，Alice和Bob分别生成密钥2，并经其hash值交给对方。</li>
+
+<li>以Alice为例，同样的其生成类似第7步的commitment tx: 5BTC给Alice, 5BTC看情况（1. 1000Blocks后Bob可以获得该5BTC，2.如果Alice拥有bob的密钥2,那么Alice可以获得该5BTC）。和第7步不同的是，Alice同时将密钥1和新的commitment tx发送给Bob</li>
+
+<li>Bob也类似，生成commitment tx后，将其和密钥1一起交给Alice</li>
+
+<li>现在Alice和Bob各自拥有新的对方生成的commitment tx。如图第9步，任意一方可以签名广播，这样双方也会得到各自该得到的（广播的这一房要延迟得到）</li>
+
+<li>要是Bob作弊，广播第7步Alice给她的旧的commit tx会怎么样呢，毕竟Bob有动机（旧的Alice给的tx里自己会得到6BTC，新的Alice给的Tx自己只会得到5BTC），如果是这样的话，那么旧的tx广播后，Alice立即得到4BTC，Bob在等待6得到BTC的过程中，Alice可以用第14步Bob给自己的密钥1去取回Bob的6BTC，这样Bob只会得到0BTC，Alice回到10BTC。Bob得到了惩罚。</li>
+
+<li>假设Bob和Alice经过多次转账后，现在Alice应得4BTC, Bob应得6BTC，Alice觉得他们应该不会再交易了，就需要将该支付通道关闭，参见图3，Alice计算好两人应得的btc后，建立一个closing Tx, Alice自己签名该Tx，然后将该tx发给Bob，让他签名并且广播。一般情况下，Bob没有理由拒绝。这样bitcoin网络上只会记录Opening Transaction和 Closing Transaction，Alice和Bob之间的多次交易记录不会被记录，降低了网络的负载。</li>
+
+<li>另一方面，如果Bob由于某种原因没有回应Alice的关闭通道的请求，Alice可以将最后一步的commitment Tx签名并广播，这样自己过一段时间后也会得到应得的。</li>
+</ol>
+
+
+<p>
+从另一个角度来看，双向通道的建立基于下面的博弈：
+</p>
+
+<p>
+Alice和Bob各自生成对自己有益（表现为交易成功后自己立即有收益，对方有条件才能获得收益）的交易（但还缺另一个人同意才真正有效）发给对方，也就是commitment tx。
+</p>
+
+<p>
+随着支付状态的变化（两人间又产生新的交易），两人又各自生产新的交易，并给与对方惩罚广播旧交易行为的权利（给与对方上一步的密钥）
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org09d00f0" class="outline-2">
+<h2 id="org09d00f0"><span class="section-number-2">3</span> 参考列表</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-building-a-bidirectional-payment-channel-1464710791/">https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-building-a-bidirectional-payment-channel-1464710791/</a></li>
+<li><a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-creating-the-network-1465326903/">https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-creating-the-network-1465326903/</a></li>
+<li><a href="https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-completing-the-puzzle-and-closing-the-channel-1466178980/">https://bitcoinmagazine.com/articles/understanding-the-lightning-network-part-completing-the-puzzle-and-closing-the-channel-1466178980/</a></li>
+<li><a href="https://blog.chainside.net/understanding-payment-channels-4ab018be79d4">https://blog.chainside.net/understanding-payment-channels-4ab018be79d4</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9bbdc4b" class="outline-2">
+<h2 id="org9bbdc4b"><span class="section-number-2">4</span> END</h2>
+<div class="outline-text-2" id="text-4">
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1276090118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1276090118' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nisen</p>
+<p class="email">Email: <a href="mailto:imnisen@163.com">imnisen@163.com</a></p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
